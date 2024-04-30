@@ -1,0 +1,25 @@
+@tailwind base;
+@tailwind utilities;
+@tailwind components;
+
+.text-green-600 {
+    color: #26A79B;
+}
+
+.bg-green-600 {
+    background-color: #26A79B;
+}
+
+.ring-green-600 {
+    color: #26A79B;
+}
+
+
+button:disabled {
+    cursor: not-allowed;
+    background-color: #11554e;
+}
+
+button:disabled:hover {
+    background-color: #11554e;
+}
