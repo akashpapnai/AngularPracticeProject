@@ -1,6 +1,6 @@
 import { Component, ElementRef, OnInit } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { HttpClient, HttpClientModule, HttpHeaders } from '@angular/common/http';
 import { LoginService } from '../login.service';
 import { CookieService } from 'ngx-cookie-service'
 import { ActivatedRoute, Router } from '@angular/router';
@@ -36,24 +36,35 @@ export class LoginComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute
   ) {}
+
+  public dontNavigate = true;
   
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
     
+    this.dontNavigate = true;
     this.route.queryParams.subscribe(params => {
       if('signUp' in params) {
         this.values.isSignIn = 2;
+        this.dontNavigate = false;
       }
     })
 
-  if(this.cService.get('user')) {
-      const user = this.cService.get('user');
-      if(user !== null && this.values.isSignIn === 1){
-        const deserializedUser = JSON.parse(user);
-        if(deserializedUser['loginName'] !== null ) {
-          debugger;
-          this.router.navigate(['/homePage']); // , {queryParams: { signUp: false }}
+  if(localStorage.getItem('token') && this.dontNavigate) {
+      const token = localStorage.getItem('token')
+
+      const checkToken = await this.http.get(this.lService.__apiURL__ + `/User/IsTokenValid?token=${token}`);
+
+      checkToken.subscribe(
+        {
+          next: () => {
+            debugger;
+            this.router.navigate(['/']);
+          },
+          error: ()=> {
+            
+          }
         }
-      }
+      )
     }
   }
 
@@ -67,24 +78,27 @@ export class LoginComponent implements OnInit {
     
     const apiURL = this.lService.__apiURL__;
     
-    this.http.post(apiURL+"/User/Login", this.loginObj).subscribe(
+    const logIn = await this.http.post(apiURL+"/User/Login", this.loginObj);
+
+    logIn.subscribe(
       { 
         next: (data) => {
-          if('errorCode' in data && 'message' in data) {
-            this.loginObj.userName = "";
-            this.loginObj.password = "";
-            alert('No user found with username: '+this.loginObj.userName);
-          }
-          else if('userName' in data && 'loginName' in data) {
-            this.cService.set('user', JSON.stringify(data));
-            alert('Login Success.');
+          var obj = JSON.parse(JSON.stringify(data));
+          
+          if('token' in obj) {
+            localStorage.setItem('token', obj['token']);
             this.router.navigate(['/']);
           }
         },
-        error: () => {
-          this.loginObj.userName = "";
-          this.loginObj.password = "";
-          alert("Error Response from Server");
+        error: (data) => {
+          if(data.status == 400) {
+            this.loginObj.userName = "";
+            this.loginObj.password = "";
+            alert(data.error.invalidUser);
+          }
+          else {
+            alert("Error Response from Server");
+          }
         }
       }
     )

@@ -82,10 +82,12 @@
                     </button>
                 </div>
 
-                <p class="mt-10 text-center text-sm text-gray-500">
-                    Already a member?
-                    <a class="font-semibold leading-6 text-green-600 hover:text-green-500 cursor-pointer" (click)="values.isSignIn=1;" >Sign In</a>
-                </p>
+                @if(dontNavigate === true) {
+                  <p class="mt-10 text-center text-sm text-gray-500">
+                      Already a member?
+                      <a class="font-semibold leading-6 text-green-600 hover:text-green-500 cursor-pointer" (click)="values.isSignIn=1;" >Sign In</a>
+                  </p>
+                }
             </form>
         </div>
     }
