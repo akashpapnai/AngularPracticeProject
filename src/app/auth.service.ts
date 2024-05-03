@@ -1,4 +1,3 @@
-
 import { Injectable } from "@angular/core";
 import { LoginService } from "./login.service";
 
@@ -9,11 +8,11 @@ import { LoginService } from "./login.service";
 export class AuthService {
 
    constructor(
-      private lService: LoginService 
    ) {}
 
    isLoggedIn():boolean {
       try {
+         debugger;
          if(localStorage.getItem('token')) {
             return true;
          }

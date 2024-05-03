@@ -57,11 +57,10 @@ export class LoginComponent implements OnInit {
       checkToken.subscribe(
         {
           next: () => {
-            debugger;
             this.router.navigate(['/']);
           },
           error: ()=> {
-            
+            alert('Error Response from Server')
           }
         }
       )
