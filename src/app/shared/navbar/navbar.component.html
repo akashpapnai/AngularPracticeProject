@@ -8,15 +8,25 @@
            <img class="hidden lg:block h-8 w-auto" src="https://imgs.search.brave.com/FV8pf8uSxvyokm6oNzBIwlNFTctmbjKV9vSVglCOBa8/rs:fit:860:0:0/g:ce/aHR0cHM6Ly9jZG4t/aWNvbnMtcG5nLmZy/ZWVwaWsuY29tLzI1/Ni82MzYyLzYzNjI1/MjAucG5n" alt="Workflow">
          </div>
          <div class="hidden sm:-my-px sm:ml-6 sm:flex">
-           <a class="inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium leading-5 text-white hover:text-gray-300 focus:outline-none focus:text-gray-300 transition duration-150 ease-in-out">Home</a>
-           <a class="ml-8 inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium leading-5 text-white hover:text-gray-300 focus:outline-none focus:text-gray-300 transition duration-150 ease-in-out">About</a>
-           <a class="ml-8 inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium leading-5 text-white hover:text-gray-300 focus:outline-none focus:text-gray-300 transition duration-150 ease-in-out">Services</a>
-           <a class="ml-8 inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium leading-5 text-white hover:text-gray-300 focus:outline-none focus:text-gray-300 transition duration-150 ease-in-out">Contact</a>
+           <a (click)="HomeClick()" class="inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium leading-5 text-white hover:text-gray-300 focus:outline-none focus:text-gray-300 transition duration-150 ease-in-out cursor-pointer">Home</a>
+           <a (click)="AboutClick()" class="ml-8 inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium leading-5 text-white hover:text-gray-300 focus:outline-none focus:text-gray-300 transition duration-150 ease-in-out cursor-pointer">About</a>
+           <a (click)="ServicesClick()" class="ml-8 inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium leading-5 text-white hover:text-gray-300 focus:outline-none focus:text-gray-300 transition duration-150 ease-in-out cursor-pointer">Services</a>
+           <a (click)="ContactClick()" class="ml-8 inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium leading-5 text-white hover:text-gray-300 focus:outline-none focus:text-gray-300 transition duration-150 ease-in-out cursor-pointer">Contact</a>
          </div>
        </div>
        <div class="-mr-2 flex items-center">
           <div class="mr-2 flex items-center">
-             <a class="cursor-pointer">
+            @if(isAuthenticated()) {
+              <a (click)="LogOut()" class="mr-4 cursor-pointer">
+                <svg class="h-6 auto" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" fill="#000000" version="1.1" id="Capa_1" viewBox="0 0 384.971 384.971" xml:space="preserve" fill="white">
+                  <g id="Sign_Out">
+                    <path d="M180.455,360.91H24.061V24.061h156.394c6.641,0,12.03-5.39,12.03-12.03s-5.39-12.03-12.03-12.03H12.03    C5.39,0.001,0,5.39,0,12.031V372.94c0,6.641,5.39,12.03,12.03,12.03h168.424c6.641,0,12.03-5.39,12.03-12.03    C192.485,366.299,187.095,360.91,180.455,360.91z"/>
+                    <path d="M381.481,184.088l-83.009-84.2c-4.704-4.752-12.319-4.74-17.011,0c-4.704,4.74-4.704,12.439,0,17.179l62.558,63.46H96.279    c-6.641,0-12.03,5.438-12.03,12.151c0,6.713,5.39,12.151,12.03,12.151h247.74l-62.558,63.46c-4.704,4.752-4.704,12.439,0,17.179    c4.704,4.752,12.319,4.752,17.011,0l82.997-84.2C386.113,196.588,386.161,188.756,381.481,184.088z"/>
+                  </g>
+                  </svg>
+              </a>
+            }             
+             <a (click)="OpenProfile()" class="cursor-pointer">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-auto" version="1.0" viewBox="0 0 300.000000 300.000000" preserveAspectRatio="xMidYMid meet" fill="white">
                 <g transform="translate(0.000000,300.000000) scale(0.100000,-0.100000)" fill="#ffffff" stroke="none">
                   <path d="M1345 2940 c-306 -65 -544 -296 -616 -597 -18 -73 -20 -108 -16 -208 7 -176 56 -312 162 -452 44 -60 127 -138 170 -161 16 -8 17 -12 5 -15 -274 -75 -565 -269 -730 -489 -123 -162 -188 -327 -197 -498 -9 -163 20 -260 102 -345 104 -106 340 -172 590 -163 l90 3 -120 18 c-66 10 -152 22 -190 28 -86 12 -227 56 -275 86 -58 36 -110 97 -135 159 -23 54 -24 69 -21 194 3 120 7 144 34 217 33 91 91 203 131 253 73 93 144 171 183 201 24 18 45 36 48 40 3 4 41 32 85 64 86 62 241 140 348 177 46 15 77 42 77 67 0 10 -24 40 -52 67 -82 74 -139 146 -181 223 -21 39 -40 78 -42 88 -3 10 -14 49 -25 88 -21 72 -28 222 -15 300 18 109 83 259 146 339 96 122 256 226 409 266 149 39 353 22 496 -41 116 -51 237 -155 310 -264 86 -128 114 -220 121 -390 5 -111 3 -142 -15 -213 -38 -147 -100 -249 -237 -385 l-77 -76 19 -24 c10 -14 41 -33 68 -42 275 -97 550 -304 686 -515 108 -168 139 -262 146 -435 5 -122 4 -135 -19 -192 -14 -34 -36 -75 -49 -91 -65 -80 -229 -150 -394 -167 -91 -9 -269 -37 -275 -42 -13 -14 312 8 395 27 272 61 385 191 385 440 0 366 -288 745 -721 949 -57 27 -124 54 -149 61 -25 7 -51 14 -59 17 -10 3 -6 9 15 22 94 58 213 206 265 330 78 187 78 426 0 611 -89 212 -263 371 -486 446 -68 22 -101 27 -215 30 -74 2 -153 -1 -175 -6z"/>
@@ -24,7 +34,7 @@
                   <path d="M1370 19 c-39 -3 14 -6 129 -7 107 -1 192 0 189 3 -8 8 -243 11 -318 4z"/>
                 </g>
               </svg>
-             </a>             
+             </a>
           </div>
           <div class="sm:hidden">
              <button (click)="toggleMenu()" type="button" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-white hover:bg-gray-700 focus:outline-none focus:bg-gray-700 focus:text-white transition duration-150 ease-in-out" aria-label="Main menu" aria-expanded="false">
