@@ -102,7 +102,37 @@ export class LoginComponent implements OnInit {
       }
     )
   }
-  public signUpBtnClick() {
+  public async signUpBtnClick(form: NgForm) {
+    const apiURL = this.lService.__apiURL__;
+
+    const postObj = {email:this.signUpObj.email, loginName: this.signUpObj.userName, password: this.signUpObj.password };
+    
+    const signUp = await this.http.post(apiURL+"/User/Register", postObj);
+
+
+    signUp.subscribe(
+      { 
+        next: (data) => {
+          var obj = JSON.parse(JSON.stringify(data));
+          
+          if('token' in obj) {
+            localStorage.setItem('token', obj['token']);
+            alert(obj['message']);
+            this.router.navigate(['/']);
+          }
+        },
+        error: (data) => {
+          if(data.status == 400) {
+            this.loginObj.userName = "";
+            this.loginObj.password = "";
+            alert(data.error.message);
+          }
+          else {
+            alert("Error Response from Server");
+          }
+        }
+      }
+    )
   }
   public sendVerificationLink() {
     if(this.loginObj.userName.trim() === "") {

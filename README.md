@@ -25,3 +25,12 @@ Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To u
 ## Further help
 
 To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+
+## Deploying the Project
+
+To Deploy the project use the following command<br/>
+`ng b --output-path docs --base-href /AngularPracticeProject/docs/browser/`
+
+Wait for 2-3 minutes to deploy\
+And to visit the deployed page:
+`https://akashpapnai.github.io/AngularPracticeProject/docs/browser/index.html`

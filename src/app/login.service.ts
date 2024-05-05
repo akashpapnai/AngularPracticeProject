@@ -4,6 +4,6 @@ import { Injectable } from '@angular/core';
   providedIn: 'root'
 })
 export class LoginService {
-  public __apiURL__:string = 'https://localhost:5203';
+  public __apiURL__:string = 'https://akashpapnai.bsite.net';
   constructor() { }
 }
