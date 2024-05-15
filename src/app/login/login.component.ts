@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, OnInit } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { HttpClient, HttpClientModule, HttpHeaders } from '@angular/common/http';
 import { LoginService } from '../login.service';
@@ -34,7 +34,8 @@ export class LoginComponent implements OnInit {
     private lService: LoginService, 
     private cService: CookieService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private cdr: ChangeDetectorRef
   ) {}
 
   public dontNavigate = true;
@@ -49,25 +50,29 @@ export class LoginComponent implements OnInit {
       }
     })
 
-  if(localStorage.getItem('token') && this.dontNavigate) {
-      const token = localStorage.getItem('token')
-
-      const checkToken = await this.http.get(this.lService.__apiURL__ + `/User/IsTokenValid?token=${token}`);
-
-      checkToken.subscribe(
-        {
-          next: () => {
-            this.router.navigate(['/']);
-          },
-          error: ()=> {
-            alert('Error Response from Server')
+  if(typeof localStorage !== 'undefined') {
+    if(localStorage.getItem('token') && this.dontNavigate) {
+        const token = localStorage.getItem('token')
+  
+        const checkToken = await this.http.get(this.lService.__apiURL__ + `/User/IsTokenValid?token=${token}`);
+  
+        checkToken.subscribe(
+          {
+            next: () => {
+              this.router.navigate(['/']);
+            },
+            error: ()=> {
+              alert('Error Response from Server')
+            }
           }
-        }
-      )
+        )
+      }
     }
   }
 
-  public values = { isSignIn: 1 }
+  public values = { isSignIn: 1, signInBtnText: 'Sign In', signUpBtnText: 'Sign Up', forgotPasswordBtnText:'Send varification link' }
+
+  public tempDisabled = false;
 
   public loginObj: LoginObj = { userName:"",password:"" };
 
@@ -77,8 +82,11 @@ export class LoginComponent implements OnInit {
     
     const apiURL = this.lService.__apiURL__;
     
-    const logIn = await this.http.post(apiURL+"/User/Login", this.loginObj);
+    this.values.signInBtnText = 'Loading...';
+    this.tempDisabled = true;
 
+    const logIn = await this.http.post(apiURL+"/User/Login", this.loginObj);
+    
     logIn.subscribe(
       { 
         next: (data) => {
@@ -101,10 +109,12 @@ export class LoginComponent implements OnInit {
         }
       }
     )
+    this.values.signInBtnText = 'Sign In';
+    this.tempDisabled = false;
   }
   public async signUpBtnClick(form: NgForm) {
     const apiURL = this.lService.__apiURL__;
-
+    
     const postObj = {email:this.signUpObj.email, loginName: this.signUpObj.userName, password: this.signUpObj.password };
     
     const signUp = await this.http.post(apiURL+"/User/Register", postObj);
