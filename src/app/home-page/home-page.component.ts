@@ -1,17 +1,55 @@
 import { Component, OnInit } from '@angular/core';
 import { NavbarComponent } from '../shared/navbar/navbar.component';
+import { LoginService } from '../login.service';
+import { HttpClient, HttpClientModule, HttpHeaders } from '@angular/common/http';
+import { CardComponent } from '../shared/card/card.component';
+import {CommonModule} from '@angular/common'
+
 @Component({
   selector: 'app-home-page',
   standalone: true,
-  imports: [NavbarComponent],
+  imports: [NavbarComponent,HttpClientModule, CardComponent, CommonModule],
   templateUrl: './home-page.component.html',
   styleUrl: './home-page.component.scss'
 })
 export class HomePageComponent {
-  constructor() {}
+  constructor(
+    private lService: LoginService,
+    private http: HttpClient
+  ) {}
 
-  items = [{src:"https://imgs.search.brave.com/fqTbQXrCdaCuYsdZGKwt8dMW5Vso_m2j671rQ-yMx8s/rs:fit:860:0:0/g:ce/aHR0cHM6Ly9waWNz/dW0ucGhvdG9zLzY0/MC80ODAvP2ltYWdl/PTM1Mw", alt: 'Image 1'},
-           {src:"https://imgs.search.brave.com/8EA6pnJcoQZoL-dyQtFMpmgZ-2B8nrntMEPZ88A72WM/rs:fit:860:0:0/g:ce/aHR0cHM6Ly9pbWFn/ZXMuZnJlZWltYWdl/cy5jb20vaW1hZ2Vz/L2xhcmdlLXByZXZp/ZXdzL2Y0OC9yYW5k/b20tcGljcy0xLTEz/MjQyODcuanBnP2Zt/dA", alt: 'Image 2'},
-           {src:"https://imgs.search.brave.com/fqTbQXrCdaCuYsdZGKwt8dMW5Vso_m2j671rQ-yMx8s/rs:fit:860:0:0/g:ce/aHR0cHM6Ly9waWNz/dW0ucGhvdG9zLzY0/MC80ODAvP2ltYWdl/PTM1Mw", alt: 'Image 3'},
-  ]
+  private apiURL = this.lService.__apiURL__;
+  private token_header = new HttpHeaders();
+  public cardData:any[] = [];
+  
+  
+  async ngOnInit(): Promise<void> {
+
+    if(typeof localStorage !== 'undefined') {
+      this.token_header = new HttpHeaders({
+        'Authorization': 'Bearer ' + localStorage.getItem('token')
+      })
+
+      const nModules = await this.http.get(this.apiURL + `/User/GetAllModules?token=${localStorage.getItem('token')}`, {headers: this.token_header});
+
+      nModules.subscribe(
+        {
+          next: data => {
+            var obj = JSON.parse(JSON.stringify(data));
+            const modules_list = obj['modulesList'];
+            if(modules_list !== null) {
+              for(let index in modules_list) {
+                const module = modules_list[index];
+                let push_data = {imageSource: 'assets/images/'+ module.toLowerCase().replaceAll(' ','') + '.png',altText: module+' Image', title: module, description: module+' Description', tags: []};
+                this.cardData.push(push_data);
+              }
+            }
+          },
+          error: (err) => {
+            console.error(err);
+          }
+        }
+      )
+    }
+  }
 }

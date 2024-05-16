@@ -1,10 +1,8 @@
 <app-navbar></app-navbar>
-<div class="content mt-2">
-   <div class="overflow-hidden">
-      <div class="flex w-full animate-slide infinite">
-         @for (item of items; track item.alt) {
-            <img src="{{item.src}}" alt="{{item.alt}}" class="w-full h-48 object-cover rounded-xl ml-1 mr-1 animate-slide">
-         }
-      </div>    
-   </div>
+
+<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+ <app-card *ngFor="let card of cardData" [data]="card">
+ </app-card>
 </div>
+
+

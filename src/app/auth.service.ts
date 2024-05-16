@@ -12,7 +12,6 @@ export class AuthService {
 
    isLoggedIn():boolean {
       try {
-         debugger;
          if(localStorage.getItem('token')) {
             return true;
          }

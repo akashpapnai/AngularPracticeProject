@@ -18,6 +18,7 @@ export class NavbarComponent {
     if(confirmation) {
       localStorage.removeItem('token');
       this.router.navigate(['/']);
+      window.location.reload();
     }
     else {
       
