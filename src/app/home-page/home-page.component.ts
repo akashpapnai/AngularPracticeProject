@@ -4,6 +4,7 @@ import { LoginService } from '../login.service';
 import { HttpClient, HttpClientModule, HttpHeaders } from '@angular/common/http';
 import { CardComponent } from '../shared/card/card.component';
 import {CommonModule} from '@angular/common'
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-home-page',
@@ -13,9 +14,11 @@ import {CommonModule} from '@angular/common'
   styleUrl: './home-page.component.scss'
 })
 export class HomePageComponent {
+
   constructor(
     private lService: LoginService,
-    private http: HttpClient
+    private http: HttpClient,
+    private router: Router
   ) {}
 
   private apiURL = this.lService.__apiURL__;
@@ -51,5 +54,16 @@ export class HomePageComponent {
         }
       )
     }
+  }
+
+  async clicked_card(_t6: any) {
+    const checkUser = await this.http.get(this.apiURL+`/User/IsTokenValid?token=${localStorage.getItem('token')}`);
+    checkUser.subscribe(
+      {
+        next: (response) => {
+          this.router.navigate(['/'+_t6.title.toLowerCase().replaceAll(' ','')]);
+        }
+      }
+    )
   }
 }
