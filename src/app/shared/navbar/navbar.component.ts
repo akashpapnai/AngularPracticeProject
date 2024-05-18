@@ -10,6 +10,8 @@ import { AuthService } from '../../auth.service';
   styleUrl: './navbar.component.scss'
 })
 export class NavbarComponent {
+
+  public url:string = getURL(this.router.url);
   
   constructor(private router: Router, private aService: AuthService) {}
   
@@ -49,3 +51,19 @@ export class NavbarComponent {
     this.router.navigate(['/']);    
   }
 }
+function getURL(url:string): string {
+  const curr_url = url.split('/')[1];
+  switch(curr_url) {
+    case 'opd':
+      return 'OPD';
+    case 'ipd':
+      return 'IPD';
+    case 'hrandpayroll':
+      return 'HR And Payroll';
+    case 'bloodbank':
+      return 'Blood Bank';
+    default:
+      return ''; 
+  }
+}
+

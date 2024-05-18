@@ -17,6 +17,7 @@
        <div class="-mr-2 flex items-center">
           <div class="mr-2 flex items-center">
             @if(isAuthenticated()) {
+              <span class="mr-4">{{url}}</span>
               <a (click)="LogOut()" class="mr-4 cursor-pointer">
                 <svg class="h-6 auto" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" fill="#000000" version="1.1" id="Capa_1" viewBox="0 0 384.971 384.971" xml:space="preserve" fill="white">
                   <g id="Sign_Out">
