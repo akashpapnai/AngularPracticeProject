@@ -7,6 +7,8 @@ import { OpdComponent } from './opd/opd.component';
 import { IpdComponent } from './ipd/ipd.component';
 import { HrandpayrollComponent } from './hrandpayroll/hrandpayroll.component';
 import { BloodbankComponent } from './bloodbank/bloodbank.component';
+import { PatientRegistrationComponent } from './links/opd/patient-registration/patient-registration.component';
+import { OpdmanagementComponent } from './links/opd/opdmanagement/opdmanagement.component';
 
 export const routes: Routes = [
     { path:'',component: HomePageComponent,pathMatch:'full' },
@@ -16,5 +18,7 @@ export const routes: Routes = [
     { path:'opd', component: OpdComponent, canActivate: [AuthGuard] },
     { path:'ipd',component:IpdComponent, canActivate:[AuthGuard] },
     { path:'hrandpayroll',component:HrandpayrollComponent,canActivate:[AuthGuard] },
-    { path:'bloodbank',component:BloodbankComponent,canActivate:[AuthGuard] }
+    { path:'bloodbank',component:BloodbankComponent,canActivate:[AuthGuard] },
+    { path:'opd/patientregistration', component: PatientRegistrationComponent, canActivate:[AuthGuard] },
+    { path:'opd/opdmanagement', component: OpdmanagementComponent, canActivate:[AuthGuard] }
 ];
