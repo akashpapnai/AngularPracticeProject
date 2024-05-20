@@ -1,8 +1,14 @@
 {
   "routes": [
     "/",
+    "/bloodbank",
     "/homePage",
+    "/hrandpayroll",
+    "/ipd",
     "/login",
+    "/opd",
+    "/opd/opdmanagement",
+    "/opd/patientregistration",
     "/profile"
   ]
 }
