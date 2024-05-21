@@ -9,4 +9,7 @@
   <div class="px-6 pt-4 pb-2">
     <span *ngFor="let tag of data.tags" class="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2">{{tag}}</span> <!-- Corrected the syntax for ngFor -->
   </div>
+  @if(clicked) {
+    <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+  }
 </div>

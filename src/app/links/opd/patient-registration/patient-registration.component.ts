@@ -1,14 +1,20 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { NavbarComponent } from '../../../shared/navbar/navbar.component';
-import { FormsModule, NgForm } from '@angular/forms';
-import {MatDatepicker, MatDatepickerModule} from '@angular/material/datepicker';
+import { FormControl, FormsModule, NgForm, ReactiveFormsModule } from '@angular/forms';
+import { MatDatepickerModule} from '@angular/material/datepicker';
+import {provideMomentDateAdapter} from '@angular/material-moment-adapter';
 import {MatInputModule} from '@angular/material/input';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {provideNativeDateAdapter} from '@angular/material/core';
 import { LoginService } from '../../../login.service';
 import { ConstantsService } from '../../../constants.service';
 import { HttpClient, HttpClientModule, HttpHeaders } from '@angular/common/http';
+import * as _moment from 'moment';
+import {default as _rollupMoment, Moment} from 'moment';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+
+const moment = _rollupMoment || _moment;
 
 interface countryResponse {
   allCountries: any[]
@@ -22,6 +28,22 @@ interface citiesResponse {
   allCities: any[]
 }
 
+interface uhidResponse {
+  uhid: string
+}
+
+export const DATE_FORMATS = {
+  parse: {
+    dateInput: 'DD-MMM-YYYY',
+  },
+  display: {
+    dateInput: 'DD-MMM-YYYY',
+    monthYearLabel: 'MMM YYYY',
+    dateA11yLabel: 'LL',
+    monthYearA11yLabel: 'MMMM YYYY',
+  }
+};
+
 @Component({
   selector: 'app-patient-registration',
   standalone: true,
@@ -32,12 +54,15 @@ interface citiesResponse {
     MatFormFieldModule, 
     MatInputModule,
     MatDatepickerModule,
-    HttpClientModule
+    HttpClientModule,
+    ReactiveFormsModule,
+    MatProgressSpinnerModule
   ],
   templateUrl: './patient-registration.component.html',
   styleUrl: './patient-registration.component.scss',
   providers: [
-    provideNativeDateAdapter()
+    provideNativeDateAdapter(),
+    provideMomentDateAdapter(DATE_FORMATS)
   ]
 })
 export class PatientRegistrationComponent implements OnInit {
@@ -58,12 +83,23 @@ export class PatientRegistrationComponent implements OnInit {
     mStatusList: this.constants.maritalStatusList,
     bGroup: this.constants.bloodGroupList,
     religion: this.constants.religionList,
-    documents: this.constants.documentsList
+    documents: this.constants.documentsList,
+    currDate: new FormControl(moment()),
+    uhid: '',
+    submit: 'Submit'
   }
-  maxDate: Date = new Date();
 
-  ngOnInit(): void {
+  public loading = {
+    resetting: false,
+    submitting: false
+  }
+
+  public maxDate: Date = new Date();
+  public date = new FormControl(moment());
+
+  async ngOnInit(): Promise<any> {
     const apiURL = this.lService.__apiURL__;
+    this.getUhid();
     
     if(typeof localStorage !== 'undefined') {
       const token_header = new HttpHeaders({
@@ -146,17 +182,49 @@ export class PatientRegistrationComponent implements OnInit {
     this.formValues.age = age.toString() + ' years';
   }
 
-  registerPatient(form: NgForm) {
-    if(form.valid) {
-      console.log('Submit');
-      console.log(form);
+  public async getUhid() {
+    if(typeof localStorage !== 'undefined') {
+
+      const token_header = new HttpHeaders({
+        'Authorization': 'Bearer ' + localStorage.getItem('token')
+      });
+      const uhid = await this.http.get(this.lService.__apiURL__ + '/Common/GetLatestUHID', {headers: token_header});
+
+      uhid.subscribe({
+        next: (data) => {
+          const obj = data as uhidResponse;
+          this.formValues.uhid = obj.uhid;
+        },
+        error: (err) => {
+          this.formValues.uhid = '';
+        }
+      })
     }
+    this.formValues.uhid = '';
+  }
+
+  registerPatient(form: NgForm) {
+    this.loading.submitting = true;
+    setTimeout(() => {
+      if(form.valid) {
+        console.log('Reset');
+        console.log(form);
+        this.loading.submitting = false;
+      }
+    }, 3000);
+  
   }
 
   public resetClick(form: NgForm) {
-    if(form.valid) {
-      console.log('Reset');
-      console.log(form);
-    }
+    this.loading.resetting = true;
+    setTimeout(() => {
+      if(form.valid) {
+        console.log('Reset');
+        console.log(form);
+        this.loading.resetting = false;
+      }
+    }, 3000);
   }
+  
 }
+

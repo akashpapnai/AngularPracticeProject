@@ -7,17 +7,17 @@
     <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="uhid">
       UHID
     </label>
-    <input class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="uhid" type="text" placeholder="UHID">
+    <input disabled [value]="formValues.uhid" class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="uhid" type="text" placeholder="UHID">
   </div>
   <!-- Date -->
-  <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0" style="display: flex; flex-direction: column;">
+  <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0">
     <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="last-name">
       Date
     </label>
     <mat-form-field class="appearance-none block w-full border rounded leading-tight focus:outline-none">
       <mat-label class="text-xs">Choose a date</mat-label>
-      <input matInput [matDatepicker]="picker" style="padding: 8px; line-height: 1;height:10px">
-      <mat-hint class="absolute">MM/DD/YYYY</mat-hint>
+      <input [formControl]="formValues.currDate" matInput [matDatepicker]="picker" style="padding: 8px; line-height: 1;height:10px">
+      <mat-hint>DD-MMM-YYYY</mat-hint>
       <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
       <mat-datepicker #picker></mat-datepicker>
     </mat-form-field>
@@ -61,9 +61,9 @@
     <mat-form-field class="appearance-none block w-full border rounded leading-tight focus:outline-none">
       <mat-label class="text-xs">Choose a date</mat-label>
       <input type="datetime" [max]="maxDate" (dateChange)="calculateAge($event.value)" matInput [matDatepicker]="dob" style="padding: 8px; line-height: 1;height:10px">
-      <mat-hint class="absolute">MM/DD/YYYY</mat-hint>
+      <mat-hint>DD-MMM-YYYY</mat-hint>
       <mat-datepicker-toggle matIconSuffix [for]="dob"></mat-datepicker-toggle>
-      <mat-datepicker #dob></mat-datepicker>
+      <mat-datepicker startView="year" #dob></mat-datepicker>
     </mat-form-field>
   </div>
     <!-- Age -->
@@ -220,9 +220,14 @@
  </div>
  <!-- Submit -->
  <div class="items-end flex flex-wrap justify-end -mx-3 mb-2">
-  <input (click)="resetClick(myForm)" type="button" value="Reset" class="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-xs px-3 py-2 me-2 mb-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700 opacity-50 hover:opacity-100" />
-  <input (click)="registerPatient(myForm)" type="button" value="Submit" class="cursor-pointer text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-xs px-3 py-2 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800" />
+  <button [disabled]="loading.resetting || loading.submitting" mat-raised-button (click)="resetClick(myForm)" type="button" class="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-xs px-3 py-2 me-2 mb-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700 opacity-50 hover:opacity-100" >
+    <span *ngIf="!loading.resetting">Reset</span>
+    <mat-spinner *ngIf="loading.resetting" [diameter]="16"></mat-spinner>
+  </button>
+  <button [disabled]="loading.resetting || loading.submitting" (click)="registerPatient(myForm)" type="button" class="cursor-pointer text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-xs px-3 py-2 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800" >
+    <span *ngIf="!loading.submitting">Submit</span>
+    <mat-spinner *ngIf="loading.submitting" [diameter]="16"></mat-spinner>
+  </button>
 </div>
-
 </form>
 
