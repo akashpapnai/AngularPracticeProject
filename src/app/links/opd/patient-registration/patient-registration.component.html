@@ -7,7 +7,7 @@
     <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="uhid">
       UHID
     </label>
-    <input disabled [value]="formValues.uhid" class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="uhid" type="text" placeholder="UHID">
+    <input disabled [value]="submitClass.uhid" class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" name="uhid" type="text" placeholder="UHID">
   </div>
   <!-- Date -->
   <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0">
@@ -16,7 +16,7 @@
     </label>
     <mat-form-field class="appearance-none block w-full border rounded leading-tight focus:outline-none">
       <mat-label class="text-xs">Choose a date</mat-label>
-      <input [formControl]="formValues.currDate" matInput [matDatepicker]="picker" style="padding: 8px; line-height: 1;height:10px">
+      <input [formControl]="submitClass.date" matInput [matDatepicker]="picker" style="padding: 8px; line-height: 1;height:10px">
       <mat-hint>DD-MMM-YYYY</mat-hint>
       <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
       <mat-datepicker #picker></mat-datepicker>
@@ -28,14 +28,14 @@
       First Name
     </label>
     <div class="flex">
-      <select class="appearance-none block w-1/4 bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="salutation">
+      <select [(ngModel)]="submitClass.salutation" class="appearance-none block w-1/4 bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500" name="salutation">
        <option value="" selected>--Select One--</option> 
        <option value="Mr.">Mr.</option>
         <option value="Mrs.">Mrs.</option>
         <option value="Ms.">Ms.</option>
         <option value="Dr.">Mrs.</option>
       </select>
-      <input class="appearance-none block w-3/4 ml-2 bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="first-name" type="text" placeholder="First Name">
+      <input [(ngModel)]="submitClass.firstName" class="appearance-none block w-3/4 ml-2 bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" name="firstName" type="text" placeholder="First Name">
     </div>
   </div>
    <!-- Middle Name -->
@@ -43,7 +43,7 @@
      <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="middle-name">
        Middle Name
      </label>
-     <input class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="middle-name" type="text" placeholder="Middle Name">
+     <input [(ngModel)]="submitClass.middleName" class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" name="middleName" type="text" placeholder="Middle Name">
    </div>
 
    <!-- Last Name -->
@@ -51,7 +51,7 @@
      <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="last-name">
        Last Name
      </label>
-     <input class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="last-name" type="text" placeholder="Last Name">
+     <input [(ngModel)]="submitClass.lastName" class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" name="lastName" type="text" placeholder="Last Name">
    </div>
    <!-- Date of Birth -->
    <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0">
@@ -60,7 +60,7 @@
     </label>
     <mat-form-field class="appearance-none block w-full border rounded leading-tight focus:outline-none">
       <mat-label class="text-xs">Choose a date</mat-label>
-      <input type="datetime" [max]="maxDate" (dateChange)="calculateAge($event.value)" matInput [matDatepicker]="dob" style="padding: 8px; line-height: 1;height:10px">
+      <input [formControl]="submitClass.dob" type="datetime" [max]="maxDate" (dateChange)="calculateAge($event.value)" matInput [matDatepicker]="dob" style="padding: 8px; line-height: 1;height:10px">
       <mat-hint>DD-MMM-YYYY</mat-hint>
       <mat-datepicker-toggle matIconSuffix [for]="dob"></mat-datepicker-toggle>
       <mat-datepicker startView="year" #dob></mat-datepicker>
@@ -78,7 +78,7 @@
       <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="mStatus">
         Marital Status
       </label>
-      <select class="appearance-none block w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="mStatus">
+      <select [(ngModel)]="submitClass.maritalStatus" class="appearance-none block w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500" name="maritalStatus">
         <option value="" selected>--Select One--</option> 
         <option *ngFor="let m of formValues.mStatusList" [value]="m">{{m}}</option>
       </select>
@@ -88,24 +88,24 @@
       <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="guardian">
         Guardian
       </label>
-      <select [(ngModel)]="dropDownValues.guardian" class="appearance-none block w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500" name="guardian">
+      <select [(ngModel)]="submitClass.guardian" class="appearance-none block w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500" name="guardian">
         <option value="" selected>--Select One--</option> 
         <option *ngFor="let g of formValues.guardianList" [value]="g">{{g}}</option>
       </select>
     </div>
     <!-- Guardian Name -->
-    <div [hidden]="dropDownValues.guardian === ''" class="w-full md:w-1/4 px-3 mb-6 md:mb-0">
+    <div [hidden]="submitClass.guardian === ''" class="w-full md:w-1/4 px-3 mb-6 md:mb-0">
       <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="gName">
         Guardian Name
       </label>
-      <input class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" name="gName" type="text" placeholder="Guardian Name">
+      <input [(ngModel)]="submitClass.guardianName" class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" name="guardianName" type="text" placeholder="Guardian Name">
     </div>
     <!-- Blood Group -->
     <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0">
       <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="bGroup">
         Blood Group
       </label>
-      <select class="appearance-none block w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500" name="bGroup">
+      <select [(ngModel)]="submitClass.bloodGroup" class="appearance-none block w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500" name="bloodGroup">
         <option value="" selected>--Select One--</option> 
         <option *ngFor="let b of formValues.bGroup" [value]="b">{{b}}</option>
       </select>
@@ -115,14 +115,14 @@
       <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="Occupation">
         Occupation
       </label>
-      <input class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" name="Occupation" type="text" placeholder="Occupation">
+      <input [(ngModel)]="submitClass.occupation" class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" name="occupation" type="text" placeholder="Occupation">
     </div>
     <!-- Religion -->
     <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0">
       <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="religion">
         Religion
       </label>
-      <select class="appearance-none block w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500" name="religion">
+      <select [(ngModel)]="submitClass.religion" class="appearance-none block w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500" name="religion">
         <option value="" selected>--Select One--</option> 
         <option *ngFor="let r of formValues.religion" [value]="r">{{r}}</option>
       </select>
@@ -132,21 +132,21 @@
       <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="mNo">
         Mobile Number
       </label>
-      <input class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" name="mNo" type="text" placeholder="Mobile Number">
+      <input [(ngModel)]="submitClass.mobileNumber" class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" name="mobileNumber" type="text" placeholder="Mobile Number">
     </div>
     <!-- Secondary Mobile Number -->
     <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0">
       <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="sMNo">
         Secondary Mobile Number
       </label>
-      <input class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" name="sMNo" type="text" placeholder="Secondary Mobile Number">
+      <input [(ngModel)]="submitClass.secondaryMobileNumber" class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" name="secondaryMobileNumber" type="text" placeholder="Secondary Mobile Number">
     </div>
     <!-- Local Address -->
     <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0">
       <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="lAddress">
         Local Address
       </label>
-      <input class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" name="lAddress" type="text" placeholder="Local Address">
+      <input [(ngModel)]="submitClass.localAddress" class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" name="localAddress" type="text" placeholder="Local Address">
     </div>
     <!-- Countries -->
     <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0">
@@ -154,7 +154,7 @@
         Country
       </label>
       <div class="relative">
-        <select (change)="countrySelected()" [(ngModel)]="dropDownValues.currCountry" name="country" class="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="countries">
+        <select (change)="countrySelected()" [(ngModel)]="submitClass.country" name="country" class="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500" name="country">
           <option value="" selected>--Select One--</option>
           <option *ngFor="let country of countries" value="{{country.id}}">{{country.name}}</option>
         </select>
@@ -162,11 +162,11 @@
     </div>
     <!-- State -->
     <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0">
-      <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="states">
+      <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="state">
         State
       </label>
       <div class="relative">
-        <select (change)="stateSelected()" [(ngModel)]="dropDownValues.currState" name="state" class="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="states">
+        <select (change)="stateSelected()" [(ngModel)]="submitClass.state" name="state" class="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
           <option value="" selected>--Select One--</option>
           <option *ngFor="let state of states" value="{{state.id}}">{{state.name}}</option>
         </select>
@@ -174,11 +174,11 @@
     </div>
    <!-- City -->
    <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0">
-    <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="cities">
+    <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="city">
       City
     </label>
     <div class="relative">
-      <select [(ngModel)]="dropDownValues.currCity" name="city" class="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="cities">
+      <select [(ngModel)]="submitClass.city" name="city" class="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
         <option value="" selected>--Select One--</option>
         <option *ngFor="let city of cities" value="{{city.id}}">{{city.name}}</option>
       </select>
@@ -186,17 +186,17 @@
   </div>
   <!-- Pin Code -->
   <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0">
-    <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="zip">
+    <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="pincode">
       Pin Code
     </label>
-    <input autocomplete="off" class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="zip" type="text" placeholder="Pin Code">
+    <input [(ngModel)]="submitClass.pincode" autocomplete="off" class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" name="pincode" type="text" placeholder="Pin Code">
   </div>
   <!-- Email -->
   <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0">
     <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="email">
       Email
     </label>
-    <input class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" name="email" type="text" placeholder="Email Address">
+    <input [(ngModel)]="submitClass.email" class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" name="email" type="text" placeholder="Email Address">
   </div>
   <!-- Document Select -->
   <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0">
@@ -204,18 +204,18 @@
      Document Select
    </label>
    <div class="relative">
-     <select [(ngModel)]="dropDownValues.dSelect" name="city" class="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="cities">
+     <select [(ngModel)]="submitClass.documentSelect" name="documentSelect" class="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500" >
        <option value="" selected>--Select One--</option>
        <option *ngFor="let document of formValues.documents" value="{{document}}">{{document}}</option>
      </select>
    </div>
  </div>
  <!-- Document Value -->
-  <div [hidden]="dropDownValues.dSelect === ''" class="w-full md:w-1/4 px-3 mb-6 md:mb-0">
+  <div [hidden]="submitClass.documentSelect === ''" class="w-full md:w-1/4 px-3 mb-6 md:mb-0">
    <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="dValue">
      Document Value
    </label>
-   <input class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" name="dValue" type="text" placeholder="Document Value">
+   <input [(ngModel)]="submitClass.documentValue" class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" name="documentValue" type="text" placeholder="Document Value">
  </div>
  </div>
  <!-- Submit -->

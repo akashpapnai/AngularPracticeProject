@@ -32,6 +32,37 @@ interface uhidResponse {
   uhid: string
 }
 
+class patientRegistration {
+  id: number = 0;
+  createdBy: number = 0;
+  createdDate: FormControl = new FormControl();
+  modifiedBy: number = 0;
+  modifiedDate: string = moment().toISOString();
+  uhid: string = '';
+  date: FormControl = new FormControl(moment());
+  salutation: string = '';
+  firstName: string = '';
+  middleName: string = '';
+  lastName: string = '';
+  dob: FormControl = new FormControl();
+  maritalStatus: string = '';
+  guardian: string = '';
+  guardianName: string = '';
+  bloodGroup: string = '';
+  occupation: string = '';
+  religion: string = '';
+  mobileNumber: string = '';
+  secondaryMobileNumber: string = '';
+  localAddress: string = '';
+  country: string = '';
+  state: string = '';
+  city: string = '';
+  pincode: string = '';
+  email: string = '';
+  documentSelect: string = '';
+  documentValue: string = '';
+}
+
 export const DATE_FORMATS = {
   parse: {
     dateInput: 'DD-MMM-YYYY',
@@ -73,20 +104,17 @@ export class PatientRegistrationComponent implements OnInit {
     private http: HttpClient
   ) {}
 
+  public submitClass = new patientRegistration();
   public countries: any[] = [];
   public states: any[] = [];
   public cities: any[] = [];
-  public dropDownValues = { currCountry: '', currState: '', currCity: '', guardian:'',dSelect: '' };
-  public formValues = { 
-    age:'', 
+  public formValues = {
     guardianList: this.constants.guardiansList,
     mStatusList: this.constants.maritalStatusList,
     bGroup: this.constants.bloodGroupList,
     religion: this.constants.religionList,
     documents: this.constants.documentsList,
-    currDate: new FormControl(moment()),
-    uhid: '',
-    submit: 'Submit'
+    age: ''
   }
 
   public loading = {
@@ -121,9 +149,9 @@ export class PatientRegistrationComponent implements OnInit {
   }
 
   public async countrySelected() {
-    this.dropDownValues.currState = '';
+    this.submitClass.state = '';
     this.states = [];
-    this.dropDownValues.currCity = '';
+    this.submitClass.city = '';
     this.cities = [];
 
     if(typeof localStorage !== 'undefined') {
@@ -133,7 +161,7 @@ export class PatientRegistrationComponent implements OnInit {
       });
 
       const statesList = await this.http.get(this.lService.__apiURL__ + '/Common/GetStatesByCountry', {headers:token_header,params: {
-        'country': this.dropDownValues.currCountry
+        'country': this.submitClass.country
       }});
 
       statesList.subscribe({
@@ -149,7 +177,7 @@ export class PatientRegistrationComponent implements OnInit {
   }
 
   public async stateSelected() {
-    this.dropDownValues.currCity = '';
+    this.submitClass.city = '';
     this.cities = [];
 
     if(typeof localStorage !== 'undefined') {
@@ -159,8 +187,8 @@ export class PatientRegistrationComponent implements OnInit {
       });
 
       const citiesList = await this.http.get(this.lService.__apiURL__ + '/Common/GetCitiesByCountryAndState', {headers:token_header,params: {
-        'country': this.dropDownValues.currCountry,
-        'state': this.dropDownValues.currState
+        'country': this.submitClass.country,
+        'state': this.submitClass.state
       }});
 
       citiesList.subscribe({
@@ -168,19 +196,37 @@ export class PatientRegistrationComponent implements OnInit {
           const objCT:citiesResponse = data as citiesResponse;
           const obj: any[] = objCT.allCities;
           for (let city of obj) {
-            this.cities.push({ id: city.iso2, name: city.name });
+            this.cities.push({ id: city.id, name: city.name });
           }
         }
       })
     }
   }
 
-  public calculateAge(dob: Date) {
-    const ageDifMs = Date.now() - dob.getTime();
-    const ageDate = new Date(ageDifMs);
-    const age = Math.abs(ageDate.getUTCFullYear() - 1970);
-    this.formValues.age = age.toString() + ' years';
+  public calculateAge(dob: Moment) {
+    const now = moment();
+    const duration = moment.duration(now.diff(dob));
+
+    const years = duration.years();
+    const months = duration.months();
+    const days = duration.days();
+
+    let ageString = '';
+
+    if (years > 0) {
+        ageString += years + ' years ';
+    }
+    if (months > 0) {
+        ageString += months + ' months ';
+    }
+    if (days > 0) {
+        ageString += days + ' days ';
+    }
+    ageString = ageString.trim();
+
+    this.formValues.age = ageString;
   }
+
 
   public async getUhid() {
     if(typeof localStorage !== 'undefined') {
@@ -193,25 +239,52 @@ export class PatientRegistrationComponent implements OnInit {
       uhid.subscribe({
         next: (data) => {
           const obj = data as uhidResponse;
-          this.formValues.uhid = obj.uhid;
+          this.submitClass.uhid = obj.uhid;
         },
         error: (err) => {
-          this.formValues.uhid = '';
+          this.submitClass.uhid = '';
         }
       })
     }
-    this.formValues.uhid = '';
+    this.submitClass.uhid = '';
   }
 
-  registerPatient(form: NgForm) {
+  public async registerPatient(form: NgForm) {
     this.loading.submitting = true;
-    setTimeout(() => {
-      if(form.valid) {
-        console.log('Reset');
-        console.log(form);
-        this.loading.submitting = false;
+    
+    if(form.valid) {
+      let register = form.value as patientRegistration;
+      register = {
+        ...register,
+        uhid: this.submitClass.uhid,
+        date: this.submitClass.date.value.format('DD-MMM-YYYY'),
+        dob: this.submitClass.dob.value?.format('DD-MMM-YYYY')
       }
-    }, 3000);
+      
+      if(validate(register)) {
+        const token_header = new HttpHeaders({
+          'Authorization': 'Bearer ' + localStorage.getItem('token'),
+          'Content-Type': 'application/json'
+        });
+        const reg = await this.http.post(this.lService.__apiURL__+'/Common/RegisterPatient',register,{headers:token_header});
+        reg.subscribe({
+          next: (data) => {
+            const obj = JSON.parse(JSON.stringify(data));
+            if(obj.status) {
+              alert(obj.message);
+              window.location.reload();
+            }
+            else {
+              alert(obj.message);
+            }
+          },
+          error: () => {
+            alert('Unable to Register Patient.');
+          }
+        })
+      }
+      this.loading.submitting = false;
+    }
   
   }
 
@@ -219,12 +292,18 @@ export class PatientRegistrationComponent implements OnInit {
     this.loading.resetting = true;
     setTimeout(() => {
       if(form.valid) {
-        console.log('Reset');
-        console.log(form);
+        this.submitClass = new patientRegistration();
+        this.formValues.age = '';
+        this.states = [];
+        this.cities = [];
         this.loading.resetting = false;
       }
-    }, 3000);
+    }, 1000);
   }
   
+}
+
+function validate(register: patientRegistration):boolean {
+  return true;
 }
 
