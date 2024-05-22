@@ -4,6 +4,8 @@ import { HttpClient, HttpClientModule, HttpHeaders } from '@angular/common/http'
 import { LoginService } from '../login.service';
 import { CookieService } from 'ngx-cookie-service'
 import { ActivatedRoute, Router } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 interface LoginObj {
   userName:string,
@@ -22,7 +24,9 @@ interface SignUpObj {
   standalone: true,
   imports: [
     FormsModule, 
-    HttpClientModule
+    HttpClientModule,
+    CommonModule,
+    MatProgressSpinnerModule
   ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss'
@@ -70,9 +74,7 @@ export class LoginComponent implements OnInit {
     }
   }
 
-  public values = { isSignIn: 1, signInBtnText: 'Sign In', signUpBtnText: 'Sign Up', forgotPasswordBtnText:'Send varification link' }
-
-  public tempDisabled = false;
+  public values = { isSignIn: 1, signInBtnClicked:false, signUpBtnClicked: false, forgotPasswordBtnText:'Send varification link' }
 
   public loginObj: LoginObj = { userName:"",password:"" };
 
@@ -81,9 +83,7 @@ export class LoginComponent implements OnInit {
   public async signInBtnClick(form: NgForm) {
     
     const apiURL = this.lService.__apiURL__;
-    
-    this.values.signInBtnText = 'Loading...';
-    this.tempDisabled = true;
+    this.values.signInBtnClicked = true;
 
     const logIn = await this.http.post(apiURL+"/User/Login", this.loginObj);
     
@@ -96,12 +96,16 @@ export class LoginComponent implements OnInit {
             localStorage.setItem('token', obj['token']);
             this.router.navigate(['/']);
           }
+
+          this.values.signInBtnClicked = false;
         },
         error: (data) => {
           if(data.status == 400) {
             this.loginObj.userName = "";
             this.loginObj.password = "";
             alert(data.error.invalidUser);
+
+            this.values.signInBtnClicked = false;
           }
           else {
             alert("Error Response from Server");
@@ -109,11 +113,14 @@ export class LoginComponent implements OnInit {
         }
       }
     )
-    this.values.signInBtnText = 'Sign In';
-    this.tempDisabled = false;
   }
   public async signUpBtnClick(form: NgForm) {
+    if(!form.valid) {
+      return;
+    }
+
     const apiURL = this.lService.__apiURL__;
+    this.values.signUpBtnClicked = true;
     
     const postObj = {email:this.signUpObj.email, loginName: this.signUpObj.userName, password: this.signUpObj.password };
     
@@ -130,6 +137,8 @@ export class LoginComponent implements OnInit {
             alert(obj['message']);
             this.router.navigate(['/']);
           }
+
+          this.values.signUpBtnClicked = false;
         },
         error: (data) => {
           if(data.status == 400) {
@@ -140,6 +149,8 @@ export class LoginComponent implements OnInit {
           else {
             alert("Error Response from Server");
           }
+
+          this.values.signUpBtnClicked = false;
         }
       }
     )

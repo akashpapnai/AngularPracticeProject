@@ -33,34 +33,29 @@ interface uhidResponse {
 }
 
 class patientRegistration {
-  id: number = 0;
-  createdBy: number = 0;
-  createdDate: FormControl = new FormControl();
-  modifiedBy: number = 0;
-  modifiedDate: string = moment().toISOString();
   uhid: string = '';
   date: FormControl = new FormControl(moment());
   salutation: string = '';
   firstName: string = '';
   middleName: string = '';
   lastName: string = '';
-  dob: FormControl = new FormControl();
+  dOB: FormControl = new FormControl();
   maritalStatus: string = '';
   guardian: string = '';
   guardianName: string = '';
   bloodGroup: string = '';
   occupation: string = '';
   religion: string = '';
-  mobileNumber: string = '';
-  secondaryMobileNumber: string = '';
+  mobNumber: string = '';
+  secMobNumber: string = '';
   localAddress: string = '';
-  country: string = '';
-  state: string = '';
-  city: string = '';
-  pincode: string = '';
+  countryId: string = '';
+  stateId: string = '';
+  cityId: string = '';
+  pinCode: string = '';
   email: string = '';
-  documentSelect: string = '';
-  documentValue: string = '';
+  documentType: string = '';
+  documentNumber: string = '';
 }
 
 export const DATE_FORMATS = {
@@ -149,9 +144,9 @@ export class PatientRegistrationComponent implements OnInit {
   }
 
   public async countrySelected() {
-    this.submitClass.state = '';
+    this.submitClass.stateId = '';
     this.states = [];
-    this.submitClass.city = '';
+    this.submitClass.cityId = '';
     this.cities = [];
 
     if(typeof localStorage !== 'undefined') {
@@ -161,7 +156,7 @@ export class PatientRegistrationComponent implements OnInit {
       });
 
       const statesList = await this.http.get(this.lService.__apiURL__ + '/Common/GetStatesByCountry', {headers:token_header,params: {
-        'country': this.submitClass.country
+        'country': this.submitClass.countryId
       }});
 
       statesList.subscribe({
@@ -177,7 +172,7 @@ export class PatientRegistrationComponent implements OnInit {
   }
 
   public async stateSelected() {
-    this.submitClass.city = '';
+    this.submitClass.cityId = '';
     this.cities = [];
 
     if(typeof localStorage !== 'undefined') {
@@ -187,8 +182,8 @@ export class PatientRegistrationComponent implements OnInit {
       });
 
       const citiesList = await this.http.get(this.lService.__apiURL__ + '/Common/GetCitiesByCountryAndState', {headers:token_header,params: {
-        'country': this.submitClass.country,
-        'state': this.submitClass.state
+        'country': this.submitClass.countryId,
+        'state': this.submitClass.stateId
       }});
 
       citiesList.subscribe({
@@ -250,15 +245,14 @@ export class PatientRegistrationComponent implements OnInit {
   }
 
   public async registerPatient(form: NgForm) {
-    this.loading.submitting = true;
-    
     if(form.valid) {
+      this.loading.submitting = true;
       let register = form.value as patientRegistration;
       register = {
         ...register,
         uhid: this.submitClass.uhid,
         date: this.submitClass.date.value.format('DD-MMM-YYYY'),
-        dob: this.submitClass.dob.value?.format('DD-MMM-YYYY')
+        dOB: this.submitClass.dOB.value?.format('DD-MMM-YYYY')
       }
       
       if(validate(register)) {
@@ -277,13 +271,14 @@ export class PatientRegistrationComponent implements OnInit {
             else {
               alert(obj.message);
             }
+            this.loading.submitting = false;
           },
           error: () => {
             alert('Unable to Register Patient.');
+            this.loading.submitting = false;
           }
         })
       }
-      this.loading.submitting = false;
     }
   
   }
