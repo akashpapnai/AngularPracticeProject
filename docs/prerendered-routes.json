@@ -9,6 +9,7 @@
     "/opd",
     "/opd/opdmanagement",
     "/opd/patientregistration",
+    "/opd/patientregistrationreport",
     "/profile"
   ]
 }
