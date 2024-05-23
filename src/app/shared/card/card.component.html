@@ -1,4 +1,4 @@
-<div class="cursor-pointer m-2 mt-4 max-w-md rounded overflow-hidden shadow-lg hover:shadow-2xl transition duration-500 ease-in-out mx-auto"> <!-- Adjusted max-w-sm to max-w-md and added mx-auto -->
+<div [ngClass]="{'disabled': (data.clicked !== '')}" class="cursor-pointer m-2 mt-4 max-w-md rounded overflow-hidden shadow-lg hover:shadow-2xl transition duration-500 ease-in-out mx-auto"> <!-- Adjusted max-w-sm to max-w-md and added mx-auto -->
   <img class="block mx-auto mt-4 w-40 hover:shadow-2xl transition duration-500 ease-in-out" [src]="data.imageSource" [alt]="data.altText"> <!-- Centered the image with block and mx-auto -->
   <div class="px-6 py-4">
     <div class="font-bold text-xl mb-2">{{data.title}}</div>
@@ -9,7 +9,7 @@
   <div class="px-6 pt-4 pb-2">
     <span *ngFor="let tag of data.tags" class="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2">{{tag}}</span> <!-- Corrected the syntax for ngFor -->
   </div>
-  @if(clicked) {
+  @if(data.clicked === data.title) {
     <mat-progress-bar mode="indeterminate"></mat-progress-bar>
   }
 </div>

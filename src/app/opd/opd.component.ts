@@ -26,6 +26,8 @@ export class OpdComponent {
   public cardDataForOperation: any[] = [];
   async clicked_card(_t5: any) {
 
+    this.cardUpdate(_t5,_t5.title);
+
     const token_header = new HttpHeaders({
       'Authorization': 'Bearer ' + localStorage.getItem('token')
     });
@@ -45,6 +47,7 @@ export class OpdComponent {
         }
         else {
           const pagesList = obj['pages'] as [];
+          this.cardDataForOperation = [];
           pagesList.forEach(page => {
             
             let filePath =  (page as string).toLowerCase().replaceAll(' ','')
@@ -52,15 +55,33 @@ export class OpdComponent {
             this.cardDataForOperation.push({imageSource:this.lService.__apiURL__+`/User/GetImage?filePath=${filePath}.png`,altText:page+'',title:page, description: page + ' Description', tags: []});
           });
         }
+        
+        this.resetAllCards();
+      },
+      error: () => {
+        this.resetAllCards();
       }
     })
   }
   public operationListShow() {
     this.cardDataForOperation = [];
+    
+    this.resetAllCards();
   }
   public linkClick(_t20: any) {
     const moduleName = this.router.url.split('/')[1];
     const link = _t20.title.toLowerCase().replaceAll(' ','');
     this.router.navigate([moduleName+'/'+link]);
   }
+  public cardUpdate(_t5:any, clicked: string) {
+    const updatedCard = { ..._t5, clicked: clicked };
+    const updatedCardData = this.cardData.map(card => card === _t5 ? updatedCard : card);
+    this.cardData = updatedCardData;
+  }
+  public resetAllCards() {
+    this.cardData.forEach(card => {
+      card.clicked = '';
+    });
+  }
 }
+

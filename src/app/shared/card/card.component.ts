@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnChanges, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {MatProgressBarModule} from '@angular/material/progress-bar';
 
@@ -11,5 +11,4 @@ import {MatProgressBarModule} from '@angular/material/progress-bar';
 })
 export class CardComponent {
   @Input() data: any;
-  @Input() clicked: any;
 }

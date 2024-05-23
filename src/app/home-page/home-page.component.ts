@@ -43,7 +43,7 @@ export class HomePageComponent {
             if(modules_list !== null) {
               for(let index in modules_list) {
                 const module = modules_list[index];
-                let push_data = {imageSource: 'assets/images/'+ module.toLowerCase().replaceAll(' ','') + '.png',altText: module+' Image', title: module, description: module+' Description', tags: []};
+                let push_data = {imageSource: 'assets/images/'+ module.toLowerCase().replaceAll(' ','') + '.png',altText: module+' Image', title: module, description: module+' Description', tags: [], clicked: ''};
                 this.cardData.push(push_data);
               }
             }
@@ -57,11 +57,20 @@ export class HomePageComponent {
   }
 
   async clicked_card(_t6: any) {
+    const updatedCard = { ..._t6, clicked: _t6.title };
+    const updatedCardData = this.cardData.map(card => card === _t6 ? updatedCard : card);
+    this.cardData = updatedCardData;
+
     const checkUser = await this.http.get(this.apiURL+`/User/IsTokenValid?token=${localStorage.getItem('token')}`);
     checkUser.subscribe(
       {
         next: (response) => {
           this.router.navigate(['/'+_t6.title.toLowerCase().replaceAll(' ','')]);
+
+          _t6.clicked = '';
+        },
+        error: () => {
+          _t6.clicked = '';
         }
       }
     )
