@@ -24,7 +24,7 @@ export class PatientsRegisteredReportComponent implements AfterViewInit,OnInit {
   public ELEMENT_DATA: PatientsData[] = [];
   public dataSource = new MatTableDataSource<PatientsData>(this.ELEMENT_DATA);
 
-  displayedColumns: string[] = ['date', 'name', 'dOB', 'age','address'];
+  displayedColumns: string[] = ['row','date', 'name', 'dOB', 'age','address'];
 
   constructor(
     private lService: LoginService,
@@ -41,11 +41,14 @@ export class PatientsRegisteredReportComponent implements AfterViewInit,OnInit {
     data.subscribe({
       next: (response) => {
         const obj = response as ResponseData;
+        let row = 1;
         obj.table.forEach(x => {
           let eachData = x as PatientsData;
+          eachData = {...eachData,row:row};
           this.ELEMENT_DATA.push(eachData);
-          this.dataSource = new MatTableDataSource<PatientsData>(this.ELEMENT_DATA);
+          row++;
         });
+        this.dataSource = new MatTableDataSource<PatientsData>(this.ELEMENT_DATA);
       },
       error: () => {
         alert('Could not load Data');
@@ -65,6 +68,7 @@ export interface ResponseData {
 
 export interface PatientsData {
   id: number;
+  row: number,
   date: string;
   name: string;
   dOB: string;

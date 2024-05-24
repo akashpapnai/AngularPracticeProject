@@ -1,12 +1,12 @@
 <app-navbar></app-navbar>
 <div class="table-container ms-4 me-4">
  <div class="mat-elevation-z8 mt-4">
-  <table mat-table [dataSource]="dataSource" >
+  <table mat-table [dataSource]="dataSource">
 
-   <ng-container matColumnDef="">
-     <th mat-header-cell *matHeaderCellDef> SR No. </th>
-     <td mat-cell *matCellDef="let element"> {{element.$index}} </td>
-   </ng-container>
+    <ng-container matColumnDef="row">
+      <th mat-header-cell *matHeaderCellDef> SR No. </th>
+      <td mat-cell *matCellDef="let element"> {{element.row}} </td>
+    </ng-container>
 
     <ng-container matColumnDef="date">
       <th mat-header-cell *matHeaderCellDef> Date </th>
