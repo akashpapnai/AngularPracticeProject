@@ -15,49 +15,6 @@ import {default as _rollupMoment, Moment} from 'moment';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 
 const moment = _rollupMoment || _moment;
-
-interface countryResponse {
-  allCountries: any[]
-}
-
-interface statesResponse {
-  allStates: any[]
-}
-
-interface citiesResponse {
-  allCities: any[]
-}
-
-interface uhidResponse {
-  uhid: string
-}
-
-class patientRegistration {
-  uhid: string = '';
-  date: FormControl = new FormControl(moment());
-  salutation: string = '';
-  firstName: string = '';
-  middleName: string = '';
-  lastName: string = '';
-  dOB: FormControl = new FormControl();
-  maritalStatus: string = '';
-  guardian: string = '';
-  guardianName: string = '';
-  bloodGroup: string = '';
-  occupation: string = '';
-  religion: string = '';
-  mobNumber: string = '';
-  secMobNumber: string = '';
-  localAddress: string = '';
-  countryId: string = '';
-  stateId: string = '';
-  cityId: string = '';
-  pinCode: string = '';
-  email: string = '';
-  documentType: string = '';
-  documentNumber: string = '';
-}
-
 export const DATE_FORMATS = {
   parse: {
     dateInput: 'DD-MMM-YYYY',
@@ -245,7 +202,7 @@ export class PatientRegistrationComponent implements OnInit {
   }
 
   public async registerPatient(form: NgForm) {
-    if(form.valid) {
+    if(form.valid && this.validate()) {
       this.loading.submitting = true;
       let register = form.value as patientRegistration;
       register = {
@@ -255,30 +212,29 @@ export class PatientRegistrationComponent implements OnInit {
         dOB: this.submitClass.dOB.value?.format('DD-MMM-YYYY')
       }
       
-      if(validate(register)) {
-        const token_header = new HttpHeaders({
-          'Authorization': 'Bearer ' + localStorage.getItem('token'),
-          'Content-Type': 'application/json'
-        });
-        const reg = await this.http.post(this.lService.__apiURL__+'/Common/RegisterPatient',register,{headers:token_header});
-        reg.subscribe({
-          next: (data) => {
-            const obj = JSON.parse(JSON.stringify(data));
-            if(obj.status) {
-              alert(obj.message);
-              window.location.reload();
-            }
-            else {
-              alert(obj.message);
-            }
-            this.loading.submitting = false;
-          },
-          error: () => {
-            alert('Unable to Register Patient.');
-            this.loading.submitting = false;
+      const token_header = new HttpHeaders({
+        'Authorization': 'Bearer ' + localStorage.getItem('token'),
+        'Content-Type': 'application/json'
+      });
+      const reg = await this.http.post(this.lService.__apiURL__+'/Common/RegisterPatient',register,{headers:token_header});
+      reg.subscribe({
+        next: (data) => {
+          const obj = JSON.parse(JSON.stringify(data));
+          if(obj.status) {
+            alert(obj.message);
+            window.location.reload();
           }
-        })
-      }
+          else {
+            alert(obj.message);
+          }
+          this.loading.submitting = false;
+        },
+        error: () => {
+          alert('Unable to Register Patient.');
+          this.loading.submitting = false;
+        }
+      })
+    
     }
   
   }
@@ -286,19 +242,60 @@ export class PatientRegistrationComponent implements OnInit {
   public resetClick(form: NgForm) {
     this.loading.resetting = true;
     setTimeout(() => {
-      if(form.valid) {
-        this.submitClass = new patientRegistration();
-        this.formValues.age = '';
-        this.states = [];
-        this.cities = [];
-        this.loading.resetting = false;
-      }
-    }, 1000);
+      
+      this.submitClass = new patientRegistration();
+      this.formValues.age = '';
+      this.states = [];
+      this.cities = [];
+      this.getUhid();
+
+      this.loading.resetting = false;
+    }, 500);
   }
-  
+
+  public validate():boolean {
+    return true;
+  }
 }
 
-function validate(register: patientRegistration):boolean {
-  return true;
+interface countryResponse {
+  allCountries: any[]
 }
 
+interface statesResponse {
+  allStates: any[]
+}
+
+interface citiesResponse {
+  allCities: any[]
+}
+
+interface uhidResponse {
+  uhid: string
+}
+
+class patientRegistration {
+  uhid: string = '';
+  date: FormControl = new FormControl(moment());
+  salutation: string = '';
+  firstName: string = '';
+  middleName: string = '';
+  lastName: string = '';
+  dOB: FormControl = new FormControl();
+  maritalStatus: string = '';
+  guardian: string = '';
+  guardianName: string = '';
+  bloodGroup: string = '';
+  occupation: string = '';
+  religion: string = '';
+  mobNumber: string = '';
+  secMobNumber: string = '';
+  localAddress: string = '';
+  countryId: string = '';
+  stateId: string = '';
+  cityId: string = '';
+  pinCode: string = '';
+  email: string = '';
+  documentType: string = '';
+  documentNumber: string = '';
+}

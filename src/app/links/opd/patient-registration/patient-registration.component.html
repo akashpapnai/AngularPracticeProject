@@ -63,7 +63,7 @@
       <input [formControl]="submitClass.dOB" type="datetime" [max]="maxDate" (dateChange)="calculateAge($event.value)" matInput [matDatepicker]="dob" style="padding: 8px; line-height: 1;height:10px" [required]="true">
       <mat-hint>DD-MMM-YYYY</mat-hint>
       <mat-datepicker-toggle matIconSuffix [for]="dob"></mat-datepicker-toggle>
-      <mat-datepicker startView="year" #dob></mat-datepicker>
+      <mat-datepicker startView="multi-year" #dob></mat-datepicker>
     </mat-form-field>
   </div>
     <!-- Age -->
@@ -98,7 +98,7 @@
       <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="gName">
         Guardian Name&nbsp;<span class="text-red-900">*</span>
       </label>
-      <input [(ngModel)]="submitClass.guardianName" class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" name="guardianName" type="text" placeholder="Guardian Name">
+      <input [(ngModel)]="submitClass.guardianName" class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" name="guardianName" type="text" placeholder="Guardian Name" [required]="submitClass.guardian !== ''">
     </div>
     <!-- Blood Group -->
     <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0">
@@ -215,7 +215,7 @@
    <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="documentNumber">
      Document Value&nbsp;<span class="text-red-900">*</span>
    </label>
-   <input [(ngModel)]="submitClass.documentNumber" class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" name="documentNumber" type="text" placeholder="Document Value" [required]="true">
+   <input [(ngModel)]="submitClass.documentNumber" class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" name="documentNumber" type="text" placeholder="Document Value" [required]="submitClass.documentType !== ''">
  </div>
  </div>
  <!-- Submit -->
@@ -230,4 +230,3 @@
   </button>
 </div>
 </form>
-

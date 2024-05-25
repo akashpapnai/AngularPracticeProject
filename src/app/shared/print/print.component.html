@@ -1,0 +1,15 @@
+<div class="letterhead">
+ <img [src]="letterHeadUrl" alt="Company Logo" class="letterhead-img">
+</div>
+<table class="mt-4 print-table w-full border-collapse border border-gray-300">
+ <thead>
+   <tr class="bg-gray-100">
+     <th *ngFor="let header of headers" class="px-4 py-2">{{ header }}</th>
+   </tr>
+ </thead>
+ <tbody>
+   <tr *ngFor="let row of tableData">
+     <td *ngFor="let cell of headers" class="border px-4 py-2">{{ row[cell] }}</td>
+   </tr>
+ </tbody>
+</table>
