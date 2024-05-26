@@ -154,7 +154,7 @@ export class PatientsRegisteredReportComponent implements AfterViewInit,OnInit {
     localStorage.setItem('tableData', encodedData);
     // window.open('/print','_blank');
     const url = this.router.serializeUrl(
-      this.router.createUrlTree(['/print'])
+      this.router.createUrlTree(['print'])
     );
     window.open(url,'_blank');
   }
