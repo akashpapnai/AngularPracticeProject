@@ -5,7 +5,7 @@ import { ProfileComponent } from './profile/profile.component';
 import { AuthGuard } from './auth.guard';
 import { PatientRegistrationComponent } from './links/opd/transaction/patient-registration/patient-registration.component';
 import { OpdmanagementComponent } from './links/opd/transaction/opdmanagement/opdmanagement.component';
-import { PatientsRegisteredReportComponent } from './links/opd/patients-registered-report/patients-registered-report.component';
+import { PatientsRegisteredReportComponent } from './links/opd/reports/patients-registered-report/patients-registered-report.component';
 import { PrintComponent } from './shared/print/print.component';
 import { ModuleComponent } from './module/module.component';
 
