@@ -1,16 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { NavbarComponent } from '../shared/navbar/navbar.component';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { HttpClient, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { LoginService } from '../login.service';
 import { Router } from '@angular/router';
 
-@Component({
-  selector: 'app-profile',
-  standalone: true,
-  imports: [NavbarComponent,HttpClientModule],
-  templateUrl: './profile.component.html',
-  styleUrl: './profile.component.scss'
-})
+@Component({ selector: 'app-profile',
+    standalone: true,
+    templateUrl: './profile.component.html',
+    styleUrl: './profile.component.scss', imports: [NavbarComponent] })
 export class ProfileComponent implements OnInit {
   constructor(
     private http: HttpClient, 

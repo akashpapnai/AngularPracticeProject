@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Component, ElementRef, OnInit } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
-import { HttpClient, HttpClientModule, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { LoginService } from '../login.service';
 import { CookieService } from 'ngx-cookie-service'
 import { ActivatedRoute, Router } from '@angular/router';
@@ -19,18 +19,16 @@ interface SignUpObj {
   rptPassword: string
 }
 
-@Component({
-  selector: 'app-login',
-  standalone: true,
-  imports: [
-    FormsModule, 
-    HttpClientModule,
-    CommonModule,
-    MatProgressSpinnerModule
-  ],
-  templateUrl: './login.component.html',
-  styleUrl: './login.component.scss'
-})
+@Component({ selector: 'app-login',
+    standalone: true,
+    templateUrl: './login.component.html',
+    styleUrl: './login.component.scss', 
+    imports: 
+    [
+      FormsModule,
+      CommonModule,
+      MatProgressSpinnerModule
+    ] })
 export class LoginComponent implements OnInit {
   constructor(
     private ele: ElementRef, 

@@ -9,7 +9,7 @@ import {MatFormFieldModule} from '@angular/material/form-field';
 import {provideNativeDateAdapter} from '@angular/material/core';
 import { LoginService } from '../../../../login.service';
 import { ConstantsService } from '../../../../constants.service';
-import { HttpClient, HttpClientModule, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import * as _moment from 'moment';
 import {default as _rollupMoment, Moment} from 'moment';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
@@ -27,27 +27,20 @@ export const DATE_FORMATS = {
   }
 };
 
-@Component({
-  selector: 'app-patient-registration',
-  standalone: true,
-  imports: [
-    CommonModule, 
-    NavbarComponent, 
-    FormsModule, 
-    MatFormFieldModule, 
-    MatInputModule,
-    MatDatepickerModule,
-    HttpClientModule,
-    ReactiveFormsModule,
-    MatProgressSpinnerModule
-  ],
-  templateUrl: './patient-registration.component.html',
-  styleUrl: './patient-registration.component.scss',
-  providers: [
-    provideNativeDateAdapter(),
-    provideMomentDateAdapter(DATE_FORMATS)
-  ]
-})
+@Component({ selector: 'app-patient-registration',
+    standalone: true,
+    templateUrl: './patient-registration.component.html',
+    styleUrl: './patient-registration.component.scss', imports: [CommonModule,
+        NavbarComponent,
+        FormsModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatDatepickerModule,
+        ReactiveFormsModule,
+        MatProgressSpinnerModule], providers: [
+        provideNativeDateAdapter(),
+        provideMomentDateAdapter(DATE_FORMATS)
+    ] })
 export class PatientRegistrationComponent implements OnInit {
 
   constructor(

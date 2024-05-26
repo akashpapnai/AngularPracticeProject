@@ -1,18 +1,20 @@
 import { Component, OnInit } from '@angular/core';
 import { NavbarComponent } from '../shared/navbar/navbar.component';
 import { LoginService } from '../login.service';
-import { HttpClient, HttpClientModule, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { CardComponent } from '../shared/card/card.component';
 import {CommonModule} from '@angular/common'
 import { Router } from '@angular/router';
 
-@Component({
-  selector: 'app-home-page',
-  standalone: true,
-  imports: [NavbarComponent,HttpClientModule, CardComponent, CommonModule],
-  templateUrl: './home-page.component.html',
-  styleUrl: './home-page.component.scss'
-})
+@Component({ selector: 'app-home-page',
+    standalone: true,
+    templateUrl: './home-page.component.html',
+    styleUrl: './home-page.component.scss', 
+    imports: [
+      NavbarComponent, 
+      CardComponent, 
+      CommonModule
+    ]})
 export class HomePageComponent {
 
   constructor(

@@ -1,24 +1,18 @@
 import { Component } from '@angular/core';
 import { ConstantsService } from '../constants.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { HttpClient,HttpClientModule,HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { LoginService } from '../login.service';
 import { CardComponent } from '../shared/card/card.component';
 import { CommonModule } from '@angular/common';
 import { NavbarComponent } from '../shared/navbar/navbar.component';
 
-@Component({
-  selector: 'app-module',
-  standalone: true,
-  imports: [
-    CardComponent,
-    CommonModule,
-    NavbarComponent,
-    HttpClientModule
-  ],
-  templateUrl: './module.component.html',
-  styleUrl: './module.component.scss'
-})
+@Component({ selector: 'app-module',
+    standalone: true,
+    templateUrl: './module.component.html',
+    styleUrl: './module.component.scss', imports: [CardComponent,
+        CommonModule,
+        NavbarComponent] })
 export class ModuleComponent {
   constructor(
     private constants: ConstantsService,

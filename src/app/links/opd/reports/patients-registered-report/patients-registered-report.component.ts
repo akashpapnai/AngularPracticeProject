@@ -2,7 +2,7 @@ import { AfterViewInit,ViewChild,Component, OnInit, HostListener } from '@angula
 import { NavbarComponent } from '../../../../shared/navbar/navbar.component';
 import {MatPaginator, MatPaginatorModule} from '@angular/material/paginator';
 import {MatTableDataSource, MatTableModule} from '@angular/material/table';
-import { HttpClient, HttpClientModule,HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { LoginService } from '../../../../login.service';
 import { Router } from '@angular/router';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -32,29 +32,27 @@ export const DATE_FORMATS = {
   }
 };
 
-@Component({
-  selector: 'app-patients-registered-report',
-  standalone: true,
-  imports: [
-    NavbarComponent, 
-    MatTableModule, 
-    MatPaginatorModule, 
-    HttpClientModule,
-    MatFormFieldModule,
-    MatDatepickerModule,
-    ReactiveFormsModule,
-    MatInputModule,
-    MatTooltipModule,
-    CommonModule,
-    SnackbarComponent
-  ],
-  templateUrl: './patients-registered-report.component.html',
-  styleUrl: './patients-registered-report.component.scss',
-  providers: [
-    provideNativeDateAdapter(),
-    provideMomentDateAdapter(DATE_FORMATS)
-  ]
-})
+@Component({ selector: 'app-patients-registered-report',
+    standalone: true,
+    templateUrl: './patients-registered-report.component.html',
+    styleUrl: './patients-registered-report.component.scss', imports: 
+    [
+      NavbarComponent,
+      MatTableModule,
+      MatPaginatorModule,
+      MatFormFieldModule,
+      MatDatepickerModule,
+      ReactiveFormsModule,
+      MatInputModule,
+      MatTooltipModule,
+      CommonModule,
+      SnackbarComponent
+      ], 
+      providers: [
+        provideNativeDateAdapter(),
+        provideMomentDateAdapter(DATE_FORMATS),
+        
+      ]})
 export class PatientsRegisteredReportComponent implements AfterViewInit,OnInit {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
