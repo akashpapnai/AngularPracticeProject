@@ -18,6 +18,7 @@ import { CommonModule } from '@angular/common';
 import { response } from 'express';
 import { Observable } from 'rxjs';
 import { ConstantsService } from '../../../constants.service';
+import { SnackbarComponent } from '../../../shared/snackbar/snackbar.component';
 
 const moment = _rollupMoment || _moment;
 
@@ -46,7 +47,8 @@ export const DATE_FORMATS = {
     ReactiveFormsModule,
     MatInputModule,
     MatTooltipModule,
-    CommonModule
+    CommonModule,
+    SnackbarComponent
   ],
   templateUrl: './patients-registered-report.component.html',
   styleUrl: './patients-registered-report.component.scss',
@@ -61,6 +63,10 @@ export class PatientsRegisteredReportComponent implements AfterViewInit,OnInit {
   public ELEMENT_DATA: PatientsData[] = [];
   public dataSource = new MatTableDataSource<PatientsData>(this.ELEMENT_DATA);
   public filter = new filter();
+  public snackBar = {
+    message: '',
+    show: false
+  }
   private token_header = new HttpHeaders({
     'Authorization': 'Bearer ' + localStorage.getItem('token')
   });
@@ -100,6 +106,8 @@ export class PatientsRegisteredReportComponent implements AfterViewInit,OnInit {
   }
 
   public async filterTable() : Promise<void | undefined> {
+    this.snackBar.message = '';
+    this.snackBar.show = false;
 
     // Validate
     if(this.filter.fromDate.value === null || this.filter.toDate.value === null) {
@@ -124,6 +132,12 @@ export class PatientsRegisteredReportComponent implements AfterViewInit,OnInit {
           this.ELEMENT_DATA.push(eachData);
           row++;
         });
+
+        if(this.ELEMENT_DATA.length === 0) {
+          this.snackBar.message = 'No Record Found';
+          this.snackBar.show = true;
+        }
+
         this.dataSource = new MatTableDataSource<PatientsData>(this.ELEMENT_DATA);
       },
       error: () => {
@@ -156,7 +170,7 @@ export class PatientsRegisteredReportComponent implements AfterViewInit,OnInit {
     localStorage.setItem('tableData', encodedData);
     // window.open('/print','_blank');
     
-    window.open(this.constants.baseUrl+'/print','_blank');
+    window.open('/print','_blank');
   }
 
   private transformedData(data: PatientsData[]) {

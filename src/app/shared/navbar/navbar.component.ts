@@ -1,19 +1,24 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../../auth.service';
+import { CommonModule } from '@angular/common';
+import { ConstantsService } from '../../constants.service';
 
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [],
+  imports: [
+    CommonModule
+  ],
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.scss'
 })
 export class NavbarComponent {
 
   public url:string = getURL(this.router.url);
+  public dockColor: string = this.constants.dockColor;
   
-  constructor(private router: Router, private aService: AuthService) {}
+  constructor(private router: Router, private aService: AuthService, private constants: ConstantsService) {}
   
   LogOut() {
     const confirmation = confirm('Are you sure you want to Log Out?');
