@@ -1,27 +1,41 @@
 import { Component } from '@angular/core';
-import { NavbarComponent } from '../shared/navbar/navbar.component';
+import { ConstantsService } from '../constants.service';
+import { ActivatedRoute, Router } from '@angular/router';
+import { HttpClient,HttpClientModule,HttpHeaders } from '@angular/common/http';
+import { LoginService } from '../login.service';
 import { CardComponent } from '../shared/card/card.component';
 import { CommonModule } from '@angular/common';
-import { ConstantsService } from '../constants.service';
-import { Router } from '@angular/router';
-import { HttpClient, HttpClientModule, HttpHeaders } from '@angular/common/http';
-import { LoginService } from '../login.service';
+import { NavbarComponent } from '../shared/navbar/navbar.component';
 
 @Component({
-  selector: 'app-opd',
+  selector: 'app-module',
   standalone: true,
-  imports: [NavbarComponent,CardComponent,CommonModule,HttpClientModule],
-  templateUrl: './opd.component.html',
-  styleUrl: './opd.component.scss'
+  imports: [
+    CardComponent,
+    CommonModule,
+    NavbarComponent,
+    HttpClientModule
+  ],
+  templateUrl: './module.component.html',
+  styleUrl: './module.component.scss'
 })
-export class OpdComponent {
+export class ModuleComponent {
   constructor(
     private constants: ConstantsService,
     private router: Router,
     private http:HttpClient,
-    private lService: LoginService
+    private lService: LoginService,
+    private route: ActivatedRoute
   ){}
 
+  ngOnInit() {
+    this.route.url.subscribe(urlSegments => {
+      const url = this.router.url;
+      this.current_module = url.substring(url.lastIndexOf('/') + 1);
+    });
+  }
+
+  public current_module: string | null = '';
   public cardData: any[] = this.constants.ModulesConstData;
   public cardDataForOperation: any[] = [];
   async clicked_card(_t5: any) {
@@ -84,4 +98,3 @@ export class OpdComponent {
     });
   }
 }
-
