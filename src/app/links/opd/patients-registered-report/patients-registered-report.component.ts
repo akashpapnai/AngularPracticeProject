@@ -153,10 +153,9 @@ export class PatientsRegisteredReportComponent implements AfterViewInit,OnInit {
     const encodedData = encodeURIComponent(JSON.stringify(data));
     localStorage.setItem('tableData', encodedData);
     // window.open('/print','_blank');
-    const url = this.router.serializeUrl(
-      this.router.createUrlTree(['print'])
-    );
-    window.open(url,'_blank');
+    
+    const baseUrl = `${window.location.protocol}//${window.location.hostname}${window.location.port ? ':' + window.location.port : ''}`;
+    window.open(baseUrl+'/print','_blank');
   }
 
   private transformedData(data: PatientsData[]) {
