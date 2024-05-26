@@ -148,11 +148,15 @@ export class PatientsRegisteredReportComponent implements AfterViewInit,OnInit {
     window.URL.revokeObjectURL(url);
   
   }
-  public printTable() {
+  public async printTable() {
     const data =  this.transformedData(this.ELEMENT_DATA);
     const encodedData = encodeURIComponent(JSON.stringify(data));
     localStorage.setItem('tableData', encodedData);
-    window.open('/print','_blank');
+    // window.open('/print','_blank');
+    const url = this.router.serializeUrl(
+      this.router.createUrlTree(['/print'])
+    );
+    window.open(url,'_blank');
   }
 
   private transformedData(data: PatientsData[]) {
