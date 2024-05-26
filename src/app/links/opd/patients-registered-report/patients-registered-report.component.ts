@@ -17,6 +17,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { CommonModule } from '@angular/common';
 import { response } from 'express';
 import { Observable } from 'rxjs';
+import { ConstantsService } from '../../../constants.service';
 
 const moment = _rollupMoment || _moment;
 
@@ -69,7 +70,8 @@ export class PatientsRegisteredReportComponent implements AfterViewInit,OnInit {
   constructor(
     private lService: LoginService,
     private http: HttpClient,
-    private router: Router
+    private router: Router,
+    private constants: ConstantsService
   ) {}
 
   async ngOnInit(): Promise<void> {
@@ -154,8 +156,7 @@ export class PatientsRegisteredReportComponent implements AfterViewInit,OnInit {
     localStorage.setItem('tableData', encodedData);
     // window.open('/print','_blank');
     
-    const baseUrl = `${window.location.protocol}//${window.location.hostname}${window.location.port ? ':' + window.location.port : ''}`;
-    window.open(baseUrl+'/print','_blank');
+    window.open(this.constants.baseUrl+'/print','_blank');
   }
 
   private transformedData(data: PatientsData[]) {

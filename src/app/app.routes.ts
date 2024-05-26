@@ -3,6 +3,7 @@ import { LoginComponent } from './login/login.component';
 import { HomePageComponent } from './home-page/home-page.component';
 import { ProfileComponent } from './profile/profile.component';
 import { AuthGuard } from './auth.guard';
+import { ConstantsService } from './constants.service';
 import { OpdComponent } from './opd/opd.component';
 import { IpdComponent } from './ipd/ipd.component';
 import { HrandpayrollComponent } from './hrandpayroll/hrandpayroll.component';
@@ -24,5 +25,5 @@ export const routes: Routes = [
     { path:'opd/patientregistration', component: PatientRegistrationComponent, canActivate:[AuthGuard] },
     { path:'opd/opdmanagement', component: OpdmanagementComponent, canActivate:[AuthGuard] },
     { path:'opd/patientregistrationreport', component: PatientsRegisteredReportComponent, canActivate:[AuthGuard] },
-    { path: 'print', component: PrintComponent, canActivate: [AuthGuard] }
+    { path: 'AngularPracticeProject/browser/'+'print', component: PrintComponent, canActivate: [AuthGuard] }
 ];
