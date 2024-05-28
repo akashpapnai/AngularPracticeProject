@@ -1,8 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../../auth.service';
 import { CommonModule } from '@angular/common';
 import { ConstantsService } from '../../constants.service';
+import { HttpClient } from '@angular/common/http';
+import { LoginService } from '../../login.service';
 
 @Component({
   selector: 'app-navbar',
@@ -17,10 +19,43 @@ export class NavbarComponent {
 
   public url:string = getURL(this.router.url);
   public dockColor: string = this.constants.dockColor;
+  public authenticationChecker: boolean | null = null;
   
-  constructor(private router: Router, private aService: AuthService, private constants: ConstantsService) {}
+  constructor(
+    private router: Router, 
+    private aService: AuthService, 
+    private constants: ConstantsService, 
+    private http: HttpClient,
+    private lService: LoginService
+  ) {}
+
+  ngOnInit() {
+    if(typeof localStorage != 'undefined') {
+      const token = localStorage.getItem('token');
+      if(token !== null) {
+        const data =  this.http.get(this.lService.__apiURL__ + '/User/IsTokenValid',{params: {
+          token: String(token)
+        }});
+        data.subscribe({
+          next: () => {
+            this.authenticationChecker = true;
+          },
+          error: () => {
+            this.authenticationChecker = false;
+          }
+        })
+      }
+      else {
+        this.authenticationChecker = false;
+      }
+    }
+  }
+
+  public LoginClick() {
+    this.router.navigate(['/login']);
+  }
   
-  LogOut() {
+  public LogOut() {
     const confirmation = confirm('Are you sure you want to Log Out?');
     if(confirmation) {
       localStorage.removeItem('token');
@@ -31,10 +66,8 @@ export class NavbarComponent {
       
     }
   }
-  isAuthenticated() {
-    return this.aService.isLoggedIn();
-  }
-  OpenProfile() {
+  
+  public OpenProfile() {
     this.router.navigate(['/profile'])
   }
   values = { menuHidden: true }

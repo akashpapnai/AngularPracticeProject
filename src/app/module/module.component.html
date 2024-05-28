@@ -1,6 +1,6 @@
 <app-navbar></app-navbar>
 @if(cardDataForOperation.length === 0) {
- <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+ <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 ms-2 me-2">
   <app-card (click)="clicked_card(card)" *ngFor="let card of cardData" [data]="card">
   </app-card>
  </div>
@@ -17,7 +17,7 @@
    <path opacity="0.5" d="M16 3H18.5C18.7761 3 19 3.22386 19 3.5L19 7.63955L15.5 4.83955V3.5C15.5 3.22386 15.7239 3 16 3Z" fill="#1C274C"/>
    </svg>
  </a>
- <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+ <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 ms-2 me-2">
   <app-card (click)="linkClick(card)" *ngFor="let card of cardDataForOperation" [data]="card">
   </app-card>
  </div>

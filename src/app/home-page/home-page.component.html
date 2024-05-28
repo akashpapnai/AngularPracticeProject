@@ -1,8 +1,29 @@
 <app-navbar></app-navbar>
+@if(marketingContent == false) {
+ <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 ms-2 me-2">
+  <app-card (click)="clicked_card(card)" *ngFor="let card of cardData" [data]="card"></app-card>
+ </div>
+}
+@else {
+ <div class="container mx-auto">
+  <div class="flex items-center relative">
+    <button class="bg-blue-500 text-white px-4 py-2 rounded-full ms-4" (click)="prev()"><</button>
+    <div class="overflow-hidden w-full">
+      <div class="flex transition-transform duration-500" [ngStyle]="{'transform': 'translateX(' + translateX + ')'}">
+        <div class="min-w-full p-4" *ngFor="let card of cards">
+          <div class="bg-white p-6 rounded-lg shadow-md">
+            <h2 class="text-2xl font-bold mb-2">{{ card.title }}</h2>
+            <img class="rounded-2xl" [src]="card.img" style="width: 100%;height: 250px;">
+            <p class="text-gray-700">{{ card.content }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <button class="bg-blue-500 text-white px-4 py-2 rounded-full me-4" (click)="next()">></button>
+  </div>
+ </div>
 
-<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
- <app-card (click)="clicked_card(card)" *ngFor="let card of cardData" [data]="card">
- </app-card>
-</div>
+
+}
 
 

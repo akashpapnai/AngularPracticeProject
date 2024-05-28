@@ -1,2 +1,33 @@
 <app-navbar></app-navbar>
-<h1>Work in Progerss</h1>
+
+<form #myForm="ngForm" class="mt-4 w-full max-w-7xl mx-auto"> <!-- #myForm="ngForm" -->
+ <div class="flex flex-wrap -mx-3 mb-6">
+ <!-- Date -->
+  <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0">
+   <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="date">
+     Date
+   </label>
+   <mat-form-field class="appearance-none block w-full border rounded leading-tight focus:outline-none">
+     <mat-label class="text-xs">Date</mat-label>
+     <input [formControl]="managementClass.date" matInput [matDatepicker]="picker" style="padding: 8px; line-height: 1;height:10px" [required]="true">
+     <mat-hint>DD-MMM-YYYY</mat-hint>
+     <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+     <mat-datepicker #picker></mat-datepicker>
+   </mat-form-field>
+ </div>
+ <!-- Appointment -->
+  <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col">
+   <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="appointment">
+     Appointment No
+   </label>
+   <input [disabled]="true" [value]="managementClass.appointment" class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" name="uhid" type="text" placeholder="Appointment">
+  </div>
+ <!-- UHID -->
+  <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col">
+   <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="uhid">
+     UHID&nbsp;<span class="text-red-900">*</span>
+   </label>
+   <input [value]="managementClass.uhid" class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" name="uhid" type="text" placeholder="UHID" [required]="true">
+  </div>
+ </div>
+</form>

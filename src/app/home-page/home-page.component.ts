@@ -26,35 +26,71 @@ export class HomePageComponent {
   private apiURL = this.lService.__apiURL__;
   private token_header = new HttpHeaders();
   public cardData:any[] = [];
+  public marketingContent: boolean = true;
+
+  cards = [
+    { title: 'Hospital Outside View', content: 'This is the beautiful view of hospital from outside', img: 'https://imgs.search.brave.com/O452HkHjQkJEMo0bhJENw742C6f5Uw6IXvVCWsRZKo0/rs:fit:860:0:0/g:ce/aHR0cDovL2lnaW1z/Lm9yZy9EYXRhRmls/ZXMvQ29udGVudC82/NF8xLmpwZw' },
+    { title: 'Hospital Bed', content: 'This is the proper bed of hospital for perticular patient', img: 'https://www.paho.org/sites/default/files/untitled_1500_540_px_1_0.jpg' },
+    { title: 'OT Room', content: 'This is how our Operation Theater Room looks like', img: 'https://www.breachcandyhospital.org/sites/default/files/17-compressed.jpg' },
+  ];
+  currentIndex = 0;
+  translateX = '0%';
+
+  prev() {
+    if (this.currentIndex > 0) {
+      this.currentIndex--;
+    } else {
+      this.currentIndex = this.cards.length - 1;
+    }
+    this.updateTranslateX();
+  }
+
+  next() {
+    if (this.currentIndex < this.cards.length - 1) {
+      this.currentIndex++;
+    } else {
+      this.currentIndex = 0;
+    }
+    this.updateTranslateX();
+  }
+
+  updateTranslateX() {
+    this.translateX = `-${this.currentIndex * 100}%`;
+  }
   
   
   async ngOnInit(): Promise<void> {
 
     if(typeof localStorage !== 'undefined') {
-      this.token_header = new HttpHeaders({
-        'Authorization': 'Bearer ' + localStorage.getItem('token')
-      })
-
-      const nModules = await this.http.get(this.apiURL + `/User/GetAllModules?token=${localStorage.getItem('token')}`, {headers: this.token_header});
-
-      nModules.subscribe(
-        {
-          next: data => {
-            var obj = JSON.parse(JSON.stringify(data));
-            const modules_list = obj['modulesList'];
-            if(modules_list !== null) {
-              for(let index in modules_list) {
-                const module = modules_list[index];
-                let push_data = {imageSource: 'assets/images/'+ module.toLowerCase().replaceAll(' ','') + '.png',altText: module+' Image', title: module, description: module+' Description', tags: [], clicked: ''};
-                this.cardData.push(push_data);
+      const token = localStorage.getItem('token');
+      if(token !== null) {
+        this.token_header = new HttpHeaders({
+          'Authorization': 'Bearer ' + localStorage.getItem('token')
+        })
+  
+        const nModules = await this.http.get(this.apiURL + `/User/GetAllModules?token=${localStorage.getItem('token')}`, {headers: this.token_header});
+  
+        nModules.subscribe(
+          {
+            next: data => {
+              var obj = JSON.parse(JSON.stringify(data));
+              const modules_list = obj['modulesList'];
+              if(modules_list !== null) {
+                for(let index in modules_list) {
+                  const module = modules_list[index];
+                  let push_data = {imageSource: 'assets/images/'+ module.toLowerCase().replaceAll(' ','') + '.png',altText: module+' Image', title: module, description: module+' Description', tags: [], clicked: ''};
+                  this.cardData.push(push_data);
+                }
+                this.marketingContent = false;
               }
+            },
+            error: (err) => {
+              this.marketingContent = true;
+              console.error(err);
             }
-          },
-          error: (err) => {
-            console.error(err);
           }
-        }
-      )
+        )
+      }
     }
   }
 

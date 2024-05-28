@@ -1,5 +1,5 @@
 <div [ngClass]="{'disabled': (data.clicked !== '')}" class="cursor-pointer m-2 mt-4 max-w-md rounded overflow-hidden shadow-lg hover:shadow-2xl transition duration-500 ease-in-out mx-auto"> <!-- Adjusted max-w-sm to max-w-md and added mx-auto -->
-  <img class="block mx-auto mt-4 w-40 hover:shadow-2xl transition duration-500 ease-in-out" [src]="data.imageSource" [alt]="data.altText"> <!-- Centered the image with block and mx-auto -->
+  <img class="block mx-auto mt-4 w-40 rounded-2xl hover:shadow-2xl transition duration-500 ease-in-out" [src]="data.imageSource" [alt]="data.altText"> <!-- Centered the image with block and mx-auto -->
   <div class="px-6 py-4">
     <div class="font-bold text-xl mb-2">{{data.title}}</div>
     <p class="text-gray-700 text-base">
