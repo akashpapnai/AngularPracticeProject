@@ -1,33 +1,110 @@
 <app-navbar></app-navbar>
 
-<form #myForm="ngForm" class="mt-4 w-full max-w-7xl mx-auto"> <!-- #myForm="ngForm" -->
- <div class="flex flex-wrap -mx-3 mb-6">
- <!-- Date -->
-  <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0">
-   <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="date">
-     Date
-   </label>
-   <mat-form-field class="appearance-none block w-full border rounded leading-tight focus:outline-none">
-     <mat-label class="text-xs">Date</mat-label>
-     <input [formControl]="managementClass.date" matInput [matDatepicker]="picker" style="padding: 8px; line-height: 1;height:10px" [required]="true">
-     <mat-hint>DD-MMM-YYYY</mat-hint>
-     <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-     <mat-datepicker #picker></mat-datepicker>
-   </mat-form-field>
- </div>
- <!-- Appointment -->
-  <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col">
-   <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="appointment">
-     Appointment No
-   </label>
-   <input [disabled]="true" [value]="managementClass.appointment" class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" name="uhid" type="text" placeholder="Appointment">
+<form #myForm="ngForm" class="mt-4 w-full max-w-7xl mx-auto">
+  <div class="flex flex-wrap -mx-3 mb-6">
+    <!-- Date -->
+    <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0">
+      <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="date">
+        Date
+      </label>
+      <div class="flex items-center relative">
+        <input 
+          [formControl]="managementClass.date" 
+          matInput 
+          [matDatepicker]="picker" 
+          [required]="true" 
+          placeholder="DD-MMM-YYYY" 
+          class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" 
+          id="date">
+        <mat-datepicker-toggle matSuffix [for]="picker" class="absolute right-0"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+      </div>
+    </div>
+
+    <!-- Appointment -->
+    <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col">
+      <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="appointment">
+        Appointment No
+      </label>
+      <input 
+        [disabled]="true" 
+        [value]="managementClass.appointment" 
+        class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" 
+        name="appointment" 
+        type="text" 
+        placeholder="Appointment">
+    </div>
+
+    <!-- UHID -->
+    <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col">
+      <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="uhid">
+        UHID&nbsp;<span class="text-red-900">*</span>
+      </label>
+      <input 
+        [formControl]="uhidControl" 
+        [matAutocomplete]="uhid" 
+        placeholder="Enter UHID" 
+        class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" 
+        name="uhid" 
+        type="text" 
+        [required]="true">
+      <mat-autocomplete autoActiveFirstOption #uhid="matAutocomplete">
+        <mat-option *ngFor="let option of uhidfilteredOptions | async" [value]="option">
+          {{ option }}
+        </mat-option>
+      </mat-autocomplete>
+    </div>
+
+    <!-- OPID -->
+    <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col">
+      <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="opid">
+        OPID&nbsp;<span class="text-red-900">*</span>
+      </label>
+      <input 
+        [formControl]="opidControl" 
+        [matAutocomplete]="opid" 
+        placeholder="Enter OPID" 
+        class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" 
+        name="opid" 
+        type="text" 
+        [required]="true">
+      <mat-autocomplete autoActiveSecondOption #opid="matAutocomplete">
+        <mat-option *ngFor="let option of opidfilteredOptions | async" [value]="option">
+          {{ option }}
+        </mat-option>
+      </mat-autocomplete>
+    </div>
+
+    <!-- First Name -->
+    <!-- Middle Name -->
+    <!-- Last Name -->
+    <!-- Gender -->
+    <!-- Age -->
+    <!-- Marital Status -->
+    <!-- Local Address -->
+    <!-- Country -->
+    <!-- State -->
+    <!-- City -->
+    <!-- Pin Code -->
+    <!-- Mobile -->
+    <!-- Secondary Mobile -->
+    <!-- Email -->
+    <!-- Company -->
+    <!-- Ref Letter No. -->
+    <!-- Id Card No -->
+    <!-- Department -->
+    <!-- Unit -->
+    <!-- Cnnsultation -->
+    <!-- Consultation Charge -->
+    <!-- Referred By -->
+    <!-- Discount Approved By -->
+    <!-- Discount Amount -->
+    <!-- Chief Complain -->
+    <!-- Paid AMount -->
+    <!-- MLC -->
+    <!-- Region -->
+    <!-- Payment Mode -->
+    <!-- Submit Reset -->
   </div>
- <!-- UHID -->
-  <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col">
-   <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="uhid">
-     UHID&nbsp;<span class="text-red-900">*</span>
-   </label>
-   <input [value]="managementClass.uhid" class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" name="uhid" type="text" placeholder="UHID" [required]="true">
-  </div>
- </div>
 </form>
+

@@ -11,16 +11,19 @@
   </div>
   <!-- Date -->
   <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0">
-    <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="last-name">
+    <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="date">
       Date&nbsp;<span class="text-red-900">*</span>
     </label>
-    <mat-form-field class="appearance-none block w-full border rounded leading-tight focus:outline-none">
-      <mat-label class="text-xs">Choose a date</mat-label>
-      <input [formControl]="submitClass.date" matInput [matDatepicker]="picker" style="padding: 8px; line-height: 1;height:10px" [required]="true">
-      <mat-hint>DD-MMM-YYYY</mat-hint>
-      <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+    <div class="flex items-center relative">
+      <input 
+        [formControl]="submitClass.date" 
+        matInput 
+        [matDatepicker]="picker" 
+        class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+        [required]="true">
+      <mat-datepicker-toggle matSuffix [for]="picker" class="absolute right-0"></mat-datepicker-toggle>
       <mat-datepicker #picker></mat-datepicker>
-    </mat-form-field>
+    </div>
   </div>
    <!-- First Name -->
    <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col">
@@ -58,13 +61,19 @@
     <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="dOB">
       Date of Birth&nbsp;<span class="text-red-900">*</span>
     </label>
-    <mat-form-field class="appearance-none block w-full border rounded leading-tight focus:outline-none">
-      <mat-label class="text-xs">Choose a date</mat-label>
-      <input [formControl]="submitClass.dOB" type="datetime" [max]="maxDate" (dateChange)="calculateAge($event.value)" matInput [matDatepicker]="dob" style="padding: 8px; line-height: 1;height:10px" [required]="true">
-      <mat-hint>DD-MMM-YYYY</mat-hint>
-      <mat-datepicker-toggle matIconSuffix [for]="dob"></mat-datepicker-toggle>
+    <div class="flex items-center relative">
+      <input 
+        [formControl]="submitClass.dOB" 
+        type="datetime" 
+        [max]="maxDate" 
+        (dateChange)="calculateAge($event.value)" 
+        matInput 
+        placeholder="DD-MMM-YYYY"
+        class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" 
+        [matDatepicker]="dob" [required]="true">
+      <mat-datepicker-toggle matIconSuffix [for]="dob" class="absolute right-0"></mat-datepicker-toggle>
       <mat-datepicker startView="multi-year" #dob></mat-datepicker>
-    </mat-form-field>
+    </div>
   </div>
     <!-- Age -->
     <div [hidden]="formValues.age === ''" class="w-full md:w-1/4 px-3 mb-6 md:mb-0">
