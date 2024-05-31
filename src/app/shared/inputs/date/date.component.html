@@ -1,0 +1,16 @@
+<label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" [htmlFor]="name">
+  {{title}}&nbsp;<span *ngIf="required" class="text-red-900">*</span>
+</label>
+<div class="flex items-center relative">
+  <input 
+    [formControl]="value"
+    (blur)="onTouched()"
+    matInput 
+    [matDatepicker]="picker" 
+    (dateChange)="changedDate($event)"
+    [name]="name"
+    [placeholder]="placeHolder"
+    class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
+  <mat-datepicker-toggle matSuffix [for]="picker" class="absolute right-0"></mat-datepicker-toggle>
+  <mat-datepicker #picker></mat-datepicker>
+</div>

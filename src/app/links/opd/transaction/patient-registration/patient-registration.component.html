@@ -1,94 +1,100 @@
 <app-navbar></app-navbar>
 
 <form #myForm="ngForm" class="mt-4 w-full max-w-7xl mx-auto">
- <div class="flex flex-wrap -mx-3 mb-6">
-  <!-- UHID -->
-  <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0">
-    <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="uhid">
-      UHID&nbsp;<span class="text-red-900">*</span>
-    </label>
-    <input disabled [value]="submitClass.uhid" class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" name="uhid" type="text" placeholder="UHID" [required]="true">
-  </div>
-  <!-- Date -->
-  <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0">
-    <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="date">
-      Date&nbsp;<span class="text-red-900">*</span>
-    </label>
-    <div class="flex items-center relative">
-      <input 
-        [formControl]="submitClass.date" 
-        matInput 
-        [matDatepicker]="picker" 
+  <div class="flex flex-wrap -mx-3 mb-6">
+    <!-- UHID -->
+    <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0">
+      <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="uhid">
+        UHID&nbsp;<span class="text-red-900">*</span>
+      </label>
+      <input disabled [value]="submitClass.uhid"
         class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-        [required]="true">
-      <mat-datepicker-toggle matSuffix [for]="picker" class="absolute right-0"></mat-datepicker-toggle>
-      <mat-datepicker #picker></mat-datepicker>
+        name="uhid" type="text" placeholder="UHID" [required]="true">
     </div>
-  </div>
-   <!-- First Name -->
-   <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col">
-    <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="first-name">
-      First Name&nbsp;<span class="text-red-900">*</span>
-    </label>
-    <div class="flex">
-      <select [(ngModel)]="submitClass.salutation" class="appearance-none block w-1/4 bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500" name="salutation" [required]="true">
-       <option value="" selected>--Select One--</option> 
-       <option value="Mr.">Mr.</option>
-        <option value="Mrs.">Mrs.</option>
-        <option value="Ms.">Ms.</option>
-        <option value="Dr.">Mrs.</option>
-      </select>
-      <input [(ngModel)]="submitClass.firstName" class="appearance-none block w-3/4 ml-2 bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" name="firstName" type="text" placeholder="First Name" [required]="true">
+    <!-- Date -->
+    <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0">
+      <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="date">
+        Date&nbsp;<span class="text-red-900">*</span>
+      </label>
+      <div class="flex items-center relative">
+        <input [formControl]="submitClass.date" matInput [matDatepicker]="picker"
+          class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+          [required]="true">
+        <mat-datepicker-toggle matSuffix [for]="picker" class="absolute right-0"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+      </div>
     </div>
-  </div>
-   <!-- Middle Name -->
-   <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0">
-     <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="middle-name">
-       Middle Name
-     </label>
-     <input [(ngModel)]="submitClass.middleName" class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" name="middleName" type="text" placeholder="Middle Name">
-   </div>
+    <!-- First Name -->
+    <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col">
+      <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="first-name">
+        First Name&nbsp;<span class="text-red-900">*</span>
+      </label>
+      <div class="flex">
+        <select [(ngModel)]="submitClass.salutation"
+          class="appearance-none block w-1/4 bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+          name="salutation" [required]="true">
+          <option value="" selected>--Select One--</option>
+          <option value="Mr.">Mr.</option>
+          <option value="Mrs.">Mrs.</option>
+          <option value="Ms.">Ms.</option>
+          <option value="Dr.">Mrs.</option>
+        </select>
+        <input [(ngModel)]="submitClass.firstName"
+          class="appearance-none block w-3/4 ml-2 bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+          name="firstName" type="text" placeholder="First Name" [required]="true">
+      </div>
+    </div>
+    <!-- Middle Name -->
+    <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0">
+      <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="middle-name">
+        Middle Name
+      </label>
+      <input [(ngModel)]="submitClass.middleName"
+        class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+        name="middleName" type="text" placeholder="Middle Name">
+    </div>
 
-   <!-- Last Name -->
-   <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0">
-     <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="last-name">
-       Last Name&nbsp;<span class="text-red-900">*</span>
-     </label>
-     <input [(ngModel)]="submitClass.lastName" class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" name="lastName" type="text" placeholder="Last Name" [required]="true">
-   </div>
-   <!-- Date of Birth -->
-   <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0">
-    <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="dOB">
-      Date of Birth&nbsp;<span class="text-red-900">*</span>
-    </label>
-    <div class="flex items-center relative">
-      <input 
-        [formControl]="submitClass.dOB" 
-        type="datetime" 
-        [max]="maxDate" 
-        (dateChange)="calculateAge($event.value)" 
-        matInput 
-        placeholder="DD-MMM-YYYY"
-        class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" 
-        [matDatepicker]="dob" [required]="true">
-      <mat-datepicker-toggle matIconSuffix [for]="dob" class="absolute right-0"></mat-datepicker-toggle>
-      <mat-datepicker startView="multi-year" #dob></mat-datepicker>
+    <!-- Last Name -->
+    <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0">
+      <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="last-name">
+        Last Name&nbsp;<span class="text-red-900">*</span>
+      </label>
+      <input [(ngModel)]="submitClass.lastName"
+        class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+        name="lastName" type="text" placeholder="Last Name" [required]="true">
     </div>
-  </div>
+    <!-- Date of Birth -->
+    <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0">
+      <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="dOB">
+        Date of Birth&nbsp;<span class="text-red-900">*</span>
+      </label>
+      <div class="flex items-center relative">
+        <input [formControl]="submitClass.dOB" type="datetime" [max]="maxDate" (dateChange)="calculateAge($event.value)"
+          matInput placeholder="DD-MMM-YYYY"
+          class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+          [matDatepicker]="dob" [required]="true">
+        <mat-datepicker-toggle matIconSuffix [for]="dob" class="absolute right-0"></mat-datepicker-toggle>
+        <mat-datepicker startView="multi-year" #dob></mat-datepicker>
+      </div>
+    </div>
     <!-- Age -->
     <div [hidden]="formValues.age === ''" class="w-full md:w-1/4 px-3 mb-6 md:mb-0">
       <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="age">
         Age
       </label>
-      <input disabled [value]="formValues.age" class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" name="age" type="text" placeholder="Age">
+      <input disabled [value]="formValues.age"
+        class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+        name="age" type="text" placeholder="Age">
     </div>
     <!-- Marital Status -->
     <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0">
       <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="mStatus">
         Marital Status&nbsp;<span class="text-red-900">*</span>
       </label>
-      <select [(ngModel)]="submitClass.maritalStatus" class="appearance-none block w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500" name="maritalStatus" [required]="true">
-        <option value="" selected>--Select One--</option> 
+      <select [(ngModel)]="submitClass.maritalStatus"
+        class="appearance-none block w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+        name="maritalStatus" [required]="true">
+        <option value="" selected>--Select One--</option>
         <option *ngFor="let m of formValues.mStatusList" [value]="m">{{m}}</option>
       </select>
     </div>
@@ -97,8 +103,10 @@
       <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="guardian">
         Guardian
       </label>
-      <select [(ngModel)]="submitClass.guardian" class="appearance-none block w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500" name="guardian">
-        <option value="" selected>--Select One--</option> 
+      <select [(ngModel)]="submitClass.guardian"
+        class="appearance-none block w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+        name="guardian">
+        <option value="" selected>--Select One--</option>
         <option *ngFor="let g of formValues.guardianList" [value]="g">{{g}}</option>
       </select>
     </div>
@@ -107,15 +115,19 @@
       <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="gName">
         Guardian Name&nbsp;<span class="text-red-900">*</span>
       </label>
-      <input [(ngModel)]="submitClass.guardianName" class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" name="guardianName" type="text" placeholder="Guardian Name" [required]="submitClass.guardian !== ''">
+      <input [(ngModel)]="submitClass.guardianName"
+        class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+        name="guardianName" type="text" placeholder="Guardian Name" [required]="submitClass.guardian !== ''">
     </div>
     <!-- Blood Group -->
     <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0">
       <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="bGroup">
         Blood Group
       </label>
-      <select [(ngModel)]="submitClass.bloodGroup" class="appearance-none block w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500" name="bloodGroup">
-        <option value="" selected>--Select One--</option> 
+      <select [(ngModel)]="submitClass.bloodGroup"
+        class="appearance-none block w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+        name="bloodGroup">
+        <option value="" selected>--Select One--</option>
         <option *ngFor="let b of formValues.bGroup" [value]="b">{{b}}</option>
       </select>
     </div>
@@ -124,15 +136,19 @@
       <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="Occupation">
         Occupation
       </label>
-      <input [(ngModel)]="submitClass.occupation" class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" name="occupation" type="text" placeholder="Occupation">
+      <input [(ngModel)]="submitClass.occupation"
+        class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+        name="occupation" type="text" placeholder="Occupation">
     </div>
     <!-- Religion -->
     <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0">
       <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="religion">
         Religion
       </label>
-      <select [(ngModel)]="submitClass.religion" class="appearance-none block w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500" name="religion">
-        <option value="" selected>--Select One--</option> 
+      <select [(ngModel)]="submitClass.religion"
+        class="appearance-none block w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+        name="religion">
+        <option value="" selected>--Select One--</option>
         <option *ngFor="let r of formValues.religion" [value]="r">{{r}}</option>
       </select>
     </div>
@@ -141,21 +157,27 @@
       <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="mobNumber">
         Mobile Number&nbsp;<span class="text-red-900">*</span>
       </label>
-      <input [(ngModel)]="submitClass.mobNumber" class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" name="mobNumber" type="text" placeholder="Mobile Number" [required]="true">
+      <input [(ngModel)]="submitClass.mobNumber"
+        class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+        name="mobNumber" type="text" placeholder="Mobile Number" [required]="true">
     </div>
     <!-- Secondary Mobile Number -->
     <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0">
       <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="secMobNumber">
         Secondary Mobile Number
       </label>
-      <input [(ngModel)]="submitClass.secMobNumber" class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" name="secMobNumber" type="text" placeholder="Secondary Mobile Number">
+      <input [(ngModel)]="submitClass.secMobNumber"
+        class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+        name="secMobNumber" type="text" placeholder="Secondary Mobile Number">
     </div>
     <!-- Local Address -->
     <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0">
       <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="localAddress">
         Local Address&nbsp;<span class="text-red-900">*</span>
       </label>
-      <input [(ngModel)]="submitClass.localAddress" class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" name="localAddress" type="text" placeholder="Local Address" [required]="true">
+      <input [(ngModel)]="submitClass.localAddress"
+        class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+        name="localAddress" type="text" placeholder="Local Address" [required]="true">
     </div>
     <!-- Countries -->
     <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0">
@@ -163,7 +185,9 @@
         Country&nbsp;<span class="text-red-900">*</span>
       </label>
       <div class="relative">
-        <select (change)="countrySelected()" [(ngModel)]="submitClass.countryId" name="country" class="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500" name="countryId" [required]="true">
+        <select (change)="countrySelected()" [(ngModel)]="submitClass.countryId" name="country"
+          class="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+          name="countryId" [required]="true">
           <option value="" selected>--Select One--</option>
           <option *ngFor="let country of countries" value="{{country.id}}">{{country.name}}</option>
         </select>
@@ -175,67 +199,81 @@
         State&nbsp;<span class="text-red-900">*</span>
       </label>
       <div class="relative">
-        <select (change)="stateSelected()" [(ngModel)]="submitClass.stateId" name="stateId" class="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500" [required]="true">
+        <select (change)="stateSelected()" [(ngModel)]="submitClass.stateId" name="stateId"
+          class="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+          [required]="true">
           <option value="" selected>--Select One--</option>
           <option *ngFor="let state of states" value="{{state.id}}">{{state.name}}</option>
         </select>
       </div>
     </div>
-   <!-- City -->
-   <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0">
-    <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="cityId">
-      City&nbsp;<span class="text-red-900">*</span>
-    </label>
-    <div class="relative">
-      <select [(ngModel)]="submitClass.cityId" name="cityId" class="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500" [required]="true">
-        <option value="" selected>--Select One--</option>
-        <option *ngFor="let city of cities" value="{{city.id}}">{{city.name}}</option>
-      </select>
+    <!-- City -->
+    <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0">
+      <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="cityId">
+        City&nbsp;<span class="text-red-900">*</span>
+      </label>
+      <div class="relative">
+        <select [(ngModel)]="submitClass.cityId" name="cityId"
+          class="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+          [required]="true">
+          <option value="" selected>--Select One--</option>
+          <option *ngFor="let city of cities" value="{{city.id}}">{{city.name}}</option>
+        </select>
+      </div>
+    </div>
+    <!-- Pin Code -->
+    <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0">
+      <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="pinCode">
+        Pin Code&nbsp;<span class="text-red-900">*</span>
+      </label>
+      <input [(ngModel)]="submitClass.pinCode" autocomplete="off"
+        class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+        name="pinCode" type="text" placeholder="Pin Code" [required]="true">
+    </div>
+    <!-- Email -->
+    <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0">
+      <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="email">
+        Email&nbsp;<span class="text-red-900">*</span>
+      </label>
+      <input [(ngModel)]="submitClass.email"
+        class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+        name="email" type="text" placeholder="Email Address" [required]="true">
+    </div>
+    <!-- Document Select -->
+    <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0">
+      <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="documentType">
+        Document Select
+      </label>
+      <div class="relative">
+        <select [(ngModel)]="submitClass.documentType" name="documentType"
+          class="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
+          <option value="" selected>--Select One--</option>
+          <option *ngFor="let document of formValues.documents" value="{{document}}">{{document}}</option>
+        </select>
+      </div>
+    </div>
+    <!-- Document Value -->
+    <div [hidden]="submitClass.documentType === ''" class="w-full md:w-1/4 px-3 mb-6 md:mb-0">
+      <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="documentNumber">
+        Document Value&nbsp;<span class="text-red-900">*</span>
+      </label>
+      <input [(ngModel)]="submitClass.documentNumber"
+        class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+        name="documentNumber" type="text" placeholder="Document Value" [required]="submitClass.documentType !== ''">
     </div>
   </div>
-  <!-- Pin Code -->
-  <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0">
-    <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="pinCode">
-      Pin Code&nbsp;<span class="text-red-900">*</span>
-    </label>
-    <input [(ngModel)]="submitClass.pinCode" autocomplete="off" class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" name="pinCode" type="text" placeholder="Pin Code" [required]="true">
+  <!-- Submit -->
+  <div class="items-end flex flex-wrap justify-end -mx-3 mb-2">
+    <button [disabled]="loading.resetting || loading.submitting" mat-raised-button (click)="resetClick(myForm)"
+      type="button"
+      class="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-xs px-3 py-2 me-2 mb-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700 opacity-50 hover:opacity-100">
+      <span *ngIf="!loading.resetting">Reset</span>
+      <mat-spinner *ngIf="loading.resetting" [diameter]="16"></mat-spinner>
+    </button>
+    <button [disabled]="loading.resetting || loading.submitting" (click)="registerPatient(myForm)" type="button"
+      class="cursor-pointer text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-xs px-3 py-2 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
+      <span *ngIf="!loading.submitting">Submit</span>
+      <mat-spinner *ngIf="loading.submitting" [diameter]="16"></mat-spinner>
+    </button>
   </div>
-  <!-- Email -->
-  <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0">
-    <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="email">
-      Email&nbsp;<span class="text-red-900">*</span>
-    </label>
-    <input [(ngModel)]="submitClass.email" class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" name="email" type="text" placeholder="Email Address" [required]="true">
-  </div>
-  <!-- Document Select -->
-  <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0">
-   <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="documentType">
-     Document Select
-   </label>
-   <div class="relative">
-     <select [(ngModel)]="submitClass.documentType" name="documentType" class="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500" >
-       <option value="" selected>--Select One--</option>
-       <option *ngFor="let document of formValues.documents" value="{{document}}">{{document}}</option>
-     </select>
-   </div>
- </div>
- <!-- Document Value -->
-  <div [hidden]="submitClass.documentType === ''" class="w-full md:w-1/4 px-3 mb-6 md:mb-0">
-   <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="documentNumber">
-     Document Value&nbsp;<span class="text-red-900">*</span>
-   </label>
-   <input [(ngModel)]="submitClass.documentNumber" class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" name="documentNumber" type="text" placeholder="Document Value" [required]="submitClass.documentType !== ''">
- </div>
- </div>
- <!-- Submit -->
- <div class="items-end flex flex-wrap justify-end -mx-3 mb-2">
-  <button [disabled]="loading.resetting || loading.submitting" mat-raised-button (click)="resetClick(myForm)" type="button" class="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-xs px-3 py-2 me-2 mb-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700 opacity-50 hover:opacity-100" >
-    <span *ngIf="!loading.resetting">Reset</span>
-    <mat-spinner *ngIf="loading.resetting" [diameter]="16"></mat-spinner>
-  </button>
-  <button [disabled]="loading.resetting || loading.submitting" (click)="registerPatient(myForm)" type="button" class="cursor-pointer text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-xs px-3 py-2 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800" >
-    <span *ngIf="!loading.submitting">Submit</span>
-    <mat-spinner *ngIf="loading.submitting" [diameter]="16"></mat-spinner>
-  </button>
-</div>
 </form>

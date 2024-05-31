@@ -1,19 +1,17 @@
 import { AsyncPipe, CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { NavbarComponent } from '../../../../shared/navbar/navbar.component';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatInputModule } from '@angular/material/input';
 import * as _moment from 'moment';
-import {default as _rollupMoment} from 'moment';
+import { default as _rollupMoment } from 'moment';
 import { provideNativeDateAdapter } from '@angular/material/core';
 import { provideMomentDateAdapter } from '@angular/material-moment-adapter';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import {MatAutocompleteModule} from '@angular/material/autocomplete';
 import { LoginService } from '../../../../login.service';
 import { Observable, from, map, startWith, switchMap } from 'rxjs';
+import { DateComponent } from '../../../../shared/inputs/date/date.component';
+import { TextFieldComponent } from '../../../../shared/inputs/text-field/text-field.component';
+import { AutoCompleteComponent } from '../../../../shared/inputs/auto-complete/auto-complete.component';
 
 const moment = _rollupMoment || _moment;
 export const DATE_FORMATS = {
@@ -32,16 +30,13 @@ export const DATE_FORMATS = {
   selector: 'app-opdmanagement',
   standalone: true,
   imports: [
-    CommonModule, 
+    CommonModule,
     NavbarComponent,
     FormsModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatDatepickerModule,
     ReactiveFormsModule,
-    MatProgressSpinnerModule,
-    MatAutocompleteModule,
-    AsyncPipe
+    DateComponent,
+    TextFieldComponent,
+    AutoCompleteComponent
   ],
   providers: [
     provideNativeDateAdapter(),
@@ -51,12 +46,16 @@ export const DATE_FORMATS = {
   styleUrl: './opdmanagement.component.scss'
 })
 export class OpdmanagementComponent {
-  public managementClass:ManagementClass = {
+  public managementClass: ManagementClass = {
     uhid: '',
-    date: new FormControl(),
-    appointment: ''
+    date: new FormControl({ value: '', disabled: true }),
+    appointment: '',
+    firstName: '',
+    middleName: '',
+    lastName: ''
   };
-  
+
+  public age: string = '';
   private apiUrl = this.lService.__apiURL__;
 
   uhidControl = new FormControl('');
@@ -65,39 +64,41 @@ export class OpdmanagementComponent {
   opidoptions: string[] = [];
   uhidfilteredOptions: Observable<string[]> = new Observable<string[]>;
   opidfilteredOptions: Observable<string[]> = new Observable<string[]>;
-  
-  constructor(private http:HttpClient, private lService: LoginService) {}
+
+  constructor(private http: HttpClient, private lService: LoginService) { }
 
   async ngOnInit() {
     this.uhidoptions = await this.getUhids('u');
 
     this.uhidfilteredOptions = this.uhidControl.valueChanges.pipe(
       startWith('u'),
-      switchMap(value   => from(this._uhidfilter(value || ''))),
+      switchMap(value => from(this._uhidfilter(value || ''))),
     );
 
     this.opidoptions = await this.getOpids('o');
     this.opidfilteredOptions = this.opidControl.valueChanges.pipe(
       startWith('u'),
-      switchMap(value   => from(this._opidfilter(value || ''))),
+      switchMap(value => from(this._opidfilter(value || ''))),
     );
   }
 
   public getUhids(startWith: string): Promise<string[]> {
     const toSend = new Promise<string[]>(resolve => {
 
-      if(startWith === '') {
+      if (startWith === '') {
         resolve([]);
       }
 
       const token = new HttpHeaders({
         'Authorization': 'Bearer ' + localStorage.getItem('token')
       });
-  
-      const data = this.http.get<uhidResponse>(this.apiUrl + '/Common/getUhidStartsWith', {headers: token,params: {
-        'startsWith': startWith
-      }});
-  
+
+      const data = this.http.get<uhidResponse>(this.apiUrl + '/Common/getUhidStartsWith', {
+        headers: token, params: {
+          'startsWith': startWith
+        }
+      });
+
       data.subscribe({
         next: (response) => {
           resolve(response.uhids);
@@ -111,18 +112,20 @@ export class OpdmanagementComponent {
   public getOpids(startWith: string): Promise<string[]> {
     const toSend = new Promise<string[]>(resolve => {
 
-      if(startWith === '') {
+      if (startWith === '') {
         resolve([]);
       }
 
       const token = new HttpHeaders({
         'Authorization': 'Bearer ' + localStorage.getItem('token')
       });
-  
-      const data = this.http.get<uhidResponse>(this.apiUrl + '/Common/getOpidStartsWith', {headers: token,params: {
-        'startsWith': startWith
-      }});
-  
+
+      const data = this.http.get<uhidResponse>(this.apiUrl + '/Common/getOpidStartsWith', {
+        headers: token, params: {
+          'startsWith': startWith
+        }
+      });
+
       data.subscribe({
         next: (response) => {
           resolve(response.uhids);
@@ -153,9 +156,12 @@ export class OpdmanagementComponent {
 }
 
 interface ManagementClass {
-appointment: any;
+  appointment: any;
   uhid: string;
   date: FormControl;
+  firstName: string;
+  middleName: string;
+  lastName: string;
 }
 
 interface uhidResponse {

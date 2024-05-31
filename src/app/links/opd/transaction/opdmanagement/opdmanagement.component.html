@@ -3,83 +3,52 @@
 <form #myForm="ngForm" class="mt-4 w-full max-w-7xl mx-auto">
   <div class="flex flex-wrap -mx-3 mb-6">
     <!-- Date -->
-    <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0">
-      <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="date">
-        Date
-      </label>
-      <div class="flex items-center relative">
-        <input 
-          [formControl]="managementClass.date" 
-          matInput 
-          [matDatepicker]="picker" 
-          [required]="true" 
-          placeholder="DD-MMM-YYYY" 
-          class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" 
-          id="date">
-        <mat-datepicker-toggle matSuffix [for]="picker" class="absolute right-0"></mat-datepicker-toggle>
-        <mat-datepicker #picker></mat-datepicker>
-      </div>
+    <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 mt-1">
+      <app-date [value]="managementClass.date" [title]="'Date'" [name]="'date'" [placeHolder]="'DD-MMM-YYYY'"
+        [required]="true"></app-date>
     </div>
 
     <!-- Appointment -->
-    <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col">
-      <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="appointment">
-        Appointment No
-      </label>
-      <input 
-        [disabled]="true" 
-        [value]="managementClass.appointment" 
-        class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" 
-        name="appointment" 
-        type="text" 
-        placeholder="Appointment">
+    <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col mt-1">
+      <app-text-field [(ngModel)]="managementClass.appointment" [value]="managementClass.appointment" [disabled]="true"
+        [name]="'Appointment'" [required]="true" [type]="'text'" [placeHolder]="'Appointment'"
+        [title]="'Appointment No'"></app-text-field>
     </div>
 
     <!-- UHID -->
-    <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col">
-      <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="uhid">
-        UHID&nbsp;<span class="text-red-900">*</span>
-      </label>
-      <input 
-        [formControl]="uhidControl" 
-        [matAutocomplete]="uhid" 
-        placeholder="Enter UHID" 
-        class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" 
-        name="uhid" 
-        type="text" 
-        [required]="true">
-      <mat-autocomplete autoActiveFirstOption #uhid="matAutocomplete">
-        <mat-option *ngFor="let option of uhidfilteredOptions | async" [value]="option">
-          {{ option }}
-        </mat-option>
-      </mat-autocomplete>
+    <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col mt-1">
+      <app-auto-complete [title]="'UHID'" [required]="true" [formControl]="uhidControl" [placeHolder]="'Enter UHID'"
+        [autoCompleteOptions]="uhidfilteredOptions" [name]="'uhid'"></app-auto-complete>
     </div>
-
     <!-- OPID -->
-    <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col">
-      <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="opid">
-        OPID&nbsp;<span class="text-red-900">*</span>
-      </label>
-      <input 
-        [formControl]="opidControl" 
-        [matAutocomplete]="opid" 
-        placeholder="Enter OPID" 
-        class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" 
-        name="opid" 
-        type="text" 
-        [required]="true">
-      <mat-autocomplete autoActiveSecondOption #opid="matAutocomplete">
-        <mat-option *ngFor="let option of opidfilteredOptions | async" [value]="option">
-          {{ option }}
-        </mat-option>
-      </mat-autocomplete>
+    <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col mt-1">
+      <app-auto-complete [title]="'Enter OPID'" [required]="true" [formControl]="opidControl"
+        [placeHolder]="'Enter UHID'" [autoCompleteOptions]="opidfilteredOptions" [name]="'opid'"></app-auto-complete>
     </div>
 
     <!-- First Name -->
+    <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col mt-1">
+      <app-text-field [(ngModel)]="managementClass.firstName" [value]="managementClass.firstName" [name]="'firstName'"
+        [required]="true" [type]="'text'" [placeHolder]="'First Name'" [title]="'First Name'"
+        [disabled]="true"></app-text-field>
+    </div>
     <!-- Middle Name -->
+    <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col mt-1">
+      <app-text-field [(ngModel)]="managementClass.middleName" [value]="managementClass.middleName"
+        [name]="'middleName'" [required]="true" [type]="'text'" [placeHolder]="'Middle Name'" [title]="'Middle Name'"
+        [disabled]="true"></app-text-field>
+    </div>
     <!-- Last Name -->
-    <!-- Gender -->
+    <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col mt-1">
+      <app-text-field [(ngModel)]="managementClass.lastName" [value]="managementClass.lastName" [name]="'lastName'"
+        [required]="true" [type]="'text'" [placeHolder]="'Last Name'" [title]="'Last Name'"
+        [disabled]="true"></app-text-field>
+    </div>
     <!-- Age -->
+    <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col mt-1">
+      <app-text-field [value]="age" [name]="'age'" [type]="'text'" [placeHolder]="'Age'" [title]="'Age'"
+        [disabled]="true"></app-text-field>
+    </div>
     <!-- Marital Status -->
     <!-- Local Address -->
     <!-- Country -->
@@ -107,4 +76,3 @@
     <!-- Submit Reset -->
   </div>
 </form>
-

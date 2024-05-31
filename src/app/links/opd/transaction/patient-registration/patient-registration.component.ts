@@ -2,17 +2,17 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { NavbarComponent } from '../../../../shared/navbar/navbar.component';
 import { FormControl, FormsModule, NgForm, ReactiveFormsModule } from '@angular/forms';
-import { MatDatepickerModule} from '@angular/material/datepicker';
-import {provideMomentDateAdapter} from '@angular/material-moment-adapter';
-import {MatInputModule} from '@angular/material/input';
-import {MatFormFieldModule} from '@angular/material/form-field';
-import {provideNativeDateAdapter} from '@angular/material/core';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { provideMomentDateAdapter } from '@angular/material-moment-adapter';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { provideNativeDateAdapter } from '@angular/material/core';
 import { LoginService } from '../../../../login.service';
 import { ConstantsService } from '../../../../constants.service';
 import { HttpClient, HttpHeaders, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import * as _moment from 'moment';
-import {default as _rollupMoment, Moment} from 'moment';
-import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import { default as _rollupMoment, Moment } from 'moment';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 const moment = _rollupMoment || _moment;
 export const DATE_FORMATS = {
@@ -27,27 +27,29 @@ export const DATE_FORMATS = {
   }
 };
 
-@Component({ selector: 'app-patient-registration',
-    standalone: true,
-    templateUrl: './patient-registration.component.html',
-    styleUrl: './patient-registration.component.scss', imports: [CommonModule,
-        NavbarComponent,
-        FormsModule,
-        MatFormFieldModule,
-        MatInputModule,
-        MatDatepickerModule,
-        ReactiveFormsModule,
-        MatProgressSpinnerModule], providers: [
-        provideNativeDateAdapter(),
-        provideMomentDateAdapter(DATE_FORMATS)
-    ] })
+@Component({
+  selector: 'app-patient-registration',
+  standalone: true,
+  templateUrl: './patient-registration.component.html',
+  styleUrl: './patient-registration.component.scss', imports: [CommonModule,
+    NavbarComponent,
+    FormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatDatepickerModule,
+    ReactiveFormsModule,
+    MatProgressSpinnerModule], providers: [
+      provideNativeDateAdapter(),
+      provideMomentDateAdapter(DATE_FORMATS)
+    ]
+})
 export class PatientRegistrationComponent implements OnInit {
 
   constructor(
-    private lService: LoginService, 
+    private lService: LoginService,
     private constants: ConstantsService,
     private http: HttpClient
-  ) {}
+  ) { }
 
   public submitClass = new patientRegistration();
   public countries: any[] = [];
@@ -73,17 +75,17 @@ export class PatientRegistrationComponent implements OnInit {
   async ngOnInit(): Promise<any> {
     const apiURL = this.lService.__apiURL__;
     this.getUhid();
-    
-    if(typeof localStorage !== 'undefined') {
+
+    if (typeof localStorage !== 'undefined') {
       const token_header = new HttpHeaders({
         'Authorization': 'Bearer ' + localStorage.getItem('token')
       });
 
-      const allCountries = this.http.get(apiURL+"/Common/getAllCountries",{headers:token_header});
+      const allCountries = this.http.get(apiURL + "/Common/getAllCountries", { headers: token_header });
 
       allCountries.subscribe({
         next: (data) => {
-          const objC:countryResponse = data as countryResponse;
+          const objC: countryResponse = data as countryResponse;
           const obj: any[] = objC.allCountries;
           for (let country of obj) {
             this.countries.push({ id: country.iso2, name: country.name });
@@ -99,19 +101,21 @@ export class PatientRegistrationComponent implements OnInit {
     this.submitClass.cityId = '';
     this.cities = [];
 
-    if(typeof localStorage !== 'undefined') {
+    if (typeof localStorage !== 'undefined') {
 
       const token_header = new HttpHeaders({
         'Authorization': 'Bearer ' + localStorage.getItem('token')
       });
 
-      const statesList = await this.http.get(this.lService.__apiURL__ + '/Common/GetStatesByCountry', {headers:token_header,params: {
-        'country': this.submitClass.countryId
-      }});
+      const statesList = await this.http.get(this.lService.__apiURL__ + '/Common/GetStatesByCountry', {
+        headers: token_header, params: {
+          'country': this.submitClass.countryId
+        }
+      });
 
       statesList.subscribe({
         next: (data) => {
-          const objS:statesResponse = data as statesResponse;
+          const objS: statesResponse = data as statesResponse;
           const obj: any[] = objS.allStates;
           for (let state of obj) {
             this.states.push({ id: state.iso2, name: state.name });
@@ -125,20 +129,22 @@ export class PatientRegistrationComponent implements OnInit {
     this.submitClass.cityId = '';
     this.cities = [];
 
-    if(typeof localStorage !== 'undefined') {
+    if (typeof localStorage !== 'undefined') {
 
       const token_header = new HttpHeaders({
         'Authorization': 'Bearer ' + localStorage.getItem('token')
       });
 
-      const citiesList = await this.http.get(this.lService.__apiURL__ + '/Common/GetCitiesByCountryAndState', {headers:token_header,params: {
-        'country': this.submitClass.countryId,
-        'state': this.submitClass.stateId
-      }});
+      const citiesList = await this.http.get(this.lService.__apiURL__ + '/Common/GetCitiesByCountryAndState', {
+        headers: token_header, params: {
+          'country': this.submitClass.countryId,
+          'state': this.submitClass.stateId
+        }
+      });
 
       citiesList.subscribe({
         next: (data) => {
-          const objCT:citiesResponse = data as citiesResponse;
+          const objCT: citiesResponse = data as citiesResponse;
           const obj: any[] = objCT.allCities;
           for (let city of obj) {
             this.cities.push({ id: city.id, name: city.name });
@@ -149,37 +155,17 @@ export class PatientRegistrationComponent implements OnInit {
   }
 
   public calculateAge(dob: Moment) {
-    const now = moment();
-    const duration = moment.duration(now.diff(dob));
-
-    const years = duration.years();
-    const months = duration.months();
-    const days = duration.days();
-
-    let ageString = '';
-
-    if (years > 0) {
-        ageString += years + ' years ';
-    }
-    if (months > 0) {
-        ageString += months + ' months ';
-    }
-    if (days > 0) {
-        ageString += days + ' days ';
-    }
-    ageString = ageString.trim();
-
-    this.formValues.age = ageString;
+    this.formValues.age = this.constants.calculateAge(dob);
   }
 
 
   public async getUhid() {
-    if(typeof localStorage !== 'undefined') {
+    if (typeof localStorage !== 'undefined') {
 
       const token_header = new HttpHeaders({
         'Authorization': 'Bearer ' + localStorage.getItem('token')
       });
-      const uhid = await this.http.get(this.lService.__apiURL__ + '/Common/GetLatestUHID', {headers: token_header});
+      const uhid = await this.http.get(this.lService.__apiURL__ + '/Common/GetLatestUHID', { headers: token_header });
 
       uhid.subscribe({
         next: (data) => {
@@ -195,7 +181,7 @@ export class PatientRegistrationComponent implements OnInit {
   }
 
   public async registerPatient(form: NgForm) {
-    if(form.valid && this.validate()) {
+    if (form.valid && this.validate()) {
       this.loading.submitting = true;
       let register = form.value as patientRegistration;
       register = {
@@ -204,16 +190,16 @@ export class PatientRegistrationComponent implements OnInit {
         date: this.submitClass.date.value.format('DD-MMM-YYYY'),
         dOB: this.submitClass.dOB.value?.format('DD-MMM-YYYY')
       }
-      
+
       const token_header = new HttpHeaders({
         'Authorization': 'Bearer ' + localStorage.getItem('token'),
         'Content-Type': 'application/json'
       });
-      const reg = await this.http.post(this.lService.__apiURL__+'/Common/RegisterPatient',register,{headers:token_header});
+      const reg = await this.http.post(this.lService.__apiURL__ + '/Common/RegisterPatient', register, { headers: token_header });
       reg.subscribe({
         next: (data) => {
           const obj = JSON.parse(JSON.stringify(data));
-          if(obj.status) {
+          if (obj.status) {
             alert(obj.message);
             window.location.reload();
           }
@@ -227,15 +213,15 @@ export class PatientRegistrationComponent implements OnInit {
           this.loading.submitting = false;
         }
       })
-    
+
     }
-  
+
   }
 
   public resetClick(form: NgForm) {
     this.loading.resetting = true;
     setTimeout(() => {
-      
+
       this.submitClass = new patientRegistration();
       this.formValues.age = '';
       this.states = [];
@@ -246,7 +232,7 @@ export class PatientRegistrationComponent implements OnInit {
     }, 500);
   }
 
-  public validate():boolean {
+  public validate(): boolean {
     return true;
   }
 }
