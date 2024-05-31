@@ -141,16 +141,9 @@
         name="occupation" type="text" placeholder="Occupation">
     </div>
     <!-- Religion -->
-    <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0">
-      <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="religion">
-        Religion
-      </label>
-      <select [(ngModel)]="submitClass.religion"
-        class="appearance-none block w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-        name="religion">
-        <option value="" selected>--Select One--</option>
-        <option *ngFor="let r of formValues.religion" [value]="r">{{r}}</option>
-      </select>
+    <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col mt-1">
+      <app-drop-down [(ngModel)]="submitClass.religion" [value]="submitClass.religion" [list]="religionList"
+        [name]="'religion'" [title]="'Religion'" [disabled]="false" [required]="true"></app-drop-down>
     </div>
     <!-- Mobile No -->
     <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0">

@@ -13,6 +13,7 @@ import { HttpClient, HttpHeaders, provideHttpClient, withInterceptorsFromDi } fr
 import * as _moment from 'moment';
 import { default as _rollupMoment, Moment } from 'moment';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { DropDownComponent } from '../../../../shared/inputs/drop-down/drop-down.component';
 
 const moment = _rollupMoment || _moment;
 export const DATE_FORMATS = {
@@ -31,14 +32,18 @@ export const DATE_FORMATS = {
   selector: 'app-patient-registration',
   standalone: true,
   templateUrl: './patient-registration.component.html',
-  styleUrl: './patient-registration.component.scss', imports: [CommonModule,
+  styleUrl: './patient-registration.component.scss', 
+  imports: [
+    CommonModule,
     NavbarComponent,
     FormsModule,
     MatFormFieldModule,
     MatInputModule,
     MatDatepickerModule,
     ReactiveFormsModule,
-    MatProgressSpinnerModule], providers: [
+    MatProgressSpinnerModule,
+    DropDownComponent
+  ], providers: [
       provideNativeDateAdapter(),
       provideMomentDateAdapter(DATE_FORMATS)
     ]
@@ -55,6 +60,8 @@ export class PatientRegistrationComponent implements OnInit {
   public countries: any[] = [];
   public states: any[] = [];
   public cities: any[] = [];
+  public religionList: any[] = this.constants.religionList;
+
   public formValues = {
     guardianList: this.constants.guardiansList,
     mStatusList: this.constants.maritalStatusList,

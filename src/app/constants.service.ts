@@ -43,15 +43,15 @@ export class ConstantsService {
     'O-',
     'Not Known'
   ];
-  public religionList: string[] = [
-    'Baudh',
-    'Christian',
-    'Hindu',
-    'Islam',
-    'Other',
-    'Parsi',
-    'Soutaal/Santal',
-    'Yahudi'
+  public religionList: any[] = [
+    {'key':'Baudh','value':'Baudh'},
+    {'key':'Christian', 'value':'Christian'},
+    {'key':'Hindu', 'value':'Hindu'},
+    {'key':'Islam', 'value':'Islam'},
+    {'key':'Other', 'value':'Other'},
+    {'key':'Parsi', 'value':'Parsi'},
+    {'key':'Soutaal/Santal', 'value':'Soutaal/Santal'},
+    {'key':'Yahudi', 'value':'Yahudi'}
   ];
   public documentsList: string[] = [
     'Aadhar Card',
@@ -59,6 +59,15 @@ export class ConstantsService {
     'Driving Liscence',
     'Pan Card',
     'PM-JAY Card'
+  ];
+  public consultationList: any[] = [
+    {'key':'1', value: 'First Time Consultation'},
+    {'key':'2', value: 'Follow Up Consultation'}
+  ];
+  public paymentModes: any[] = [
+    {'key':'1', 'value':'Cash'},
+    {'key':'2', 'value':'Cheque'},
+    {'key':'3', 'value':'Online'},
   ];
   public calculateAge(dob: Moment) {
     const now = moment();

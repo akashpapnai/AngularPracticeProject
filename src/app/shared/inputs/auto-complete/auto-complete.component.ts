@@ -1,5 +1,5 @@
 import { AsyncPipe, CommonModule } from '@angular/common';
-import { Component, Input, Output, EventEmitter, forwardRef } from '@angular/core';
+import { Component, Input, Output, EventEmitter, forwardRef, ViewChild, ElementRef } from '@angular/core';
 import { FormControl, NG_VALUE_ACCESSOR, ReactiveFormsModule } from '@angular/forms';
 import { MatAutocomplete, MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatDatepickerModule } from '@angular/material/datepicker';
@@ -31,6 +31,9 @@ import { Observable } from 'rxjs';
   ],
 })
 export class AutoCompleteComponent {
+
+  @ViewChild('inputField') inputField!: ElementRef;
+
   @Input() autoCompleteOptions: Observable<string[]> = new Observable<string[]>;
   @Input() placeHolder: string = '';
   @Input() name: string = '';
@@ -43,6 +46,10 @@ export class AutoCompleteComponent {
 
   onChange: any = () => {};
   onTouched: any = () => {};
+
+  focusInput() {
+    this.inputField.nativeElement.focus();
+  }
 
   onInputChange(event: Event) {
     const input = event.target as HTMLInputElement;
