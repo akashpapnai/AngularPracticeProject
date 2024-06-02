@@ -45,6 +45,7 @@ export class NavbarComponent {
           error: () => {
             this.authenticationChecker = false;
             alert('You are not Authorized.');
+            window.localStorage.removeItem('token');
             this.router.navigate(['/login']);
           }
         })
@@ -52,6 +53,7 @@ export class NavbarComponent {
       else {
         this.authenticationChecker = false;
         alert('You are not Authorized.');
+        window.localStorage.removeItem('token');
         this.router.navigate(['/login']);
       }
     }
