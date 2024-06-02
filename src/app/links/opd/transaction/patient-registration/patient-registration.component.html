@@ -256,3 +256,5 @@
     </button>
   </div>
 </form>
+
+<app-registered-dialog *ngIf="patientRegistered" [ID]="submitClass.uhid" (close)="hideDialog()"></app-registered-dialog>

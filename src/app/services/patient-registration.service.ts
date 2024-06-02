@@ -66,11 +66,11 @@ export class PatientRegistrationService {
     }
     return states;
   }
-  public getUhid():Promise<string> {
+  public getUhid(): Promise<string> {
     const toSend = new Promise<string>(resolve => {
       if (typeof localStorage !== 'undefined') {
         const uhid = this.http.get<uhidResponse>(this.apiURL + '/Common/GetLatestUHID', { headers: this.token_header });
-  
+
         uhid.subscribe({
           next: (data) => {
             resolve(data.uhid);
@@ -84,8 +84,8 @@ export class PatientRegistrationService {
     return toSend;
   }
 
-  public stateSelected(countryId:string, stateId:string):any[] {
-    const cities:any[] = []
+  public stateSelected(countryId: string, stateId: string): any[] {
+    const cities: any[] = []
     if (typeof localStorage !== 'undefined') {
 
       const citiesList = this.http.get<citiesResponse>(this.lService.__apiURL__ + '/Common/GetCitiesByCountryAndState', {
@@ -106,22 +106,21 @@ export class PatientRegistrationService {
     }
     return cities;
   }
-  public registerPatient(register:any):Promise<void> {
-    return new Promise<void>(resolve => {
+  public registerPatient(register: any): Promise<any> {
+    return new Promise<any>(resolve => {
       const reg = this.http.post(this.apiURL + '/Common/RegisterPatient', register, { headers: this.token_header });
       reg.subscribe({
         next: (data) => {
           const obj = JSON.parse(JSON.stringify(data));
           if (obj.status) {
-            alert(obj.message);
-            window.location.reload();
+            resolve({ 'status': true, 'message': obj.message });
           }
           else {
-            alert(obj.message);
+            resolve({ 'status': false, 'message': obj.message });
           }
         },
         error: () => {
-          alert('Unable to Register Patient.');
+          resolve({ 'status': false, 'message': 'Unable to Register Patient.' });
         }
       });
     });

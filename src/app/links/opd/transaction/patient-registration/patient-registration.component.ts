@@ -15,6 +15,7 @@ import { DropDownComponent } from '../../../../shared/inputs/drop-down/drop-down
 import { PatientRegistrationService } from '../../../../services/patient-registration.service';
 import { TextFieldComponent } from '../../../../shared/inputs/text-field/text-field.component';
 import { DateComponent } from '../../../../shared/inputs/date/date.component';
+import { RegisteredDialogComponent } from './registered-dialog/registered-dialog.component';
 
 const moment = _rollupMoment || _moment;
 export const DATE_FORMATS = {
@@ -45,7 +46,8 @@ export const DATE_FORMATS = {
     MatProgressSpinnerModule,
     DropDownComponent,
     TextFieldComponent,
-    DateComponent
+    DateComponent,
+    RegisteredDialogComponent
   ], providers: [
     provideNativeDateAdapter(),
     provideMomentDateAdapter(DATE_FORMATS)
@@ -59,6 +61,7 @@ export class PatientRegistrationComponent implements OnInit {
   public cities: any[] = [];
   public religionList: any[] = this.constants.religionList;
   public formValues: any;
+  public patientRegistered = false;
 
   constructor(
     private constants: ConstantsService,
@@ -111,8 +114,13 @@ export class PatientRegistrationComponent implements OnInit {
         date: this.submitClass.date.value.format('DD-MMM-YYYY'),
         dOB: this.submitClass.dOB.value?.format('DD-MMM-YYYY')
       }
-      debugger;
-      await this.service.registerPatient(register);
+      const response = await this.service.registerPatient(register);
+      if(response.status) {
+        this.patientRegistered = true;
+      }
+      else {
+        alert(response.message);
+      }
       
       this.loading.submitting = false;
     }
@@ -135,6 +143,14 @@ export class PatientRegistrationComponent implements OnInit {
 
   public validate(): boolean {
     return true;
+  }
+
+  showDialog() {
+    this.patientRegistered = true;
+  }
+
+  hideDialog() {
+    this.patientRegistered = false;
   }
 }
 

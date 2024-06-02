@@ -16,6 +16,7 @@ import { Title } from '@angular/platform-browser';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner'
 import { OpdManagementService } from '../../../../services/opd-management.service';
+import { ActivatedRoute } from '@angular/router';
 
 const moment = _rollupMoment || _moment;
 export const DATE_FORMATS = {
@@ -78,6 +79,7 @@ export class OpdmanagementComponent {
   public religionList: any[];
   public paymentModes: any[];
   public managementClass = this.service.mClass;
+  public idFromUrl:string = '';
 
   uhidControl = new FormControl('');
   opidControl = new FormControl('');
@@ -86,7 +88,7 @@ export class OpdmanagementComponent {
   uhidfilteredOptions: Observable<string[]> = new Observable<string[]>;
   opidfilteredOptions: Observable<string[]> = new Observable<string[]>;
 
-  constructor(private constants: ConstantsService, private titleS: Title,private service: OpdManagementService) {
+  constructor(private constants: ConstantsService, private titleS: Title,private service: OpdManagementService,private router: ActivatedRoute) {
     this.countriesList = this.service.getCountries();
     this.statesList = [];
     this.citiesList = [];
@@ -109,18 +111,25 @@ export class OpdmanagementComponent {
   async ngOnInit() {
     this.titleS.setTitle('OPD Management');
 
-    this.uhidoptions = await this.service.getUhids('u');
+    this.router.paramMap.subscribe(async params => {
+      if (params.get('id') !== '') {
+        this.uhidControl = new FormControl(params.get('id'));
+      }
+      this.uhidoptions = await this.service.getUhids(this.uhidControl.value ?? '');
+  
+      this.uhidfilteredOptions = this.uhidControl.valueChanges.pipe(
+        startWith(this.uhidControl.value),
+        switchMap(value => from(this._uhidfilter(value || ''))),
+      );
+  
+      this.opidoptions = await this.service.getOpids('o');
+      this.opidfilteredOptions = this.opidControl.valueChanges.pipe(
+        startWith('o'),
+        switchMap(value => from(this._opidfilter(value || ''))),
+      );
+    });
 
-    this.uhidfilteredOptions = this.uhidControl.valueChanges.pipe(
-      startWith('u'),
-      switchMap(value => from(this._uhidfilter(value || ''))),
-    );
 
-    this.opidoptions = await this.service.getOpids('o');
-    this.opidfilteredOptions = this.opidControl.valueChanges.pipe(
-      startWith('u'),
-      switchMap(value => from(this._opidfilter(value || ''))),
-    );
   }
 
   public getConsultationCharge(): string {

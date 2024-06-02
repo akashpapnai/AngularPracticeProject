@@ -20,6 +20,7 @@ export const routes: Routes = [
     { path:'bloodbank',component: ModuleComponent,canActivate:[AuthGuard] },
     { path:'opd/patientregistration', component: PatientRegistrationComponent, canActivate:[AuthGuard] },
     { path:'opd/opdmanagement', component: OpdmanagementComponent, canActivate:[AuthGuard] },
+    { path:'opd/opdmanagement/:id', component: OpdmanagementComponent, canActivate:[AuthGuard] },
     { path:'opd/patientregistrationreport', component: PatientsRegisteredReportComponent, canActivate:[AuthGuard] },
     { path:'print', component: PrintComponent, canActivate: [AuthGuard] }
 ];

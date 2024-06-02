@@ -166,7 +166,7 @@ export class PatientsRegisteredReportComponent implements AfterViewInit,OnInit {
     localStorage.setItem('tableData', encodedData);
     // window.open('/print','_blank');
     
-    window.open('/print','_blank');
+    window.open(window.location.origin+'/print','_blank');
   }
 
   private transformedData(data: PatientsData[]) {
