@@ -17,36 +17,42 @@ import { LoginService } from '../../login.service';
 })
 export class NavbarComponent {
 
-  public url:string = getURL(this.router.url);
+  public url: string = getURL(this.router.url);
   public dockColor: string = this.constants.dockColor;
   public authenticationChecker: boolean | null = null;
-  
+
   constructor(
-    private router: Router, 
-    private aService: AuthService, 
-    private constants: ConstantsService, 
+    private router: Router,
+    private aService: AuthService,
+    private constants: ConstantsService,
     private http: HttpClient,
     private lService: LoginService
-  ) {}
+  ) { }
 
   ngOnInit() {
-    if(typeof localStorage != 'undefined') {
+    if (typeof localStorage != 'undefined') {
       const token = localStorage.getItem('token');
-      if(token !== null) {
-        const data =  this.http.get(this.lService.__apiURL__ + '/User/IsTokenValid',{params: {
-          token: String(token)
-        }});
+      if (token !== null) {
+        const data = this.http.get(this.lService.__apiURL__ + '/User/IsTokenValid', {
+          params: {
+            token: String(token)
+          }
+        });
         data.subscribe({
           next: () => {
             this.authenticationChecker = true;
           },
           error: () => {
             this.authenticationChecker = false;
+            alert('You are not Authorized.');
+            this.router.navigate(['/login']);
           }
         })
       }
       else {
         this.authenticationChecker = false;
+        alert('You are not Authorized.');
+        this.router.navigate(['/login']);
       }
     }
   }
@@ -54,24 +60,24 @@ export class NavbarComponent {
   public LoginClick() {
     this.router.navigate(['/login']);
   }
-  
+
   public LogOut() {
     const confirmation = confirm('Are you sure you want to Log Out?');
-    if(confirmation) {
+    if (confirmation) {
       localStorage.removeItem('token');
       this.router.navigate(['/']);
       window.location.reload();
     }
     else {
-      
+
     }
   }
-  
+
   public OpenProfile() {
     this.router.navigate(['/profile'])
   }
   values = { menuHidden: true }
-  
+
   public toggleMenu() {
     this.values.menuHidden = !this.values.menuHidden;
   }
@@ -86,12 +92,12 @@ export class NavbarComponent {
     throw new Error('Method not implemented.');
   }
   HomeClick() {
-    this.router.navigate(['/']);    
+    this.router.navigate(['/']);
   }
 }
-function getURL(url:string): string {
+function getURL(url: string): string {
   const curr_url = url.split('/')[1];
-  switch(curr_url) {
+  switch (curr_url) {
     case 'opd':
       return 'OPD';
     case 'ipd':
@@ -101,7 +107,7 @@ function getURL(url:string): string {
     case 'bloodbank':
       return 'Blood Bank';
     default:
-      return ''; 
+      return '';
   }
 }
 
