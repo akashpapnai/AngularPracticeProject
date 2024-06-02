@@ -8,6 +8,7 @@ import { Moment } from 'moment';
 export class ConstantsService {
   public letterHeadImgUrl: string = 'assets/images/letterHead/ambition_hospital.jpg';
   public dockColor: string = '#19212C'
+  public baseUrlForPrint = '/AngularPracticeProject/browser'
   public ModulesConstData: any[] = [
     { imageSource: 'assets/images/master.png', altText: 'Master Image', title: 'Master', description: 'Master Description', tags: [], clicked: '' },
     { imageSource: 'assets/images/transaction.png', altText: 'Transaction Image', title: 'Transaction', description: 'Transaction Description', tags: [], clicked: '' },

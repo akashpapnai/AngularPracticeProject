@@ -1,13 +1,13 @@
-import { AfterViewInit,ViewChild,Component, OnInit, HostListener } from '@angular/core';
+import { AfterViewInit, ViewChild, Component, OnInit, HostListener } from '@angular/core';
 import { NavbarComponent } from '../../../../shared/navbar/navbar.component';
-import {MatPaginator, MatPaginatorModule} from '@angular/material/paginator';
-import {MatTableDataSource, MatTableModule} from '@angular/material/table';
+import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
+import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { HttpClient, HttpHeaders, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { LoginService } from '../../../../login.service';
 import { Router } from '@angular/router';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import * as _moment from 'moment';
-import {default as _rollupMoment } from 'moment';
+import { default as _rollupMoment } from 'moment';
 import { provideNativeDateAdapter } from '@angular/material/core';
 import { provideMomentDateAdapter } from '@angular/material-moment-adapter';
 import { MatDatepickerModule } from '@angular/material/datepicker';
@@ -32,10 +32,11 @@ export const DATE_FORMATS = {
   }
 };
 
-@Component({ selector: 'app-patients-registered-report',
-    standalone: true,
-    templateUrl: './patients-registered-report.component.html',
-    styleUrl: './patients-registered-report.component.scss', imports: 
+@Component({
+  selector: 'app-patients-registered-report',
+  standalone: true,
+  templateUrl: './patients-registered-report.component.html',
+  styleUrl: './patients-registered-report.component.scss', imports:
     [
       NavbarComponent,
       MatTableModule,
@@ -47,13 +48,14 @@ export const DATE_FORMATS = {
       MatTooltipModule,
       CommonModule,
       SnackbarComponent
-      ], 
-      providers: [
-        provideNativeDateAdapter(),
-        provideMomentDateAdapter(DATE_FORMATS),
-        
-      ]})
-export class PatientsRegisteredReportComponent implements AfterViewInit,OnInit {
+    ],
+  providers: [
+    provideNativeDateAdapter(),
+    provideMomentDateAdapter(DATE_FORMATS),
+
+  ]
+})
+export class PatientsRegisteredReportComponent implements AfterViewInit, OnInit {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   public ELEMENT_DATA: PatientsData[] = [];
@@ -67,25 +69,25 @@ export class PatientsRegisteredReportComponent implements AfterViewInit,OnInit {
     'Authorization': 'Bearer ' + localStorage.getItem('token')
   });
 
-  displayedColumns: string[] = ['row','uhid','date', 'name', 'dOB', 'age','address'];
+  displayedColumns: string[] = ['row', 'uhid', 'date', 'name', 'dOB', 'age', 'address'];
 
   constructor(
     private lService: LoginService,
     private http: HttpClient,
     private router: Router,
     private constants: ConstantsService
-  ) {}
+  ) { }
 
   async ngOnInit(): Promise<void> {
 
-    const data = await this.http.get(this.lService.__apiURL__ + '/Common/getAllRegisteredPatients',{headers:this.token_header});
+    const data = await this.http.get(this.lService.__apiURL__ + '/Common/getAllRegisteredPatients', { headers: this.token_header });
     data.subscribe({
       next: (response) => {
         const obj = response as ResponseData;
         let row = 1;
         obj.table.forEach(x => {
           let eachData = x as PatientsData;
-          eachData = {...eachData,row:row};
+          eachData = { ...eachData, row: row };
           this.ELEMENT_DATA.push(eachData);
           row++;
         });
@@ -101,22 +103,24 @@ export class PatientsRegisteredReportComponent implements AfterViewInit,OnInit {
     this.dataSource.paginator = this.paginator;
   }
 
-  public async filterTable() : Promise<void | undefined> {
+  public async filterTable(): Promise<void | undefined> {
     this.snackBar.message = '';
     this.snackBar.show = false;
 
     // Validate
-    if(this.filter.fromDate.value === null || this.filter.toDate.value === null) {
+    if (this.filter.fromDate.value === null || this.filter.toDate.value === null) {
       alert('Please fill From and To Date');
       return;
     }
 
-    
-    const data = await this.http.get(this.lService.__apiURL__ + '/Common/getAllRegisteredPatients',{headers:this.token_header,params: {
-      'fromDate' : this.filter.fromDate.value?.format('DD-MMM-YYYY'),
-      'toDate' : this.filter.toDate.value?.format('DD-MMM-YYYY')
-    }});
-    
+
+    const data = await this.http.get(this.lService.__apiURL__ + '/Common/getAllRegisteredPatients', {
+      headers: this.token_header, params: {
+        'fromDate': this.filter.fromDate.value?.format('DD-MMM-YYYY'),
+        'toDate': this.filter.toDate.value?.format('DD-MMM-YYYY')
+      }
+    });
+
     data.subscribe({
       next: (response) => {
         this.ELEMENT_DATA = [];
@@ -124,12 +128,12 @@ export class PatientsRegisteredReportComponent implements AfterViewInit,OnInit {
         let row = 1;
         obj.table.forEach(x => {
           let eachData = x as PatientsData;
-          eachData = {...eachData,row:row};
+          eachData = { ...eachData, row: row };
           this.ELEMENT_DATA.push(eachData);
           row++;
         });
 
-        if(this.ELEMENT_DATA.length === 0) {
+        if (this.ELEMENT_DATA.length === 0) {
           this.snackBar.message = 'No Record Found';
           this.snackBar.show = true;
         }
@@ -146,7 +150,7 @@ export class PatientsRegisteredReportComponent implements AfterViewInit,OnInit {
     const headers = new HttpHeaders().set('Authorization', `Bearer ${localStorage.getItem('token')}`);
 
     const data = this.ELEMENT_DATA;
-    
+
     const modifiedData = this.transformedData(data);
 
     const tableData = await this.http.post<any>(this.lService.__apiURL__ + "/Common/getExcel", modifiedData, { headers, responseType: 'blob' as 'json' }).toPromise();
@@ -158,15 +162,15 @@ export class PatientsRegisteredReportComponent implements AfterViewInit,OnInit {
     a.click();
     document.body.removeChild(a);
     window.URL.revokeObjectURL(url);
-  
+
   }
   public async printTable() {
-    const data =  this.transformedData(this.ELEMENT_DATA);
+    const data = this.transformedData(this.ELEMENT_DATA);
     const encodedData = encodeURIComponent(JSON.stringify(data));
     localStorage.setItem('tableData', encodedData);
     // window.open('/print','_blank');
-    
-    window.open(window.location.origin+'/print','_blank');
+
+    window.open(this.constants.baseUrlForPrint + '/print', '_blank');
   }
 
   private transformedData(data: PatientsData[]) {
@@ -176,24 +180,24 @@ export class PatientsRegisteredReportComponent implements AfterViewInit,OnInit {
     data.forEach(row => {
       const tempData: { [key: string]: any } = {};
       const genericObj = JSON.parse(JSON.stringify(row));
-      
-      for(let key in row){
-        if(keysToDelete.includes(key)) {
+
+      for (let key in row) {
+        if (keysToDelete.includes(key)) {
           continue;
         }
         tempData[keyMappings[key]] = genericObj[key];
       }
 
-      let orderedKeys = ['S.R. No', 'UHID', 'Name','Date','Date Of Birth','Age','Address'];
+      let orderedKeys = ['S.R. No', 'UHID', 'Name', 'Date', 'Date Of Birth', 'Age', 'Address'];
 
       let orderedObject: any = {};
 
       orderedKeys.forEach(key => {
-          if (tempData.hasOwnProperty(key)) {
-              orderedObject[key] = tempData[key];
-          }
+        if (tempData.hasOwnProperty(key)) {
+          orderedObject[key] = tempData[key];
+        }
       });
-      
+
       modifiedData.push(orderedObject);
     });
 
@@ -208,7 +212,7 @@ export class PatientsRegisteredReportComponent implements AfterViewInit,OnInit {
 }
 
 export interface ResponseData {
-  table:object[];
+  table: object[];
 }
 
 const keyMappings: { [key: string]: string } = {
