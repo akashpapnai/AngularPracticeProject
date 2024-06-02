@@ -88,27 +88,13 @@
     </div>
     <!-- Marital Status -->
     <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0">
-      <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="mStatus">
-        Marital Status&nbsp;<span class="text-red-900">*</span>
-      </label>
-      <select [(ngModel)]="submitClass.maritalStatus"
-        class="appearance-none block w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-        name="maritalStatus" [required]="true">
-        <option value="" selected>--Select One--</option>
-        <option *ngFor="let m of formValues.mStatusList" [value]="m">{{m}}</option>
-      </select>
+      <app-drop-down [(ngModel)]="submitClass.maritalStatus" [value]="submitClass.maritalStatus" [list]="formValues.mStatusList"
+        [disabled]="false" [name]="'maritalStatus'" [title]="'Marital Status'" [required]="true"></app-drop-down>
     </div>
     <!-- Guardian -->
     <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0">
-      <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="guardian">
-        Guardian
-      </label>
-      <select [(ngModel)]="submitClass.guardian"
-        class="appearance-none block w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-        name="guardian">
-        <option value="" selected>--Select One--</option>
-        <option *ngFor="let g of formValues.guardianList" [value]="g">{{g}}</option>
-      </select>
+      <app-drop-down [(ngModel)]="submitClass.guardian" [value]="submitClass.guardian" [list]="formValues.guardianList"
+        [disabled]="false" [name]="'guardian'" [title]="'Guardian'" [required]="false"></app-drop-down>
     </div>
     <!-- Guardian Name -->
     <div [hidden]="submitClass.guardian === ''" class="w-full md:w-1/4 px-3 mb-6 md:mb-0">

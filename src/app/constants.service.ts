@@ -13,24 +13,24 @@ export class ConstantsService {
     { imageSource: 'assets/images/transaction.png', altText: 'Transaction Image', title: 'Transaction', description: 'Transaction Description', tags: [], clicked: '' },
     { imageSource: 'assets/images/report.png', altText: 'Report Image', title: 'Report', description: 'Report Description', tags: [], clicked: '' },
   ];
-  public guardiansList: string[] = [
-    'Daughter',
-    'Daughter-in-law',
-    'Father',
-    'Grand Father',
-    'Grand Mother',
-    'Husband',
-    'Wife',
-    'Mother',
-    'Son',
-    'Son-in-law',
-    'Other'
+  public guardiansList: any[] = [
+    {'key':'Daughter','value':'Daughter'},
+    {'key':'Daughter-in-law','value':'Daughter-in-law'},
+    {'key':'Father','value':'Father'},
+    {'key':'Grand Father','value':'Grand Father'},
+    {'key':'Grand Mother','value':'Grand Mother'},
+    {'key':'Husband','value':'Husband'},
+    {'key':'Wife','value':'Wife'},
+    {'key':'Mother','value':'Mother'},
+    {'key':'Son','value':'Son'},
+    {'key':'Son-in-law','value':'Son-in-law'},
+    {'key':'Other','value':'Other'}
   ];
-  public maritalStatusList: string[] = [
-    'Single',
-    'Married',
-    'Divorcee',
-    'Widow'
+  public maritalStatusList: any[] = [
+    {'key':'Single','value':'Single'},
+    {'key':'Married','value':'Married'},
+    {'key':'Divorcee','value':'Divorcee'},
+    {'key':'Widow','value':'Widow'}
   ];
   public bloodGroupList: string[] = [
     'A+',
