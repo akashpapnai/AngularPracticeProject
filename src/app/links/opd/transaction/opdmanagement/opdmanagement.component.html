@@ -18,7 +18,7 @@
     <!-- UHID -->
     <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col mt-1">
       <app-auto-complete [title]="'UHID'" [required]="true" [formControl]="uhidControl" [placeHolder]="'Enter UHID'"
-        [autoCompleteOptions]="uhidfilteredOptions" [name]="'uhid'" #uhid></app-auto-complete>
+        [autoCompleteOptions]="uhidfilteredOptions" [name]="'uhid'" #uhid (valueChanged)="onUhidChange($event)"></app-auto-complete>
     </div>
     <!-- OPID -->
     <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col mt-1">
@@ -63,19 +63,19 @@
     <!-- Country -->
     <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col mt-1">
       <app-drop-down [(ngModel)]="managementClass.countryId" [value]="managementClass.countryId" [list]="countriesList"
-        [disabled]="true" [name]="'countries'" [title]="'Country'" [required]="true"
+        [disabled]="false" [name]="'countries'" [title]="'Country'" [required]="true"
         (ngModelChange)="countryChanged($event)"></app-drop-down>
     </div>
     <!-- State -->
     <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col mt-1">
       <app-drop-down [(ngModel)]="managementClass.stateId" [value]="managementClass.stateId" [list]="statesList"
-        [disabled]="true" [name]="'states'" [title]="'State'" [required]="true"
+        [disabled]="false" [name]="'states'" [title]="'State'" [required]="true"
         (ngModelChange)="stateChanged($event)"></app-drop-down>
     </div>
     <!-- City -->
     <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col mt-1">
       <app-drop-down [(ngModel)]="managementClass.cityId" [value]="managementClass.cityId" [list]="citiesList"
-        [disabled]="true" [name]="'cities'" [title]="'City'" [required]="true"></app-drop-down>
+        [disabled]="false" [name]="'cities'" [title]="'City'" [required]="true"></app-drop-down>
     </div>
     <!-- Pin Code -->
     <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col mt-1">

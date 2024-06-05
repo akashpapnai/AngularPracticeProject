@@ -8,10 +8,10 @@
  class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" 
  [name]="name"
  type="text" 
- [required]="required"
- (input)="onInputChange($event)">
-<mat-autocomplete autoActiveFirstOption #matAutoComplete="matAutocomplete">
- <mat-option *ngFor="let option of autoCompleteOptions | async" [value]="option">
+ [required]="required">
+<mat-autocomplete (optionSelected)="onChanged($event)" (opened)="onAutoCompleteOpened()"
+(closed)="onAutoCompleteClosed()" autoActiveFirstOption #matAutoComplete="matAutocomplete">
+ <mat-option *ngFor="let option of autoCompleteOptions | async" [value]="option" (mousedown)="onAutoCompleteOpened()">
    {{ option }}
  </mat-option>
 </mat-autocomplete>

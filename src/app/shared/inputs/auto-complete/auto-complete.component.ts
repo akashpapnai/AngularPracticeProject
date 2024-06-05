@@ -1,7 +1,7 @@
 import { AsyncPipe, CommonModule } from '@angular/common';
 import { Component, Input, Output, EventEmitter, forwardRef, ViewChild, ElementRef } from '@angular/core';
 import { FormControl, NG_VALUE_ACCESSOR, ReactiveFormsModule } from '@angular/forms';
-import { MatAutocomplete, MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatAutocomplete, MatAutocompleteModule, MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -34,26 +34,44 @@ export class AutoCompleteComponent {
 
   @ViewChild('inputField') inputField!: ElementRef;
 
+  isAutoCompleteOpen = false;
+
   @Input() autoCompleteOptions: Observable<string[]> = new Observable<string[]>;
   @Input() placeHolder: string = '';
   @Input() name: string = '';
   @Input() required: boolean = false;
   @Input() title: string = '';
   @Input() disabled: boolean = false;
-  @Input() formControl: FormControl = new FormControl({value:'',disabled:this.disabled});
+  @Input() formControl: FormControl = new FormControl({ value: '', disabled: this.disabled });
 
   @Output() valueChanged = new EventEmitter<string>();
 
-  onChange: any = () => {};
-  onTouched: any = () => {};
+  onChange: any = () => { };
+  onTouched: any = () => { };
 
-  focusInput() {
-    this.inputField.nativeElement.focus();
+  onAutoCompleteOpened() {
+    this.isAutoCompleteOpen = true;
   }
 
-  onInputChange(event: Event) {
-    const input = event.target as HTMLInputElement;
-    this.valueChanged.emit(input.value);
+  onAutoCompleteClosed() {
+    this.isAutoCompleteOpen = false;
+  }
+
+  onBlurChanged(value: Event) {
+    if (!this.isAutoCompleteOpen) {
+      const val = value.target as HTMLInputElement;
+      this.valueChanged.emit(val.value);
+    }
+  }
+
+  public onChanged(event: MatAutocompleteSelectedEvent) {
+    const selectedUhid = event.option.value;
+    this.valueChanged.emit(selectedUhid);
+
+    this.isAutoCompleteOpen = false;
+  }
+  focusInput() {
+    this.inputField.nativeElement.focus();
   }
 
   writeValue(value: any): void {
