@@ -4,9 +4,14 @@ import { LoginService } from '../login.service';
 import { FormControl } from '@angular/forms';
 import { ConstantsService } from '../constants.service';
 import { UserData, citiesResponse, companyResponse, departmentResponse, statesResponse, unitsResponse } from '../links/opd/transaction/opdmanagement/interfaces';
-import { chiefComplainsResponse, disApprovedByResponse, doctorResponse, consultChargeResponse, patientDataResponse, uhidResponse,
+import {
+  chiefComplainsResponse, disApprovedByResponse, doctorResponse, consultChargeResponse, patientDataResponse, uhidResponse,
   opidResponse, countryResponse
- } from '../links/opd/transaction/opdmanagement/interfaces';
+} from '../links/opd/transaction/opdmanagement/interfaces';
+
+import { default as _rollupMoment } from 'moment';
+import * as _moment from 'moment';
+const moment = _rollupMoment || _moment;
 
 @Injectable({
   providedIn: 'root'
@@ -22,7 +27,8 @@ export class OpdManagementService {
     'Authorization': 'Bearer ' + localStorage.getItem('token')
   });
 
-  public fillData(user: UserData, managementClass: managementClass):any {
+  public fillData(user: UserData, managementClass: managementClass): any {
+    managementClass.date = new FormControl({ value: user.Date, disabled: true });
     managementClass.firstName = user.FirstName;
     managementClass.middleName = user.MiddleName;
     managementClass.lastName = user.LastName;
@@ -35,11 +41,11 @@ export class OpdManagementService {
     managementClass.email = user.Email;
     managementClass.religion = user.Religion;
 
-    return {'stateId': user.StateId, 'cityId': user.CityId}
+    return { 'age': this.constants.calculateAge(moment(user.DOB)) }
   }
 
   public async getRegisteredPatientData(selectedUhid: string): Promise<UserData> {
-    const data = await new Promise<any>((resolve,reject) => {
+    const data = await new Promise<any>((resolve, reject) => {
       let record = this.http.get<patientDataResponse>(this.apiUrl + '/Common/getPatientDataByUhid', {
         headers: this.token, params: {
           'uhid': selectedUhid
@@ -134,13 +140,13 @@ export class OpdManagementService {
     const stateData = new Promise<any[]>(resolve => {
       const stateList: any[] = [];
       if (typeof localStorage !== 'undefined') {
-  
+
         const statesList = this.http.get<statesResponse>(this.lService.__apiURL__ + '/Common/GetStatesByCountry', {
           headers: this.token, params: {
             'country': $event
           }
         });
-  
+
         statesList.subscribe({
           next: (data) => {
             const obj: any[] = data.allStates;
@@ -155,31 +161,30 @@ export class OpdManagementService {
     return stateData;
   }
 
-  public setCities(state: string, country: string): any[] {
-    const cities: any[] = [];
-    if (typeof localStorage !== 'undefined') {
-
-      const token_header = new HttpHeaders({
-        'Authorization': 'Bearer ' + localStorage.getItem('token')
-      });
-
-      const citiesList = this.http.get<citiesResponse>(this.lService.__apiURL__ + '/Common/GetCitiesByCountryAndState', {
-        headers: token_header, params: {
-          'country': country,
-          'state': state
-        }
-      });
-
-      citiesList.subscribe({
-        next: (data) => {
-          const obj: any[] = data.allCities;
-          for (let city of obj) {
-            cities.push({ key: city.id, value: city.name });
+  public setCities(state: string, country: string): Promise<any[]> {
+    const cityData = new Promise<any[]>(resolve => {
+      const cityList: any[] = [];
+      if (typeof localStorage !== 'undefined') {
+  
+        const citiesList = this.http.get<citiesResponse>(this.lService.__apiURL__ + '/Common/GetCitiesByCountryAndState', {
+          headers: this.token, params: {
+            'country': country,
+            'state': state
           }
-        }
-      });
-    }
-    return cities;
+        });
+  
+        citiesList.subscribe({
+          next: (data) => {
+            const obj: any[] = data.allCities;
+            for (let city of obj) {
+              cityList.push({ key: city.id, value: city.name });
+            }
+            resolve(cityList);
+          }
+        });
+      }
+    });
+    return cityData;
   }
 
   public getAllUnits(): any[] {

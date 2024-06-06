@@ -10,8 +10,8 @@
 
     <!-- Appointment -->
     <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col mt-1">
-      <app-text-field [(ngModel)]="managementClass.appointment" [value]="managementClass.appointment" [disabled]="true"
-        [name]="'Appointment'" [required]="true" [type]="'text'" [placeHolder]="'Appointment'"
+      <app-text-field [(ngModel)]="managementClass.appointment" [value]="managementClass.appointment" [disabled]="false"
+        [name]="'Appointment'" [required]="false" [type]="'text'" [placeHolder]="'Appointment'"
         [title]="'Appointment No'"></app-text-field>
     </div>
 
@@ -35,7 +35,7 @@
     <!-- Middle Name -->
     <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col mt-1">
       <app-text-field [(ngModel)]="managementClass.middleName" [value]="managementClass.middleName"
-        [name]="'middleName'" [required]="true" [type]="'text'" [placeHolder]="'Middle Name'" [title]="'Middle Name'"
+        [name]="'middleName'" [required]="false" [type]="'text'" [placeHolder]="'Middle Name'" [title]="'Middle Name'"
         [disabled]="true"></app-text-field>
     </div>
     <!-- Last Name -->
@@ -46,7 +46,7 @@
     </div>
     <!-- Age -->
     <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col mt-1">
-      <app-text-field [value]="age" [name]="'age'" [type]="'text'" [placeHolder]="'Age'" [title]="'Age'"
+      <app-text-field [(ngModel)]="age" [value]="age" [name]="'age'" [type]="'text'" [placeHolder]="'Age'" [title]="'Age'"
         [disabled]="true"></app-text-field>
     </div>
     <!-- Marital Status -->
@@ -63,7 +63,7 @@
     <!-- Country -->
     <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col mt-1">
       <app-drop-down [(ngModel)]="managementClass.countryId" [value]="managementClass.countryId" [list]="countriesList"
-        [disabled]="false" [name]="'countries'" [title]="'Country'" [required]="true"
+        [disabled]="true" [name]="'countries'" [title]="'Country'" [required]="true"
         (ngModelChange)="countryChanged($event)"></app-drop-down>
     </div>
     <!-- State -->
@@ -92,7 +92,7 @@
     <!-- Secondary Mobile -->
     <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col mt-1">
       <app-text-field [(ngModel)]="managementClass.secMobile" [value]="managementClass.secMobile" [name]="'secMobile'"
-        [required]="true" [type]="'text'" [placeHolder]="'Secondary Mobile Number'" [title]="'Secondary Mobile'"
+        [required]="false" [type]="'text'" [placeHolder]="'Secondary Mobile Number'" [title]="'Secondary Mobile'"
         [disabled]="true"></app-text-field>
     </div>
     <!-- Email -->

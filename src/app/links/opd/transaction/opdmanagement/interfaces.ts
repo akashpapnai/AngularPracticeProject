@@ -49,8 +49,8 @@ export interface UserData {
  CountryId: string;
  CreatedBy: Date;
  CreatedDate: Date;
- DOB: Date;
- Date: Date;
+ DOB: string;
+ Date: string;
  DocumentNumber: string;
  DocumentType: string;
  Email: string;

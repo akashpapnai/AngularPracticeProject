@@ -89,7 +89,7 @@ export class OpdmanagementComponent {
   uhidfilteredOptions: Observable<string[]> = new Observable<string[]>;
   opidfilteredOptions: Observable<string[]> = new Observable<string[]>;
 
-  constructor(private constants: ConstantsService, private titleS: Title, private service: OpdManagementService, private router: ActivatedRoute, private cdr: ChangeDetectorRef) {
+  constructor(private constants: ConstantsService, private titleS: Title, private service: OpdManagementService, private router: ActivatedRoute) {
     this.countriesList = this.service.getCountries();
     this.statesList = [];
     this.citiesList = [];
@@ -135,16 +135,16 @@ export class OpdmanagementComponent {
     const selectedUhid: string = event;
     const data = await this.service.getRegisteredPatientData(selectedUhid);
     const user = data as UserData;
-    await this.service.fillData(user, this.managementClass);
-    this.countryChanged(this.managementClass.countryId).then(() => {
-      debugger;
-      console.log(this.statesList);
-      this.managementClass.stateId = user.StateId;
-      this.stateChanged(this.managementClass.stateId).then(() => {
-        this.managementClass.cityId = user.CityId;
-      });
-    });
-    this.cdr.detectChanges();
+    const outReachData = this.service.fillData(user, this.managementClass);
+    this.age = outReachData.age;
+    await this.countryChanged(this.managementClass.countryId);
+
+    this.managementClass.stateId = user.StateId;
+
+    await this.stateChanged(this.managementClass.stateId);
+    this.managementClass.cityId = user.CityId;
+
+    console.log(this.managementClass);
   }
 
   public getConsultationCharge(): string {
@@ -175,21 +175,13 @@ export class OpdmanagementComponent {
 
 
   public async countryChanged($event: string): Promise<void> {
-    return new Promise<void>(async (resolve) => {
-      this.statesList = [];
-      this.citiesList = [];
-      const stateList = this.service.setStates($event);
-      this.statesList = await stateList;
-      resolve();
-    });
+    this.citiesList = [];
+    this.statesList = await this.service.setStates($event);
   }
-  public async stateChanged($event: string): Promise<void> {
-    return new Promise<void>((resolve) => {
+
+  public async stateChanged($event: string): Promise<void> {   
       this.citiesList = [];
-      const cityList = this.service.setCities($event, this.managementClass.countryId);
-      this.citiesList = cityList;
-      resolve();
-    });
+      this.citiesList = await this.service.setCities($event, this.managementClass.countryId);
   }
   public departmentChanged($event: any) {
     const getUnits = this.service.getAllUnits();
