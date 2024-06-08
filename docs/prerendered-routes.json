@@ -1,6 +1,8 @@
 {
   "routes": [
     "/",
+    "/admin",
+    "/admin/companymaster",
     "/bloodbank",
     "/homePage",
     "/hrandpayroll",

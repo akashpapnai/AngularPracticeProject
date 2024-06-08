@@ -2,7 +2,7 @@ import { AfterViewInit, ViewChild, Component, OnInit, HostListener } from '@angu
 import { NavbarComponent } from '../../../../shared/navbar/navbar.component';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
-import { HttpClient, HttpHeaders, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { LoginService } from '../../../../login.service';
 import { Router } from '@angular/router';
 import { MatFormFieldModule } from '@angular/material/form-field';

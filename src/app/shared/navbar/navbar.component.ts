@@ -109,6 +109,10 @@ function getURL(url: string): string {
     case 'bloodbank':
       return 'Blood Bank';
     default:
+      const splitted = curr_url.split(' ');
+      if(splitted.length == 1) {
+        return splitted[0].charAt(0).toUpperCase() + splitted[0].slice(1);
+      }
       return '';
   }
 }

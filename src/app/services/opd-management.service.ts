@@ -224,9 +224,9 @@ export class OpdManagementService {
 
       allCountries.subscribe({
         next: (data) => {
-          const obj: any[] = data.allCompanies;
-          for (let country of obj) {
-            companies.push({ key: country.iso2, value: country.name });
+          const companies: any[] = data.allCompanies;
+          for (let company of companies) {
+            companies.push({ key: company.key, value: company.value });
           }
         }
       });

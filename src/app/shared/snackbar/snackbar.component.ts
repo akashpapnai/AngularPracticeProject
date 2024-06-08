@@ -37,7 +37,6 @@ export class SnackbarComponent implements OnChanges, OnInit {
   }
 
   ngOnChanges() {
-    debugger;
     if(this.message.length > 0) {
       this.showSnackbar(this.message);
     }
