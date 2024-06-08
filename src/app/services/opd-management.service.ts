@@ -165,14 +165,14 @@ export class OpdManagementService {
     const cityData = new Promise<any[]>(resolve => {
       const cityList: any[] = [];
       if (typeof localStorage !== 'undefined') {
-  
+
         const citiesList = this.http.get<citiesResponse>(this.lService.__apiURL__ + '/Common/GetCitiesByCountryAndState', {
           headers: this.token, params: {
             'country': country,
             'state': state
           }
         });
-  
+
         citiesList.subscribe({
           next: (data) => {
             const obj: any[] = data.allCities;
@@ -372,36 +372,70 @@ export class OpdManagementService {
   }
 }
 
-class managementClass {
-  uhid = '';
-  date = new FormControl({ value: '', disabled: true });
-  appointment = '';
-  firstName = '';
-  middleName = '';
-  lastName = '';
-  mStatus = '';
-  countryId = '';
-  stateId = '';
-  cityId = '';
-  pinCode = '';
-  address = '';
-  mobile = '';
-  secMobile = '';
-  email = '';
-  company = '';
-  refLetterNo = '';
-  idCardNo = '';
-  department = '';
-  unit = '';
-  consultation = '';
-  consultationCharge = '';
-  doctor = '';
-  refBy = '';
-  discountAmt = '';
-  disApprovedBy = '';
-  chiefComplains = '';
-  paidAmount = '';
-  mlc = false;
-  religion = '';
-  paymentMode = 0
-};
+export class managementClass {
+  uhid: string;
+  date: FormControl;
+  appointment: string;
+  firstName: string;
+  middleName: string;
+  lastName: string;
+  mStatus: string;
+  countryId: string;
+  stateId: string;
+  cityId: string;
+  pinCode: string;
+  address: string;
+  mobile: string;
+  secMobile: string;
+  email: string;
+  company: string;
+  refLetterNo: string;
+  idCardNo: string;
+  department: string;
+  unit: string;
+  consultation: string;
+  consultationCharge: string;
+  doctor: string;
+  refBy: string;
+  discountAmt: string;
+  disApprovedBy: string;
+  chiefComplains: string;
+  paidAmount: string;
+  mlc: boolean;
+  religion: string;
+  paymentMode: number;
+
+  constructor() {
+    this.uhid = '';
+    this.date = new FormControl({ value: '', disabled: true });
+    this.appointment = '';
+    this.firstName = '';
+    this.middleName = '';
+    this.lastName = '';
+    this.mStatus = '';
+    this.countryId = '';
+    this.stateId = '';
+    this.cityId = '';
+    this.pinCode = '';
+    this.address = '';
+    this.mobile = '';
+    this.secMobile = '';
+    this.email = '';
+    this.company = '';
+    this.refLetterNo = '';
+    this.idCardNo = '';
+    this.department = '';
+    this.unit = '';
+    this.consultation = '';
+    this.consultationCharge = '';
+    this.doctor = '';
+    this.refBy = '';
+    this.discountAmt = '';
+    this.disApprovedBy = '';
+    this.chiefComplains = '';
+    this.paidAmount = '';
+    this.mlc = false;
+    this.religion = '';
+    this.paymentMode = 0;
+  }
+}

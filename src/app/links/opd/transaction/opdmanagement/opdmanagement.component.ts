@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectorRef, Component, ViewChild } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { NavbarComponent } from '../../../../shared/navbar/navbar.component';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import * as _moment from 'moment';
@@ -15,7 +15,7 @@ import { DropDownComponent } from '../../../../shared/inputs/drop-down/drop-down
 import { Title } from '@angular/platform-browser';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner'
-import { OpdManagementService } from '../../../../services/opd-management.service';
+import { OpdManagementService,managementClass } from '../../../../services/opd-management.service';
 import { ActivatedRoute } from '@angular/router';
 import { UserData } from './interfaces';
 
@@ -138,6 +138,7 @@ export class OpdmanagementComponent {
     const outReachData = this.service.fillData(user, this.managementClass);
     this.age = outReachData.age;
     await this.countryChanged(this.managementClass.countryId);
+    debugger;
 
     this.managementClass.stateId = user.StateId;
 
@@ -179,9 +180,9 @@ export class OpdmanagementComponent {
     this.statesList = await this.service.setStates($event);
   }
 
-  public async stateChanged($event: string): Promise<void> {   
-      this.citiesList = [];
-      this.citiesList = await this.service.setCities($event, this.managementClass.countryId);
+  public async stateChanged($event: string): Promise<void> {
+    this.citiesList = [];
+    this.citiesList = await this.service.setCities($event, this.managementClass.countryId);
   }
   public departmentChanged($event: any) {
     const getUnits = this.service.getAllUnits();
@@ -190,7 +191,27 @@ export class OpdmanagementComponent {
 
   public resetClick() {
     this.loading.resetting = true;
-    setTimeout(() => {
+    setTimeout(async () => {
+      this.managementClass = new managementClass();
+      this.managementClass.uhid = '';
+      this.uhidControl = new FormControl('');
+      
+      this.uhidoptions = await this.service.getUhids(this.uhidControl.value ?? '');
+
+      this.uhidfilteredOptions = this.uhidControl.valueChanges.pipe(
+        startWith(this.uhidControl.value),
+        switchMap(value => from(this._uhidfilter(value || ''))),
+      );
+
+      this.opidoptions = await this.service.getOpids('o');
+      this.opidfilteredOptions = this.opidControl.valueChanges.pipe(
+        startWith('o'),
+        switchMap(value => from(this._opidfilter(value || ''))),
+      );
+
+      this.opidControl = new FormControl('');
+      this.opidfilteredOptions = new Observable<[]>;
+
       this.loading.resetting = false;
     }, 500);
   }

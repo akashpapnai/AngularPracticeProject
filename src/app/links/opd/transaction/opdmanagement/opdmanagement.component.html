@@ -18,7 +18,8 @@
     <!-- UHID -->
     <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col mt-1">
       <app-auto-complete [title]="'UHID'" [required]="true" [formControl]="uhidControl" [placeHolder]="'Enter UHID'"
-        [autoCompleteOptions]="uhidfilteredOptions" [name]="'uhid'" #uhid (valueChanged)="onUhidChange($event)"></app-auto-complete>
+        [autoCompleteOptions]="uhidfilteredOptions" [name]="'uhid'" #uhid
+        (valueChanged)="onUhidChange($event)"></app-auto-complete>
     </div>
     <!-- OPID -->
     <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col mt-1">
@@ -46,8 +47,8 @@
     </div>
     <!-- Age -->
     <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col mt-1">
-      <app-text-field [(ngModel)]="age" [value]="age" [name]="'age'" [type]="'text'" [placeHolder]="'Age'" [title]="'Age'"
-        [disabled]="true"></app-text-field>
+      <app-text-field [(ngModel)]="age" [value]="age" [name]="'age'" [type]="'text'" [placeHolder]="'Age'"
+        [title]="'Age'" [disabled]="true"></app-text-field>
     </div>
     <!-- Marital Status -->
     <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col mt-1">
@@ -68,14 +69,30 @@
     </div>
     <!-- State -->
     <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col mt-1">
-      <app-drop-down [(ngModel)]="managementClass.stateId" [value]="managementClass.stateId" [list]="statesList"
-        [disabled]="false" [name]="'states'" [title]="'State'" [required]="true"
-        (ngModelChange)="stateChanged($event)"></app-drop-down>
+      <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" [htmlFor]="'states'">
+        {{'State'}}&nbsp;<span class="text-red-900">*</span>
+      </label>
+      <select
+        class="cursor-not-allowed appearance-none block w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+        [name]="'states'" [required]="true" [disabled]="true" [hidden]="false" [(ngModel)]="managementClass.stateId"
+        [value]="managementClass.stateId">
+        <option value="" selected>--Select One--</option>
+        <option *ngFor="let m of statesList" [value]="m.key">{{m.value}}</option>
+      </select>
     </div>
     <!-- City -->
     <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col mt-1">
-      <app-drop-down [(ngModel)]="managementClass.cityId" [value]="managementClass.cityId" [list]="citiesList"
-        [disabled]="false" [name]="'cities'" [title]="'City'" [required]="true"></app-drop-down>
+      <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" [htmlFor]="'cities'">
+        {{'City'}}&nbsp;<span class="text-red-900">*</span>
+      </label>
+      <select
+        class="cursor-not-allowed ppearance-none block w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+        [name]="'cities'" [required]="true" [disabled]="true" [hidden]="false" [(ngModel)]="managementClass.cityId"
+        [value]="managementClass.cityId">
+        <option value="" selected>--Select One--</option>
+        <option *ngFor="let m of citiesList" [value]="m.key">{{m.value}}</option>
+      </select>
+
     </div>
     <!-- Pin Code -->
     <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col mt-1">
@@ -191,11 +208,13 @@
   </div>
   <div class="flex flex-wrap -mx-3 mb-6">
     <!-- Payment Mode -->
-    <div *ngIf="convertToInt(managementClass.paidAmount) > 0" class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col mt-1">
+    <div *ngIf="convertToInt(managementClass.paidAmount) > 0"
+      class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col mt-1">
       <label for="paymentMode" class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">
         Payment Mode&nbsp;<span class="text-red-900">*</span>
       </label>
-      <mat-radio-group class="flex" aria-label="Select an option" [(ngModel)]="managementClass.paymentMode" [name]="'payMode'" [required]="convertToInt(managementClass.paidAmount) > 0">
+      <mat-radio-group class="flex" aria-label="Select an option" [(ngModel)]="managementClass.paymentMode"
+        [name]="'payMode'" [required]="convertToInt(managementClass.paidAmount) > 0">
         <div *ngFor="let paymentMode of paymentModes">
           <mat-radio-button [value]="paymentMode.key">{{paymentMode.value}}</mat-radio-button>
         </div>
@@ -205,13 +224,14 @@
   </div>
   <div class="items-end flex flex-wrap justify-end -mx-3 mb-2">
     <button [disabled]="loading.resetting || loading.submitting" mat-raised-button (click)="resetClick()"
-      type="button"
+      [ngClass]="{'cursor-not-allowed':(loading.resetting || loading.submitting)}" type="button"
       class="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-xs px-3 py-2 me-2 mb-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700 opacity-50 hover:opacity-100">
       <span *ngIf="!loading.resetting">Reset</span>
       <mat-spinner *ngIf="loading.resetting" [diameter]="16"></mat-spinner>
     </button>
     <button [disabled]="loading.resetting || loading.submitting" type="button"
-      class="cursor-pointer text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-xs px-3 py-2 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
+      [ngClass]="{'cursor-not-allowed':(loading.resetting || loading.submitting)}"
+      class="cursor-pointer text-white bg-gray-700 hover:bg-gray-800 focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-xs px-3 py-2 me-2 mb-2 dark:bg-gray-600 dark:hover:bg-gray-700 focus:outline-none dark:focus:ring-gray-800">
       <span *ngIf="!loading.submitting">Submit</span>
       <mat-spinner *ngIf="loading.submitting" [diameter]="16"></mat-spinner>
     </button>
