@@ -138,14 +138,11 @@ export class OpdmanagementComponent {
     const outReachData = this.service.fillData(user, this.managementClass);
     this.age = outReachData.age;
     await this.countryChanged(this.managementClass.countryId);
-    debugger;
 
     this.managementClass.stateId = user.StateId;
 
     await this.stateChanged(this.managementClass.stateId);
     this.managementClass.cityId = user.CityId;
-
-    console.log(this.managementClass);
   }
 
   public getConsultationCharge(): string {
