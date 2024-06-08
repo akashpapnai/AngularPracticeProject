@@ -11,7 +11,8 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { CommonModule } from '@angular/common';
 import { SnackbarComponent } from '../../../../shared/snackbar/snackbar.component';
 import { TextFieldComponent } from '../../../../shared/inputs/text-field/text-field.component';
-import { CompanyMasterService } from '../../../../services/company-master.service';
+import { CompanyMasterService, AddCompanyModel, CompaniesData } from '../../../../services/company-master.service';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-company-master',
@@ -28,7 +29,8 @@ import { CompanyMasterService } from '../../../../services/company-master.servic
     CommonModule,
     SnackbarComponent,
     FormsModule,
-    TextFieldComponent
+    TextFieldComponent,
+    MatProgressSpinnerModule
   ],
   templateUrl: './company-master.component.html',
   styleUrl: './company-master.component.scss'
@@ -44,21 +46,43 @@ export class CompanyMasterComponent implements OnInit {
   }
   public showCompanies: boolean = true;
   public addingCompany: boolean = false;
-  public displayedColumns: string[] = ['CompanyId', 'CompanyName', 'CreatedBy'];
+  public displayedColumns: string[] = ['row', 'companyName', 'createdBy'];
   public companyName: string = '';
-
-  constructor(private title: Title, private service: CompanyMasterService) { }
-  ngOnInit(): void {
-    this.title.setTitle('Company Master');
+  public loading = {
+    resetting: false,
+    submitting: false
   }
 
-  public addCompany(form: NgForm) {
-    if(form.valid) {
-      this.service.addCompany(form.value);
+  constructor(private title: Title, private service: CompanyMasterService) { }
+  async ngOnInit(): Promise<void> {
+    this.title.setTitle('Company Master');
+
+    const tableData = await this.service.getAllCompanies();
+    let rn = 1;
+    tableData.forEach(x => {
+      this.ELEMENT_DATA.push({ ...x, row: rn });
+      rn++;
+    });
+    this.dataSource = new MatTableDataSource<CompaniesData>(this.ELEMENT_DATA);
+  }
+
+  public async addCompany(form: NgForm) {
+    this.loading.submitting = true;
+    if (form.valid) {
+      const data: AddCompanyModel = {
+        Token: localStorage.getItem('token'),
+        CompanyName: form.value.CompanyName
+      }
+      const status = await this.service.addCompany(data);
+      alert(status.message);
+      if (status.status === 1) {
+        window.location.reload();
+      }
     }
     else {
       alert('Enter full details');
     }
+    this.loading.submitting = false;
   }
 
   public companiesList() {
@@ -70,11 +94,4 @@ export class CompanyMasterComponent implements OnInit {
     this.addingCompany = true;
   }
 
-}
-
-export interface CompaniesData {
-  CompanyId: number;
-  CompanyName: number,
-  isActive: string;
-  CreatedBy: string;
 }
