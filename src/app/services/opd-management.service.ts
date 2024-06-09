@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { LoginService } from '../login.service';
 import { FormControl } from '@angular/forms';
 import { ConstantsService } from '../constants.service';
-import { UserData, citiesResponse, companyResponse, departmentResponse, statesResponse, unitsResponse } from '../links/opd/transaction/opdmanagement/interfaces';
+import { UserData, citiesResponse, companyResponse, departmentResponse, statesResponse, unitsResponse, bankResponse } from '../links/opd/transaction/opdmanagement/interfaces';
 import {
   chiefComplainsResponse, disApprovedByResponse, doctorResponse, consultChargeResponse, patientDataResponse, uhidResponse,
   opidResponse, countryResponse
@@ -136,6 +136,52 @@ export class OpdManagementService {
     return countries;
   }
 
+  public getCompanies(): any[] {
+    const companies: any[] = []
+    if (typeof localStorage !== 'undefined') {
+
+      const token_header = new HttpHeaders({
+        'Authorization': 'Bearer ' + localStorage.getItem('token')
+      });
+
+      const allCompanies = this.http.get<companyResponse>(this.lService.__apiURL__ + "/Common/getAllCompanies", { headers: token_header });
+
+      allCompanies.subscribe({
+        next: (data) => {
+          const companiesData: any[] = data.allCompanies;
+          companiesData.forEach(company => {
+            companies.push({ key: company.key, value: company.value });
+          })
+        }
+      });
+    }
+    return companies;
+  }
+
+  public getBanks(): string[] {
+    const banks: any[] = []
+    if (typeof localStorage !== 'undefined') {
+
+      const token_header = new HttpHeaders({
+        'Authorization': 'Bearer ' + localStorage.getItem('token'),
+        'Content-Type': 'application/json'
+      });
+
+      const allBanks = this.http.get<bankResponse>(this.lService.__apiURL__ + "/Bank/getAllBanks", { headers: token_header });
+
+      allBanks.subscribe({
+        next: (data) => {
+          debugger;
+          const banksData: any[] = data.allBanks;
+          banksData.forEach(bank => {
+            banks.push({ key: bank.key, value: bank.value });
+          })
+        }
+      });
+    }
+    return banks;
+  }
+
   public async setStates($event: string) {
     const stateData = new Promise<any[]>(resolve => {
       const stateList: any[] = [];
@@ -212,30 +258,16 @@ export class OpdManagementService {
     }
     return units;
   }
-  public getCompanies(): any[] {
-    const companies: any[] = []
-    if (typeof localStorage !== 'undefined') {
-
-      const token_header = new HttpHeaders({
-        'Authorization': 'Bearer ' + localStorage.getItem('token')
-      });
-
-      const allCountries = this.http.get<companyResponse>(this.lService.__apiURL__ + "/Common/getAllCompanies", { headers: token_header });
-
-      allCountries.subscribe({
-        next: (data) => {
-          debugger;
-          const companiesData: any[] = data.allCompanies;
-          companiesData.forEach(company => {
-            companies.push({ key: company.key, value: company.value });
-          })
-        }
-      });
-    }
-    return companies;
-  }
   public getMStatusList(): any[] {
     const list = this.constants.maritalStatusList;
+    const retList: any[] = [];
+    list.forEach(l => {
+      retList.push(l);
+    });
+    return retList;
+  }
+  public paymentTypeList(): any[] {
+    const list = this.constants.paymentTypeList;
     const retList: any[] = [];
     list.forEach(l => {
       retList.push(l);
@@ -405,6 +437,14 @@ export class managementClass {
   mlc: boolean;
   religion: string;
   paymentMode: number;
+  bankName: string;
+  chequeDate: FormControl;
+  chequeNo: string;
+  chequeAmount: string;
+  paymentType: string;
+  referenceNo: string;
+  cardNo: string;
+  UPIID: string;
 
   constructor() {
     this.uhid = '';
@@ -434,9 +474,17 @@ export class managementClass {
     this.discountAmt = '';
     this.disApprovedBy = '';
     this.chiefComplains = '';
-    this.paidAmount = '';
+    this.paidAmount = '0';
     this.mlc = false;
     this.religion = '';
     this.paymentMode = 0;
+    this.bankName = '';
+    this.chequeDate = new FormControl('');
+    this.chequeNo = '';
+    this.chequeAmount = '0';
+    this.paymentType = '';
+    this.referenceNo = '';
+    this.cardNo = '';
+    this.UPIID = '';
   }
 }

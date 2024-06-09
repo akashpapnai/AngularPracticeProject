@@ -33,6 +33,15 @@ export class ConstantsService {
     {'key':'Divorcee','value':'Divorcee'},
     {'key':'Widow','value':'Widow'}
   ];
+  public paymentTypeList: any[] = [
+    {'key':'Bank Transfer','value':'Bank Transfer'},
+    {'key':'Credit Card','value':'Credit Card'},
+    {'key':'Debit Card','value':'Debit Card'},
+    {'key':'IMPS','value':'IMPS'},
+    {'key':'NEFT','value':'NEFT'},
+    {'key':'RTGS','value':'RTGS'},
+    {'key':'UPI','value':'UPI'}
+  ];
   public bloodGroupList: string[] = [
     'A+',
     'A-',

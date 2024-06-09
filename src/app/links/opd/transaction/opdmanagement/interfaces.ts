@@ -23,6 +23,11 @@ export interface unitsResponse {
 export interface companyResponse {
  allCompanies: any[]
 }
+
+export interface bankResponse {
+ allBanks: any[]
+}
+
 export interface departmentResponse {
  allDepartments: any[]
 }

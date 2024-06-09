@@ -15,7 +15,7 @@ import { DropDownComponent } from '../../../../shared/inputs/drop-down/drop-down
 import { Title } from '@angular/platform-browser';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner'
-import { OpdManagementService,managementClass } from '../../../../services/opd-management.service';
+import { OpdManagementService, managementClass } from '../../../../services/opd-management.service';
 import { ActivatedRoute } from '@angular/router';
 import { UserData } from './interfaces';
 
@@ -66,9 +66,11 @@ export class OpdmanagementComponent {
 
   public age: string = '';
   public mStatusList: any[] = this.service.getMStatusList();
+  public paymentTypeList: any[] = this.service.paymentTypeList();
   public countriesList: any[];
   public statesList: any[];
   public citiesList: any[];
+  public bankNamesList: any[];
   public companiesList: any[];
   public departmentList: any[];
   public unitList: any[];
@@ -94,6 +96,7 @@ export class OpdmanagementComponent {
     this.statesList = [];
     this.citiesList = [];
     this.companiesList = this.service.getCompanies();
+    this.bankNamesList = this.service.getBanks();
     this.departmentList = this.service.getdepartmentList();
     this.unitList = [];
     this.consultationList = this.constants.consultationList;
@@ -185,6 +188,30 @@ export class OpdmanagementComponent {
     const getUnits = this.service.getAllUnits();
     this.unitList = getUnits;
   }
+  public paidAmountChanged() {
+    this.managementClass.paymentMode = 0;
+    this.paymentValuesReset();
+  }
+
+  public paymentModeChanged() {
+    this.paymentValuesReset();
+  }
+  public paymentTypeChanged() {
+    this.managementClass.cardNo = '';
+    this.managementClass.UPIID = '';
+    this.managementClass.bankName = '';
+  }
+
+  private paymentValuesReset() {
+    this.managementClass.bankName = '';
+    this.managementClass.chequeDate = new FormControl('');
+    this.managementClass.chequeNo = '';
+    this.managementClass.chequeAmount = '0';
+    this.managementClass.paymentType = '';
+    this.managementClass.cardNo = '';
+    this.managementClass.UPIID = '';
+    this.managementClass.referenceNo = '';
+  }
 
   public resetClick() {
     this.loading.resetting = true;
@@ -192,7 +219,7 @@ export class OpdmanagementComponent {
       this.managementClass = new managementClass();
       this.managementClass.uhid = '';
       this.uhidControl = new FormControl('');
-      
+
       this.uhidoptions = await this.service.getUhids(this.uhidControl.value ?? '');
 
       this.uhidfilteredOptions = this.uhidControl.valueChanges.pipe(

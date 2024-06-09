@@ -186,11 +186,11 @@
         [list]="chiefComplainsList" [name]="'chiefComplains'" [title]="'Chief Complains'" [disabled]="false"
         [required]="true"></app-drop-down>
     </div>
-    <!-- Paid AMount -->
+    <!-- Paid Amount -->
     <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col mt-1">
       <app-text-field [(ngModel)]="managementClass.paidAmount" [value]="managementClass.paidAmount"
         [name]="'paidAmount'" [required]="false" [type]="'number'" [placeHolder]="'Paid Amount'" [title]="'Paid Amount'"
-        [disabled]="false"></app-text-field>
+        [disabled]="false" (ngModelChange)="paidAmountChanged()"></app-text-field>
     </div>
     <!-- MLC -->
     <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col mt-1">
@@ -213,15 +213,74 @@
       <label for="paymentMode" class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">
         Payment Mode&nbsp;<span class="text-red-900">*</span>
       </label>
-      <mat-radio-group class="flex" aria-label="Select an option" [(ngModel)]="managementClass.paymentMode"
+      <mat-radio-group (change)="paymentModeChanged()" class="flex" aria-label="Select an option" [(ngModel)]="managementClass.paymentMode"
         [name]="'payMode'" [required]="convertToInt(managementClass.paidAmount) > 0">
         <div *ngFor="let paymentMode of paymentModes">
           <mat-radio-button [value]="paymentMode.key">{{paymentMode.value}}</mat-radio-button>
         </div>
       </mat-radio-group>
     </div>
-    <!-- Submit Reset -->
   </div>
+  <div class="flex flex-wrap -mx-3 mb-6">
+    @if(managementClass.paymentMode == 2) { <!-- Cheque -->
+    <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col mt-1">
+      <app-drop-down [(ngModel)]="managementClass.bankName" [value]="managementClass.bankName" [list]="bankNamesList"
+        [name]="'bankName'" [title]="'Bank Name'" [disabled]="false"
+        [required]="managementClass.paymentMode == 2"></app-drop-down>
+    </div>
+    <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 mt-1">
+      <app-date [value]="managementClass.chequeDate" [title]="'Cheque Date'" [name]="'chequedate'"
+        [placeHolder]="'DD-MMM-YYYY'" [required]="managementClass.paymentMode == 2"></app-date>
+    </div>
+    <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col mt-1">
+      <app-text-field [(ngModel)]="managementClass.chequeNo" [value]="managementClass.chequeNo" [name]="'chequeNo'"
+        [required]="managementClass.paymentMode == 2" [type]="'text'" [placeHolder]="'Cheque Number'"
+        [title]="'Cheque No.'" [disabled]="false"></app-text-field>
+    </div>
+    <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col mt-1">
+      <app-text-field [(ngModel)]="managementClass.chequeAmount" [value]="managementClass.chequeAmount"
+        [name]="'chequeAmount'" [required]="managementClass.paymentMode == 2" [type]="'number'"
+        [placeHolder]="'Cheque Amount'" [title]="'Cheque Amount'" [disabled]="false"></app-text-field>
+    </div>
+    }
+    @else if(managementClass.paymentMode == 3) {
+    <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col mt-1">
+      <app-drop-down [(ngModel)]="managementClass.paymentType" [value]="managementClass.paymentType"
+        [list]="paymentTypeList" [name]="'paymentType'" [title]="'Payment Type'" [disabled]="false"
+        [required]="managementClass.paymentMode == 3" (ngModelChange)="paymentTypeChanged()"></app-drop-down>
+    </div>
+    }
+  </div>
+  <div class="flex flex-wrap -mx-3 mb-6">
+    <div *ngIf="managementClass.paymentType !== '' && managementClass.paymentType !== 'UPI'"
+      class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col mt-1">
+      <app-text-field [(ngModel)]="managementClass.cardNo" [value]="managementClass.cardNo" [name]="'cardNo'"
+        [required]="managementClass.paymentType !== ''" [type]="'nmmber'" [placeHolder]="'Card Number'"
+        [title]="'Card No.'" [disabled]="false"></app-text-field>
+    </div>
+
+    <div *ngIf="managementClass.paymentType !== '' && managementClass.paymentType !== 'UPI'"
+      class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col mt-1">
+      <app-drop-down [(ngModel)]="managementClass.bankName" [value]="managementClass.bankName" [list]="bankNamesList"
+        [name]="'bankName'" [title]="'Bank Name'" [disabled]="false"
+        [required]="managementClass.paymentType !== ''"></app-drop-down>
+    </div>
+
+    <div *ngIf="managementClass.paymentType === 'UPI'" class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col mt-1">
+      <app-text-field [(ngModel)]="managementClass.UPIID" [value]="managementClass.UPIID" [name]="'UPIID'"
+        [required]="managementClass.paymentType === 'UPI'" [type]="'text'" [placeHolder]="'UPI ID'" [title]="'UPI Id'"
+        [disabled]="false"></app-text-field>
+    </div>
+
+    <div *ngIf="managementClass.paymentType !== ''" class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col mt-1">
+      <app-text-field [(ngModel)]="managementClass.referenceNo" [value]="managementClass.referenceNo"
+        [name]="'referenceNo'" [required]="managementClass.paymentType !== ''" [type]="'text'"
+        [placeHolder]="'Reference Number'" [title]="'Reference No.'" [disabled]="false"></app-text-field>
+    </div>
+
+
+  </div>
+  <!-- Submit Reset -->
   <div class="items-end flex flex-wrap justify-end -mx-3 mb-2">
     <button [disabled]="loading.resetting || loading.submitting" mat-raised-button (click)="resetClick()"
       [ngClass]="{'cursor-not-allowed':(loading.resetting || loading.submitting)}" type="button"
