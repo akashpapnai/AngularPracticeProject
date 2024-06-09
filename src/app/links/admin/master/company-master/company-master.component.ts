@@ -13,6 +13,7 @@ import { SnackbarComponent } from '../../../../shared/snackbar/snackbar.componen
 import { TextFieldComponent } from '../../../../shared/inputs/text-field/text-field.component';
 import { CompanyMasterService, AddCompanyModel, CompaniesData } from '../../../../services/company-master.service';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { DialogBoxComponent } from './dialog-box/dialog-box.component';
 
 @Component({
   selector: 'app-company-master',
@@ -30,7 +31,8 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
     SnackbarComponent,
     FormsModule,
     TextFieldComponent,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    DialogBoxComponent
   ],
   templateUrl: './company-master.component.html',
   styleUrl: './company-master.component.scss'
@@ -46,12 +48,15 @@ export class CompanyMasterComponent implements OnInit {
   }
   public showCompanies: boolean = true;
   public addingCompany: boolean = false;
-  public displayedColumns: string[] = ['row', 'companyName', 'createdBy'];
+  public displayedColumns: string[] = ['row', 'companyName', 'createdBy', 'actions'];
   public companyName: string = '';
   public loading = {
     resetting: false,
     submitting: false
   }
+  public openDialog:boolean = false;
+  public action:string = '';
+  public changeCompanyId:number = 0;
 
   constructor(private title: Title, private service: CompanyMasterService) { }
   async ngOnInit(): Promise<void> {
@@ -85,6 +90,17 @@ export class CompanyMasterComponent implements OnInit {
     this.loading.submitting = false;
   }
 
+  public companyDelete(companyId: number) {
+    this.changeCompanyId = companyId;
+    this.action = 'Delete'
+    this.openDialog = true;
+  }
+  public companyEdit(companyId: number) {
+    this.changeCompanyId = companyId;
+    this.action = 'Edit'
+    this.openDialog = true;
+  }
+
   public companiesList() {
     this.showCompanies = !this.showCompanies;
     this.addingCompany = false;
@@ -92,6 +108,10 @@ export class CompanyMasterComponent implements OnInit {
   public formToAddNewCompany() {
     this.showCompanies = !this.showCompanies;
     this.addingCompany = true;
+  }
+  public hideDialog() {
+    this.openDialog = false;
+    this.changeCompanyId = 0;
   }
 
 }

@@ -224,10 +224,11 @@ export class OpdManagementService {
 
       allCountries.subscribe({
         next: (data) => {
-          const companies: any[] = data.allCompanies;
-          for (let company of companies) {
+          debugger;
+          const companiesData: any[] = data.allCompanies;
+          companiesData.forEach(company => {
             companies.push({ key: company.key, value: company.value });
-          }
+          })
         }
       });
     }
