@@ -2,6 +2,7 @@
   "routes": [
     "/",
     "/admin",
+    "/admin/bankmaster",
     "/admin/companymaster",
     "/bloodbank",
     "/homePage",
