@@ -11,13 +11,14 @@ import {
 
 import { default as _rollupMoment } from 'moment';
 import * as _moment from 'moment';
+import { DoctorMasterService } from './doctor-master.service';
 const moment = _rollupMoment || _moment;
 
 @Injectable({
   providedIn: 'root'
 })
 export class OpdManagementService {
-  constructor(private http: HttpClient, private lService: LoginService, private constants: ConstantsService) { }
+  constructor(private http: HttpClient, private lService: LoginService, private constants: ConstantsService, private docService: DoctorMasterService) { }
 
   private apiUrl = this.lService.__apiURL__;
 
@@ -171,10 +172,9 @@ export class OpdManagementService {
 
       allBanks.subscribe({
         next: (data) => {
-          debugger;
           const banksData: any[] = data.allBanks;
           banksData.forEach(bank => {
-            banks.push({ key: bank.key, value: bank.value });
+            banks.push({ key: bank.bankId, value: bank.bankName });
           })
         }
       });
@@ -315,26 +315,25 @@ export class OpdManagementService {
     return String(0);
   }
   public getDoctors(): any[] {
-    const allDoctors: any[] = [];
-    const token_header = new HttpHeaders({
-      'Authorization': 'Bearer ' + localStorage.getItem('token')
-    });
+    const doctors: any[] = []
+    if (typeof localStorage !== 'undefined') {
 
-    const doctors = this.http.get<doctorResponse>(this.lService.__apiURL__ + '/Common/getAllDoctors', {
-      headers: token_header, params: {
-        'docId': this.mClass.department
-      }
-    });
+      const token_header = new HttpHeaders({
+        'Authorization': 'Bearer ' + localStorage.getItem('token')
+      });
 
-    doctors.subscribe({
-      next: (data) => {
-        const obj: any[] = data.allDoctors;
-        for (let doctor of obj) {
-          allDoctors.push({ key: doctor.id, value: doctor.name });
+      const allDoctors = this.http.get<doctorResponse>(this.lService.__apiURL__ + "/Doctor/GetAllDoctors", { headers: token_header });
+
+      allDoctors.subscribe({
+        next: (data) => {
+          const doctorsData: any[] = data.allDoctors;
+          doctorsData.forEach(doctor => {
+            doctors.push({ key: doctor.doctorId, value: doctor.doctorName });
+          })
         }
-      }
-    })
-    return allDoctors;
+      });
+    }
+    return doctors;
   }
   public getReferredDoctors(): any[] {
     const allDoctors: any[] = [];

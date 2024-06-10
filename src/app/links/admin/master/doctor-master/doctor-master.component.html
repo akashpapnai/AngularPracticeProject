@@ -1,0 +1,77 @@
+<app-navbar></app-navbar>
+
+<div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 mt-4">
+  <div class="w-full md:w-1/5 px-3 mb-6 md:mb-0">
+    <div class="items-start flex flex-wrap justify-start -mx-3 mb-2">
+      <button (click)="doctorsList()" *ngIf="!showDoctors" matTooltip="All Existing Doctors List"
+        mat-raised-button type="button"
+        class="cursor-pointer text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-xs px-3 py-2 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
+        All Companies
+      </button>
+
+      <button (click)="formToAddNewDoctor()" *ngIf="showDoctors" matTooltip="Add New Doctor" mat-raised-button
+        type="button"
+        class="cursor-pointer text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-xs px-3 py-2 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
+        Add Doctor
+      </button>
+    </div>
+  </div>
+</div>
+<div class="table-container ms-4 me-4 mb-0">
+  <div class="w-full px-3 mb-6 md:mb-0">
+    @if(addingDoctor === false) {
+    @if(ELEMENT_DATA.length > 0) {
+    <div class="mat-elevation-z8 mt-4">
+      <table mat-table [dataSource]="dataSource">
+
+        <ng-container matColumnDef="row">
+          <th mat-header-cell *matHeaderCellDef> S.R. No </th>
+          <td mat-cell *matCellDef="let element"> {{element.row}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="doctorName">
+          <th mat-header-cell *matHeaderCellDef> Doctor Name </th>
+          <td mat-cell *matCellDef="let element"> {{element.doctorName}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="createdBy">
+          <th mat-header-cell *matHeaderCellDef> Created By </th>
+          <td mat-cell *matCellDef="let element"> {{element.createdBy}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef> Actions </th>
+          <td mat-cell *matCellDef="let element"> <a (click)="doctorEdit(element.doctorId)"
+              class="hover:text-blue-600 cursor-pointer">Edit</a>&nbsp;
+            <a (click)="doctorDelete(element.doctorId)" class="hover:text-blue-600 cursor-pointer">Delete</a>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+
+      <mat-paginator [pageSizeOptions]="[5, 10, 20] " showFirstLastButtons aria-label="Select page of Companies">
+      </mat-paginator>
+    </div>
+    }
+    }
+    @else {
+    <form #myForm="ngForm" class="mt-4 w-full max-w-7xl mx-auto">
+      <div class="flex flex-wrap -mx-3 mb-6">
+        <div class="w-full md:w-full px-3 mb-6 md:mb-0 mt-1">
+          <app-text-field [(ngModel)]="doctorName" [value]="doctorName" [disabled]="false" [name]="'DoctorName'"
+            [required]="true" [type]="'text'" [placeHolder]="'Doctor Name'" [title]="'Doctor Name'"></app-text-field>
+        </div>
+      </div>
+      <button [disabled]="loading.resetting || loading.submitting" (click)="addDoctor(myForm)"
+        matTooltip="Add New Doctor" mat-raised-button type="button"
+        class="cursor-pointer text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-xs px-3 py-2 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
+        <span *ngIf="!loading.submitting">Add Doctor</span>
+        <mat-spinner *ngIf="loading.submitting" [diameter]="16"></mat-spinner>
+      </button>
+    </form>
+    }
+  </div>
+  <app-snackbar [message]="snackBar.message" [show]="snackBar.show"></app-snackbar>
+  <app-doctor-master-dialog-box *ngIf="openDialog" [DoctorId]="changeDoctorId" [Action]="action" (close)="hideDialog()"></app-doctor-master-dialog-box>

@@ -11,12 +11,12 @@ import { CommonModule } from '@angular/common';
 import { SnackbarComponent } from '../../../../shared/snackbar/snackbar.component';
 import { TextFieldComponent } from '../../../../shared/inputs/text-field/text-field.component';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { BankMasterDialogBoxComponent } from './bank-master-dialog-box/bank-master-dialog-box.component';
-import { BankMasterService, Bank, AddBankModel } from '../../../../services/bank-master.service';
+import { AddDoctorModel, Doctor, DoctorMasterService } from '../../../../services/doctor-master.service';
 import { Title } from '@angular/platform-browser';
+import { DoctorMasterDialogBoxComponent } from './doctor-master-dialog-box/doctor-master-dialog-box.component';
 
 @Component({
-  selector: 'app-bank-master',
+  selector: 'app-doctor-master',
   standalone: true,
   imports: [
     NavbarComponent,
@@ -32,55 +32,55 @@ import { Title } from '@angular/platform-browser';
     FormsModule,
     TextFieldComponent,
     MatProgressSpinnerModule,
-    BankMasterDialogBoxComponent
+    DoctorMasterDialogBoxComponent
   ],
-  templateUrl: './bank-master.component.html',
-  styleUrl: './bank-master.component.scss'
+  templateUrl: './doctor-master.component.html',
+  styleUrl: './doctor-master.component.scss'
 })
-export class BankMasterComponent {
+export class DoctorMasterComponent {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
-  constructor(private service: BankMasterService,private title: Title) {}
+  constructor(private service: DoctorMasterService,private title: Title) {}
 
-  public ELEMENT_DATA: Bank[] = [];
-  public dataSource = new MatTableDataSource<Bank>(this.ELEMENT_DATA);
+  public ELEMENT_DATA: Doctor[] = [];
+  public dataSource = new MatTableDataSource<Doctor>(this.ELEMENT_DATA);
   public snackBar = {
     message: '',
     show: false
   }
-  public showBanks: boolean = true;
-  public addingBank: boolean = false;
-  public displayedColumns: string[] = ['row', 'bankName', 'createdBy', 'actions'];
-  public bankName: string = '';
+  public showDoctors: boolean = true;
+  public addingDoctor: boolean = false;
+  public displayedColumns: string[] = ['row', 'doctorName', 'createdBy', 'actions'];
+  public doctorName: string = '';
   public loading = {
     resetting: false,
     submitting: false
   }
   public openDialog: boolean = false;
   public action: string = '';
-  public changeBankId: number = 0;
+  public changeDoctorId: number = 0;
 
   async ngOnInit(): Promise<void> {
-    this.title.setTitle('Bank Master');
+    this.title.setTitle('Doctor Master');
 
-    const tableData = await this.service.getAllBanks();
+    const tableData = await this.service.getAllDoctors();
     debugger;
     let rn = 1;
     tableData.forEach(x => {
       this.ELEMENT_DATA.push({ ...x, row: rn });
       rn++;
     });
-    this.dataSource = new MatTableDataSource<Bank>(this.ELEMENT_DATA);
+    this.dataSource = new MatTableDataSource<Doctor>(this.ELEMENT_DATA);
   }
 
-  public async addBank(form: NgForm) {
+  public async addDoctor(form: NgForm) {
     this.loading.submitting = true;
     if (form.valid) {
-      const data: AddBankModel = {
+      const data: AddDoctorModel = {
         Token: localStorage.getItem('token'),
-        BankName: form.value.BankName
+        DoctorName: form.value.DoctorName
       }
-      const status = await this.service.addBank(data);
+      const status = await this.service.addDoctor(data);
       alert(status.message);
       if (status.status === 1) {
         window.location.reload();
@@ -92,27 +92,27 @@ export class BankMasterComponent {
     this.loading.submitting = false;
   }
 
-  public bankDelete(bankId: number) {
-    this.changeBankId = bankId;
+  public doctorDelete(doctorId: number) {
+    this.changeDoctorId = doctorId;
     this.action = 'Delete'
     this.openDialog = true;
   }
-  public bankEdit(bankId: number) {
-    this.changeBankId = bankId;
+  public doctorEdit(doctorId: number) {
+    this.changeDoctorId = doctorId;
     this.action = 'Edit'
     this.openDialog = true;
   }
 
-  public banksList() {
-    this.showBanks = !this.showBanks;
-    this.addingBank = false;
+  public doctorsList() {
+    this.showDoctors = !this.showDoctors;
+    this.addingDoctor = false;
   }
-  public formToAddNewBank() {
-    this.showBanks = !this.showBanks;
-    this.addingBank = true;
+  public formToAddNewDoctor() {
+    this.showDoctors = !this.showDoctors;
+    this.addingDoctor = true;
   }
   public hideDialog() {
     this.openDialog = false;
-    this.changeBankId = 0;
+    this.changeDoctorId = 0;
   }
 }
