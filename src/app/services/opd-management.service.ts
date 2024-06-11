@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { LoginService } from '../login.service';
 import { FormControl } from '@angular/forms';
 import { ConstantsService } from '../constants.service';
-import { UserData, citiesResponse, companyResponse, departmentResponse, statesResponse, unitsResponse, bankResponse } from '../links/opd/transaction/opdmanagement/interfaces';
+import { UserData, citiesResponse, companyResponse, departmentResponse, statesResponse, unitsResponse, bankResponse, latestOpidResponse } from '../links/opd/transaction/opdmanagement/interfaces';
 import {
   chiefComplainsResponse, disApprovedByResponse, doctorResponse, consultChargeResponse, patientDataResponse, uhidResponse,
   opidResponse, countryResponse
@@ -65,6 +65,24 @@ export class OpdManagementService {
     return data;
   }
 
+  public getOpid(): Promise<string> {
+    const toSend = new Promise<string>(resolve => {
+      if (typeof localStorage !== 'undefined') {
+        const uhid = this.http.get<latestOpidResponse>(this.apiUrl + '/Common/GetLatestOPID', { headers: this.token });
+
+        uhid.subscribe({
+          next: (data) => {
+            resolve(data.opid);
+          },
+          error: (err) => {
+            return resolve('');
+          }
+        });
+      }
+    })
+    return toSend;
+  }
+
   public getUhids(startWith: string): Promise<string[]> {
     const toSend = new Promise<string[]>(resolve => {
 
@@ -88,6 +106,26 @@ export class OpdManagementService {
     return toSend;
   }
 
+  public async checkIfUhidExists(value: string): Promise<boolean> {
+    return new Promise<boolean>((resolve) => {
+      const data = this.http.get<uhidResponse>(this.apiUrl + '/Common/getUhidStartsWith', {
+        headers: this.token, params: {
+          'startsWith': value,
+          'exact': true
+        }
+      });
+
+      data.subscribe({
+        next: (response) => {
+          resolve(response.uhids.length > 0);
+        },
+        error: () => {
+          resolve(false);
+        }
+      });
+    })
+  }
+
   public getOpids(startWith: string): Promise<string[]> {
     const toSend = new Promise<string[]>(resolve => {
 
@@ -99,7 +137,7 @@ export class OpdManagementService {
         'Authorization': 'Bearer ' + localStorage.getItem('token')
       });
 
-      const data = this.http.get<opidResponse>(this.apiUrl + '/Common/getOpidStartsWith', {
+      const data = this.http.get<opidResponse>(this.apiUrl + '/OPD/GetOpidStartsWith', {
         headers: token, params: {
           'startsWith': startWith
         }

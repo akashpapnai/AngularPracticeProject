@@ -6,6 +6,10 @@ export interface opidResponse {
  opids: string[];
 }
 
+export interface latestOpidResponse{
+ opid: string;
+}
+
 export interface countryResponse {
  allCountries: any[]
 }

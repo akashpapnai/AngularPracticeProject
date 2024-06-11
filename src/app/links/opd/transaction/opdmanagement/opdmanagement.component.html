@@ -16,7 +16,7 @@
     </div>
 
     <!-- UHID -->
-    <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col mt-1">
+    <div (focusout)="checkUhid()" [tabIndex]="1" class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col mt-1">
       <app-auto-complete [title]="'UHID'" [required]="true" [formControl]="uhidControl" [placeHolder]="'Enter UHID'"
         [autoCompleteOptions]="uhidfilteredOptions" [name]="'uhid'" #uhid
         (valueChanged)="onUhidChange($event)"></app-auto-complete>
@@ -213,8 +213,9 @@
       <label for="paymentMode" class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">
         Payment Mode&nbsp;<span class="text-red-900">*</span>
       </label>
-      <mat-radio-group (change)="paymentModeChanged()" class="flex" aria-label="Select an option" [(ngModel)]="managementClass.paymentMode"
-        [name]="'payMode'" [required]="convertToInt(managementClass.paidAmount) > 0">
+      <mat-radio-group (change)="paymentModeChanged()" class="flex" aria-label="Select an option"
+        [(ngModel)]="managementClass.paymentMode" [name]="'payMode'"
+        [required]="convertToInt(managementClass.paidAmount) > 0">
         <div *ngFor="let paymentMode of paymentModes">
           <mat-radio-button [value]="paymentMode.key">{{paymentMode.value}}</mat-radio-button>
         </div>

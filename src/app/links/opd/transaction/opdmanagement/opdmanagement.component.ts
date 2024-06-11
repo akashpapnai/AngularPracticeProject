@@ -126,12 +126,30 @@ export class OpdmanagementComponent {
         switchMap(value => from(this._uhidfilter(value || ''))),
       );
 
+      const opd = await this.service.getOpid();
+      this.opidControl = new FormControl(opd);
+
       this.opidoptions = await this.service.getOpids('o');
       this.opidfilteredOptions = this.opidControl.valueChanges.pipe(
         startWith('o'),
         switchMap(value => from(this._opidfilter(value || ''))),
       );
     });
+  }
+
+  public checkUhid(): void {
+    setTimeout(async () => {
+      if (this.uhidControl.value !== null) {
+        const status = await this.service.checkIfUhidExists(this.uhidControl.value);
+        if (!status) {
+          const opidValue = this.opidControl.value;
+          this.resetClick().then(() => {
+          this.opidControl = new FormControl(opidValue);
+          alert('UHID did not exists');
+          });
+        }
+      }
+    }, 500);
   }
 
   public async onUhidChange(event: any) {
@@ -213,7 +231,7 @@ export class OpdmanagementComponent {
     this.managementClass.referenceNo = '';
   }
 
-  public resetClick() {
+  public async resetClick(): Promise<void> {
     this.loading.resetting = true;
     setTimeout(async () => {
       this.managementClass = new managementClass();
