@@ -12,6 +12,7 @@ import {
 import { default as _rollupMoment } from 'moment';
 import * as _moment from 'moment';
 import { DoctorMasterService } from './doctor-master.service';
+import { Department } from './department-master.service';
 const moment = _rollupMoment || _moment;
 
 @Injectable({
@@ -320,14 +321,14 @@ export class OpdManagementService {
         'Authorization': 'Bearer ' + localStorage.getItem('token')
       });
 
-      const allDepartments = this.http.get<departmentResponse>(this.lService.__apiURL__ + "/Common/getAllDepartments", { headers: token_header });
+      const allDepartments = this.http.get<departmentResponse>(this.lService.__apiURL__ + "/Department/GetAllDepartments", { headers: token_header });
 
       allDepartments.subscribe({
         next: (data) => {
-          const obj: any[] = data.allDepartments;
-          for (let country of obj) {
-            departments.push({ key: country.iso2, value: country.name });
-          }
+          const obj: Department[] = data.allDepartments;
+          obj.forEach(x=> {
+            departments.push({key:x.departmentId,value:x.departmentName})
+          });
         }
       });
     }

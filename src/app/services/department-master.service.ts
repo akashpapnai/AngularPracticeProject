@@ -5,7 +5,7 @@ import { LoginService } from '../login.service';
 @Injectable({
   providedIn: 'root'
 })
-export class DoctorMasterService {
+export class DepartmentMasterService {
 
   constructor(private http:HttpClient, private lService: LoginService) { }
   private apiUrl = this.lService.__apiURL__;
@@ -14,19 +14,19 @@ export class DoctorMasterService {
     'Content-Type': 'application/json',
   });
 
-  public async addDoctor(data: AddDoctorModel): Promise<any> {
+  public async addDepartment(data: AddDepartmentModel): Promise<any> {
     return new Promise<any>(async (resolve) => {
       let alrt: any = {};
-      const newComp = await this.http.post<doctorAddStatus>(this.apiUrl + '/Doctor/AddDoctor', JSON.stringify(data), { headers: this.token });
+      const newComp = await this.http.post<departmentAddStatus>(this.apiUrl + '/Department/AddDepartment', JSON.stringify(data), { headers: this.token });
 
       newComp.subscribe(
         {
           next: (data) => {
             if (data.status > 0) {
-              alrt = { message: 'Doctor added Successfully', status: 1 };
+              alrt = { message: 'Department added Successfully', status: 1 };
             }
             else if (data.status === -10) {
-              alrt = { message: 'Doctor already exists!!', status: 0 };
+              alrt = { message: 'Department already exists!!', status: 0 };
             }
             else {
               alrt = { message: 'Something went wrong', status: 0 };
@@ -42,12 +42,12 @@ export class DoctorMasterService {
     );
   }
 
-  public getAllDoctors(): Promise<Doctor[]> {
-    return new Promise<Doctor[]>(async (resolve) => {
-      const doctors = await this.http.get<DoctorData>(this.apiUrl + '/Doctor/GetAllDoctors', { headers: this.token });
-      doctors.subscribe({
+  public getAllDepartments(): Promise<Department[]> {
+    return new Promise<Department[]>(async (resolve) => {
+      const departments = await this.http.get<DepartmentData>(this.apiUrl + '/Department/GetAllDepartments', { headers: this.token });
+      departments.subscribe({
         next: (data) => {
-          resolve(data.allDoctors);
+          resolve(data.allDepartments);
         },
         error: (error) => {
           console.error(error);
@@ -58,24 +58,23 @@ export class DoctorMasterService {
   }
 }
 
-interface doctorAddStatus {
+interface departmentAddStatus {
   status: number
 }
 
 
-export interface AddDoctorModel {
-  DoctorName: string | null,
-  Token: string | null,
-  DepartmentId: number
+export interface AddDepartmentModel {
+  DepartmentName: string | null,
+  Token: string | null
 }
 
-export interface DoctorData {
-  allDoctors: Doctor[]
+export interface DepartmentData {
+  allDepartments: Department[]
 }
 
-export interface Doctor {
-  doctorId: number;
-  doctorName: number,
+export interface Department {
+  departmentId: number;
+  departmentName: number,
   isActive: string;
   createdBy: string;
   row: number;

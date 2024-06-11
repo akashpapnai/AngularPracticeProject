@@ -14,6 +14,8 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { AddDoctorModel, Doctor, DoctorMasterService } from '../../../../services/doctor-master.service';
 import { Title } from '@angular/platform-browser';
 import { DoctorMasterDialogBoxComponent } from './doctor-master-dialog-box/doctor-master-dialog-box.component';
+import { DropDownComponent } from '../../../../shared/inputs/drop-down/drop-down.component';
+import { DepartmentMasterService } from '../../../../services/department-master.service';
 
 @Component({
   selector: 'app-doctor-master',
@@ -32,6 +34,7 @@ import { DoctorMasterDialogBoxComponent } from './doctor-master-dialog-box/docto
     FormsModule,
     TextFieldComponent,
     MatProgressSpinnerModule,
+    DropDownComponent,
     DoctorMasterDialogBoxComponent
   ],
   templateUrl: './doctor-master.component.html',
@@ -40,7 +43,8 @@ import { DoctorMasterDialogBoxComponent } from './doctor-master-dialog-box/docto
 export class DoctorMasterComponent {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
-  constructor(private service: DoctorMasterService,private title: Title) {}
+  constructor(private service: DoctorMasterService, private deptService: DepartmentMasterService, private title: Title) {
+  }
 
   public ELEMENT_DATA: Doctor[] = [];
   public dataSource = new MatTableDataSource<Doctor>(this.ELEMENT_DATA);
@@ -52,6 +56,8 @@ export class DoctorMasterComponent {
   public addingDoctor: boolean = false;
   public displayedColumns: string[] = ['row', 'doctorName', 'createdBy', 'actions'];
   public doctorName: string = '';
+  public departmentId: number = 0;
+  public departmentsList: any[] = [];
   public loading = {
     resetting: false,
     submitting: false
@@ -63,8 +69,12 @@ export class DoctorMasterComponent {
   async ngOnInit(): Promise<void> {
     this.title.setTitle('Doctor Master');
 
+    const allDepts = await this.deptService.getAllDepartments();
+    allDepts.forEach(x => {
+      this.departmentsList.push({ key: x.departmentId, value: x.departmentName });
+    });
+
     const tableData = await this.service.getAllDoctors();
-    debugger;
     let rn = 1;
     tableData.forEach(x => {
       this.ELEMENT_DATA.push({ ...x, row: rn });
@@ -76,9 +86,11 @@ export class DoctorMasterComponent {
   public async addDoctor(form: NgForm) {
     this.loading.submitting = true;
     if (form.valid) {
+      console.log(form.value);
       const data: AddDoctorModel = {
         Token: localStorage.getItem('token'),
-        DoctorName: form.value.DoctorName
+        DoctorName: form.value.DoctorName,
+        DepartmentId: this.departmentId
       }
       const status = await this.service.addDoctor(data);
       alert(status.message);

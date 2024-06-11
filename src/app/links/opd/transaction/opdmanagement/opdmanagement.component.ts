@@ -145,6 +145,7 @@ export class OpdmanagementComponent {
           const opidValue = this.opidControl.value;
           this.resetClick().then(() => {
           this.opidControl = new FormControl(opidValue);
+          this.age = '';
           alert('UHID did not exists');
           });
         }

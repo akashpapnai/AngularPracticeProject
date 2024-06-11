@@ -11,6 +11,7 @@ import { ModuleComponent } from './module/module.component';
 import { CompanyMasterComponent } from './links/admin/master/company-master/company-master.component';
 import { BankMasterComponent } from './links/admin/master/bank-master/bank-master.component';
 import { DoctorMasterComponent } from './links/admin/master/doctor-master/doctor-master.component';
+import { DepartmentMasterComponent } from './links/admin/master/department-master/department-master.component';
 
 export const routes: Routes = [
     { path:'',component: HomePageComponent,pathMatch:'full' },
@@ -25,6 +26,7 @@ export const routes: Routes = [
     { path:'admin/companymaster', component: CompanyMasterComponent, canActivate:[AuthGuard] },
     { path:'admin/bankmaster', component: BankMasterComponent, canActivate:[AuthGuard] },
     { path:'admin/doctormaster', component: DoctorMasterComponent, canActivate:[AuthGuard] },
+    { path:'admin/departmentmaster', component: DepartmentMasterComponent, canActivate:[AuthGuard] },
     { path:'opd/patientregistration', component: PatientRegistrationComponent, canActivate:[AuthGuard] },
     { path:'opd/opdmanagement', component: OpdmanagementComponent, canActivate:[AuthGuard] },
     { path:'opd/opdmanagement/:id', component: OpdmanagementComponent, canActivate:[AuthGuard] },

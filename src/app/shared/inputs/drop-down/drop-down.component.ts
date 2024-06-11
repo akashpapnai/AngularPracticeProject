@@ -25,7 +25,7 @@ export class DropDownComponent {
   @Input() required: boolean = false;
   @Input() title: string = '';
   @Input() name: string = '';
-  @Input() value: string = '';
+  @Input() value: any;
 
   onChange: any = () => {};
 
