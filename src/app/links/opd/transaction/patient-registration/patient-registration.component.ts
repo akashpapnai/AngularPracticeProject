@@ -15,7 +15,7 @@ import { DropDownComponent } from '../../../../shared/inputs/drop-down/drop-down
 import { PatientRegistrationService } from '../../../../services/patient-registration.service';
 import { TextFieldComponent } from '../../../../shared/inputs/text-field/text-field.component';
 import { DateComponent } from '../../../../shared/inputs/date/date.component';
-import { RegisteredDialogComponent } from './registered-dialog/registered-dialog.component';
+import { DialogBoxComponent } from '../../../../shared/dialog-box/dialog-box.component';
 
 const moment = _rollupMoment || _moment;
 export const DATE_FORMATS = {
@@ -47,7 +47,7 @@ export const DATE_FORMATS = {
     DropDownComponent,
     TextFieldComponent,
     DateComponent,
-    RegisteredDialogComponent
+    DialogBoxComponent
   ], providers: [
     provideNativeDateAdapter(),
     provideMomentDateAdapter(DATE_FORMATS)

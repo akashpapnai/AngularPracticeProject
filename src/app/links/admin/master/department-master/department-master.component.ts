@@ -11,9 +11,9 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { TextFieldComponent } from '../../../../shared/inputs/text-field/text-field.component';
 import { SnackbarComponent } from '../../../../shared/snackbar/snackbar.component';
-import { DepartmentMasterDialogBoxComponent } from './department-master-dialog-box/department-master-dialog-box.component';
 import { Title } from '@angular/platform-browser';
 import { AddDepartmentModel, Department, DepartmentMasterService } from '../../../../services/department-master.service';
+import { DialogBoxComponent } from '../../../../shared/dialog-box/dialog-box.component';
 
 /**
  * @title Table
@@ -35,7 +35,7 @@ import { AddDepartmentModel, Department, DepartmentMasterService } from '../../.
     FormsModule,
     TextFieldComponent,
     MatProgressSpinnerModule,
-    DepartmentMasterDialogBoxComponent
+    DialogBoxComponent
   ],
   templateUrl: './department-master.component.html',
   styleUrl: './department-master.component.scss'

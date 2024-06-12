@@ -74,4 +74,4 @@
     }
   </div>
   <app-snackbar [message]="snackBar.message" [show]="snackBar.show"></app-snackbar>
-  <app-department-master-dialog-box *ngIf="openDialog" [DepartmentId]="changeDepartmentId" [Action]="action" (close)="hideDialog()"></app-department-master-dialog-box>
+  <app-dialog-box *ngIf="openDialog" [Page]="'Department'" [Id]="changeDepartmentId" [Action]="action" (close)="hideDialog()"></app-dialog-box>

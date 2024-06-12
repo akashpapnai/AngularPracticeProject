@@ -13,9 +13,9 @@ import { TextFieldComponent } from '../../../../shared/inputs/text-field/text-fi
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { AddDoctorModel, Doctor, DoctorMasterService } from '../../../../services/doctor-master.service';
 import { Title } from '@angular/platform-browser';
-import { DoctorMasterDialogBoxComponent } from './doctor-master-dialog-box/doctor-master-dialog-box.component';
 import { DropDownComponent } from '../../../../shared/inputs/drop-down/drop-down.component';
 import { DepartmentMasterService } from '../../../../services/department-master.service';
+import { DialogBoxComponent } from '../../../../shared/dialog-box/dialog-box.component';
 
 @Component({
   selector: 'app-doctor-master',
@@ -35,7 +35,7 @@ import { DepartmentMasterService } from '../../../../services/department-master.
     TextFieldComponent,
     MatProgressSpinnerModule,
     DropDownComponent,
-    DoctorMasterDialogBoxComponent
+    DialogBoxComponent
   ],
   templateUrl: './doctor-master.component.html',
   styleUrl: './doctor-master.component.scss'

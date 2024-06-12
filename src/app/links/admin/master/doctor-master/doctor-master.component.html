@@ -321,5 +321,4 @@
     }
   </div>
   <app-snackbar [message]="snackBar.message" [show]="snackBar.show"></app-snackbar>
-  <app-doctor-master-dialog-box *ngIf="openDialog" [DoctorId]="changeDoctorId" [Action]="action"
-    (close)="hideDialog()"></app-doctor-master-dialog-box>
+  <app-dialog-box *ngIf="openDialog" [Page]="'Doctor'" [Id]="changeDoctorId" [Action]="action" (close)="hideDialog()"></app-dialog-box>

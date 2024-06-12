@@ -13,7 +13,7 @@ import { SnackbarComponent } from '../../../../shared/snackbar/snackbar.componen
 import { TextFieldComponent } from '../../../../shared/inputs/text-field/text-field.component';
 import { CompanyMasterService, AddCompanyModel, CompaniesData } from '../../../../services/company-master.service';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { DialogBoxComponent } from './dialog-box/dialog-box.component';
+import { DialogBoxComponent } from '../../../../shared/dialog-box/dialog-box.component';
 
 @Component({
   selector: 'app-company-master',

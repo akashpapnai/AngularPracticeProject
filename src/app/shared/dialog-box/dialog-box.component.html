@@ -1,0 +1,53 @@
+<div class="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center">
+  <div class="relative bg-white rounded-lg p-6 shadow-lg max-w-md mx-auto">
+    <button (click)="closeDialog()" class="absolute top-0 right-0 m-2">
+      <svg class="rounded" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="24" height="24" fill="#CD0001" onmouseover="this.style.fill='#800808'"
+          onmouseout="this.style.fill='#CD0001'" />
+        <path d="M6 6L18 18" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+        <path d="M18 6L6 18" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+    </button>
+    <!-- Main Content -->
+    @if(Page === 'Department') {
+    <h1>Department {{Action}} {{Id}}</h1>
+    }
+    @else if (Page === 'Bank') {
+    <h1>Bank {{Action}} {{Id}}</h1>
+    }
+    @else if (Page === 'Company') {
+    <h1>Company {{Action}} {{Id}}</h1>
+    }
+    @else if (Page === 'Doctor') {
+    <h1>Doctor {{Action}} {{Id}}</h1>
+    }
+    @else if (Page === 'PatientRegistered') {
+    <p class="text-base font-bold mb-4 pr-6">Do you want to register patient to OPD or IPD?</p>
+    }
+    <!-- Buttons -->
+    <div class="flex justify-end">
+      @if(Page === 'Department') {
+      <button (click)="Action == 'Edit' ? editDepartment() : deleteDepartment()"
+        class=" bg-blue-500 text-white px-2 py-2 rounded hover:bg-blue-700">{{Action}}</button>
+      }
+      @else if (Page === 'Bank') {
+      <button (click)="Action == 'Edit' ? editBank() : deleteBank()"
+        class=" bg-blue-500 text-white px-2 py-2 rounded hover:bg-blue-700">{{Action}}</button>
+      }
+      @else if (Page === 'Company') {
+      <button (click)="Action == 'Edit' ? editCompany() : deleteCompany()"
+        class=" bg-blue-500 text-white px-2 py-2 rounded hover:bg-blue-700">{{Action}}</button>
+      }
+      @else if (Page === 'Doctor') {
+      <button (click)="Action == 'Edit' ? editDoctor() : deleteDoctor()"
+        class=" bg-blue-500 text-white px-2 py-2 rounded hover:bg-blue-700">{{Action}}</button>
+      }
+      @else if (Page === 'PatientRegistered') {
+      <button (click)="sendToOPD()" [disabled]="false"
+        class="bg-blue-500 text-white px-2 py-2 rounded hover:bg-blue-700 mx-2">OPD</button>
+      <button (click)="sendToIPD()" [disabled]="true"
+        class="cursor-not-allowed bg-blue-500 text-white px-2 py-2 rounded hover:bg-blue-700">IPD</button>
+      }
+    </div>
+  </div>
+</div>

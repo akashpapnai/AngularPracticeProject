@@ -74,4 +74,4 @@
     }
   </div>
   <app-snackbar [message]="snackBar.message" [show]="snackBar.show"></app-snackbar>
-  <app-dialog-box *ngIf="openDialog" [CompanyId]="changeCompanyId" [Action]="action" (close)="hideDialog()"></app-dialog-box>
+  <app-dialog-box *ngIf="openDialog" [Page]="'Company'" [Id]="changeCompanyId" [Action]="action" (close)="hideDialog()"></app-dialog-box>

@@ -74,4 +74,4 @@
     }
   </div>
   <app-snackbar [message]="snackBar.message" [show]="snackBar.show"></app-snackbar>
-  <app-bank-master-dialog-box *ngIf="openDialog" [BankId]="changeBankId" [Action]="action" (close)="hideDialog()"></app-bank-master-dialog-box>
+  <app-dialog-box *ngIf="openDialog" [Page]="'Bank'" [Id]="changeBankId" [Action]="action" (close)="hideDialog()"></app-dialog-box>

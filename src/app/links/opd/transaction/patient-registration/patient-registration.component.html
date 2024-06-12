@@ -257,4 +257,4 @@
   </div>
 </form>
 
-<app-registered-dialog *ngIf="patientRegistered" [ID]="submitClass.uhid" (close)="hideDialog()"></app-registered-dialog>
+<app-dialog-box *ngIf="patientRegistered" [Page]="'PatientRegistered'" [Id]="submitClass.uhid" ></app-dialog-box>

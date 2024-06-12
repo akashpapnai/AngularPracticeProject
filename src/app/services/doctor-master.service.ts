@@ -49,11 +49,9 @@ export class DoctorMasterService {
       }});
       doctors.subscribe({
         next: (data) => {
-          console.log(data.allDoctors);
           resolve(data.allDoctors);
         },
         error: (error) => {
-          console.error(error);
           resolve([]);
         }
       });

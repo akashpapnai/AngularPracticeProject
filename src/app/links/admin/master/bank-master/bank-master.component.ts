@@ -11,9 +11,9 @@ import { CommonModule } from '@angular/common';
 import { SnackbarComponent } from '../../../../shared/snackbar/snackbar.component';
 import { TextFieldComponent } from '../../../../shared/inputs/text-field/text-field.component';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { BankMasterDialogBoxComponent } from './bank-master-dialog-box/bank-master-dialog-box.component';
 import { BankMasterService, Bank, AddBankModel } from '../../../../services/bank-master.service';
 import { Title } from '@angular/platform-browser';
+import { DialogBoxComponent } from '../../../../shared/dialog-box/dialog-box.component';
 
 @Component({
   selector: 'app-bank-master',
@@ -32,7 +32,7 @@ import { Title } from '@angular/platform-browser';
     FormsModule,
     TextFieldComponent,
     MatProgressSpinnerModule,
-    BankMasterDialogBoxComponent
+    DialogBoxComponent
   ],
   templateUrl: './bank-master.component.html',
   styleUrl: './bank-master.component.scss'
@@ -64,7 +64,6 @@ export class BankMasterComponent {
     this.title.setTitle('Bank Master');
 
     const tableData = await this.service.getAllBanks();
-    debugger;
     let rn = 1;
     tableData.forEach(x => {
       this.ELEMENT_DATA.push({ ...x, row: rn });
