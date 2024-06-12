@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { LoginService } from '../login.service';
 import { FormControl } from '@angular/forms';
 import { ConstantsService } from '../constants.service';
-import { UserData, citiesResponse, companyResponse, departmentResponse, statesResponse, unitsResponse, bankResponse, latestOpidResponse } from '../links/opd/transaction/opdmanagement/interfaces';
+import { UserData, citiesResponse, companyResponse, departmentResponse, statesResponse, unitsResponse, bankResponse, latestOpidResponse, GotDepartment, consultationTypeResponse } from '../links/opd/transaction/opdmanagement/interfaces';
 import {
   chiefComplainsResponse, disApprovedByResponse, doctorResponse, consultChargeResponse, patientDataResponse, uhidResponse,
   opidResponse, countryResponse
@@ -334,6 +334,26 @@ export class OpdManagementService {
     }
     return departments;
   }
+  public consultationSelect(uhid: string): Promise<string> {
+    return new Promise<string>((resolve) => {
+      const token_header = new HttpHeaders({
+        'Authorization': 'Bearer ' + localStorage.getItem('token')
+      });
+  
+      const consultCharge = this.http.get<consultationTypeResponse>(this.lService.__apiURL__ + '/OPD/GetConsultationType', {
+        headers: token_header, params: {
+          'uhid': uhid,
+          'before': this.constants.nDaysForNewConsultation
+        }
+      });
+
+      consultCharge.subscribe({
+        next: (data) => {
+          resolve(data.whichConsultation);
+        }
+      });
+    });
+  }
   public getConsultationCharge(): string {
     const token_header = new HttpHeaders({
       'Authorization': 'Bearer ' + localStorage.getItem('token')
@@ -374,25 +394,51 @@ export class OpdManagementService {
     }
     return doctors;
   }
-  public getReferredDoctors(): any[] {
-    const allDoctors: any[] = [];
-    const token_header = new HttpHeaders({
-      'Authorization': 'Bearer ' + localStorage.getItem('token')
-    });
-
-    const doctors = this.http.get<doctorResponse>(this.lService.__apiURL__ + '/Common/getAllRefDoctors', {
-      headers: token_header
-    });
-
-    doctors.subscribe({
-      next: (data) => {
-        const obj: any[] = data.allDoctors;
-        for (let doctor of obj) {
-          allDoctors.push({ key: doctor.id, value: doctor.name });
-        }
+  public getDepartmentOfDoctor(doctorId: number): Promise<number> {
+    return new Promise<number>(async (resolve) => {
+      if (typeof localStorage !== 'undefined') {
+  
+        const token_header = new HttpHeaders({
+          'Authorization': 'Bearer ' + localStorage.getItem('token')
+        });
+  
+        const departments = this.http.get<GotDepartment>(this.lService.__apiURL__ + "/Department/GetDepartmentOfDoctor", { headers: token_header, params: {
+          'docId':doctorId
+        }});
+  
+        departments.subscribe({
+          next: (data) => {
+            resolve(data.department);
+          },
+          error: () => {
+            resolve(0);
+          }
+        });
       }
-    })
-    return allDoctors;
+    });
+  }
+  public getReferredDoctors(): any[] {
+    const doctors: any[] = []
+    if (typeof localStorage !== 'undefined') {
+
+      const token_header = new HttpHeaders({
+        'Authorization': 'Bearer ' + localStorage.getItem('token')
+      });
+
+      const allDoctors = this.http.get<doctorResponse>(this.lService.__apiURL__ + "/Doctor/GetAllDoctors", { headers: token_header, params: {
+        'referringDoctors': true
+      }});
+
+      allDoctors.subscribe({
+        next: (data) => {
+          const doctorsData: any[] = data.allDoctors;
+          doctorsData.forEach(doctor => {
+            doctors.push({ key: doctor.doctorId, value: doctor.doctorName });
+          })
+        }
+      });
+    }
+    return doctors;
   }
   public getDiscountApprovedByList(): any[] {
     const allDoctors: any[] = [];

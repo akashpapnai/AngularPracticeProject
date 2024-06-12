@@ -44,9 +44,12 @@ export class DoctorMasterService {
 
   public getAllDoctors(): Promise<Doctor[]> {
     return new Promise<Doctor[]>(async (resolve) => {
-      const doctors = await this.http.get<DoctorData>(this.apiUrl + '/Doctor/GetAllDoctors', { headers: this.token });
+      const doctors = await this.http.get<DoctorData>(this.apiUrl + '/Doctor/GetAllDoctors', { headers: this.token, params: {
+        'allDocs': true
+      }});
       doctors.subscribe({
         next: (data) => {
+          console.log(data.allDoctors);
           resolve(data.allDoctors);
         },
         error: (error) => {
@@ -66,7 +69,8 @@ interface doctorAddStatus {
 export interface AddDoctorModel {
   DoctorName: string | null,
   Token: string | null,
-  DepartmentId: number
+  DepartmentId: number,
+  isReferring: boolean
 }
 
 export interface DoctorData {
@@ -78,5 +82,6 @@ export interface Doctor {
   doctorName: number,
   isActive: string;
   createdBy: string;
+  isReferring: boolean;
   row: number;
 }

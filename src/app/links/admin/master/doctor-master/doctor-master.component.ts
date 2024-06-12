@@ -54,7 +54,7 @@ export class DoctorMasterComponent {
   }
   public showDoctors: boolean = true;
   public addingDoctor: boolean = false;
-  public displayedColumns: string[] = ['row', 'doctorName', 'createdBy', 'actions'];
+  public displayedColumns: string[] = ['row', 'doctorName', 'createdBy','referringDoctor', 'actions'];
   public doctorName: string = '';
   public departmentId: number = 0;
   public departmentsList: any[] = [];
@@ -65,6 +65,7 @@ export class DoctorMasterComponent {
   public openDialog: boolean = false;
   public action: string = '';
   public changeDoctorId: number = 0;
+  public referringDoc: boolean = false;
 
   async ngOnInit(): Promise<void> {
     this.title.setTitle('Doctor Master');
@@ -86,11 +87,11 @@ export class DoctorMasterComponent {
   public async addDoctor(form: NgForm) {
     this.loading.submitting = true;
     if (form.valid) {
-      console.log(form.value);
       const data: AddDoctorModel = {
         Token: localStorage.getItem('token'),
         DoctorName: form.value.DoctorName,
-        DepartmentId: this.departmentId
+        DepartmentId: this.departmentId,
+        isReferring: this.referringDoc
       }
       const status = await this.service.addDoctor(data);
       alert(status.message);

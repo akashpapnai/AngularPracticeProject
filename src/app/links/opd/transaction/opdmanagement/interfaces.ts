@@ -39,8 +39,14 @@ export interface departmentResponse {
 export interface doctorResponse {
  allDoctors: any[];
 }
+export interface GotDepartment {
+ department: number;
+}
 export interface consultChargeResponse {
  consultationCharge: number;
+}
+export interface consultationTypeResponse {
+ whichConsultation: string;
 }
 export interface disApprovedByResponse {
  allAuthorizedDoctors: any[];

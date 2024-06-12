@@ -6,7 +6,7 @@ import * as _moment from 'moment';
 import { default as _rollupMoment } from 'moment';
 import { provideNativeDateAdapter } from '@angular/material/core';
 import { provideMomentDateAdapter } from '@angular/material-moment-adapter';
-import { Observable, from, startWith, switchMap } from 'rxjs';
+import { Observable, from, startWith, switchMap, timeout } from 'rxjs';
 import { DateComponent } from '../../../../shared/inputs/date/date.component';
 import { TextFieldComponent } from '../../../../shared/inputs/text-field/text-field.component';
 import { AutoCompleteComponent } from '../../../../shared/inputs/auto-complete/auto-complete.component';
@@ -61,8 +61,6 @@ export class OpdmanagementComponent {
     resetting: false,
     submitting: false
   }
-
-
 
   public age: string = '';
   public mStatusList: any[] = this.service.getMStatusList();
@@ -144,9 +142,9 @@ export class OpdmanagementComponent {
         if (!status) {
           const opidValue = this.opidControl.value;
           this.resetClick().then(() => {
-          this.opidControl = new FormControl(opidValue);
-          this.age = '';
-          alert('UHID did not exists');
+            this.opidControl = new FormControl(opidValue);
+            this.age = '';
+            alert('UHID did not exists');
           });
         }
       }
@@ -165,6 +163,9 @@ export class OpdmanagementComponent {
 
     await this.stateChanged(this.managementClass.stateId);
     this.managementClass.cityId = user.CityId;
+
+    const whichConsultation:string = await this.service.consultationSelect(this.opidControl.value ?? '');
+    this.managementClass.consultation = whichConsultation;
   }
 
   public getConsultationCharge(): string {
@@ -219,6 +220,13 @@ export class OpdmanagementComponent {
     this.managementClass.cardNo = '';
     this.managementClass.UPIID = '';
     this.managementClass.bankName = '';
+  }
+
+  public doctorChanged() {
+    setTimeout(async () => {
+      const deptId = await this.service.getDepartmentOfDoctor(parseInt(this.managementClass.doctor));
+      this.managementClass.department = (deptId === 0 ? '' : deptId).toString();
+    }, 1);
   }
 
   private paymentValuesReset() {

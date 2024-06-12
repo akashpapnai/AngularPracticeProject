@@ -134,10 +134,15 @@
         [required]="false" [type]="'text'" [placeHolder]="'Id Card No.'" [title]="'Id Card No'"
         [disabled]="false"></app-text-field>
     </div>
+    <!-- Doctor -->
+    <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col mt-1">
+      <app-drop-down (ngModelChange)="doctorChanged()" [(ngModel)]="managementClass.doctor" [value]="managementClass.doctor" [list]="doctorList"
+        [name]="'doctor'" [title]="'Doctor'" [disabled]="false" [required]="true"></app-drop-down>
+    </div>
     <!-- Department -->
     <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col mt-1">
       <app-drop-down [(ngModel)]="managementClass.department" [value]="managementClass.department"
-        [list]="departmentList" [disabled]="false" [name]="'department'" [title]="'Department'" [required]="true"
+        [list]="departmentList" [disabled]="true" [name]="'department'" [title]="'Department'" [required]="true"
         (ngModelChange)="departmentChanged($event)"></app-drop-down>
     </div>
     <!-- Unit -->
@@ -150,11 +155,6 @@
       <app-drop-down [(ngModel)]="managementClass.consultation" [value]="managementClass.consultation"
         [list]="consultationList" [name]="'consultation'" [title]="'Consultation'" [disabled]="true"
         [required]="true"></app-drop-down>
-    </div>
-    <!-- Doctor -->
-    <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col mt-1">
-      <app-drop-down [(ngModel)]="managementClass.doctor" [value]="managementClass.doctor" [list]="doctorList"
-        [name]="'doctor'" [title]="'Doctor'" [disabled]="false" [required]="true"></app-drop-down>
     </div>
     <!-- Consultation Charge -->
     <div *ngIf="managementClass.doctor !== ''" class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col mt-1">
