@@ -4,6 +4,7 @@
     "/admin",
     "/admin/bankmaster",
     "/admin/companymaster",
+    "/admin/departmentmaster",
     "/admin/doctormaster",
     "/bloodbank",
     "/homePage",
