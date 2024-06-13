@@ -441,24 +441,24 @@ export class OpdManagementService {
     return doctors;
   }
   public getDiscountApprovedByList(): any[] {
-    const allDoctors: any[] = [];
+    const allEmployees: any[] = [];
     const token_header = new HttpHeaders({
       'Authorization': 'Bearer ' + localStorage.getItem('token')
     });
 
-    const doctors = this.http.get<disApprovedByResponse>(this.lService.__apiURL__ + '/Common/getAllAuthorizedDoctors', {
+    const employees = this.http.get<disApprovedByResponse>(this.lService.__apiURL__ + '/Employee/getAllAuthorizedEmployees', {
       headers: token_header
     });
 
-    doctors.subscribe({
+    employees.subscribe({
       next: (data) => {
-        const obj: any[] = data.allAuthorizedDoctors;
-        for (let doctor of obj) {
-          allDoctors.push({ key: doctor.id, value: doctor.name });
-        }
+        const empData: any[] = data.allAuthorizedEmployees;
+        empData.forEach(x => {
+          allEmployees.push(x);
+        });
       }
     })
-    return allDoctors;
+    return allEmployees;
   }
   public getAllChiefComplains(): any[] {
     const chiefComplains: any[] = [];

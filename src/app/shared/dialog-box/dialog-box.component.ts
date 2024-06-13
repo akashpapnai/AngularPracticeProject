@@ -1,11 +1,22 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { DialogBoxService } from './dialog-box.service';
+import { ChiefComplaintData, ChiefComplaintInterface, DialogBoxService } from './dialog-box.service';
 import { Router } from '@angular/router';
+import { TextFieldComponent } from '../inputs/text-field/text-field.component';
+import { FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 
 @Component({
   selector: 'app-dialog-box',
   standalone: true,
-  imports: [],
+  imports: [
+    TextFieldComponent,
+    FormsModule,
+    CommonModule,
+    MatProgressSpinnerModule,
+    MatTableModule
+  ],
   templateUrl: './dialog-box.component.html',
   styleUrl: './dialog-box.component.scss'
 })
@@ -14,6 +25,29 @@ export class DialogBoxComponent {
   @Input() Id: any = 0;
   @Input() Action: string = '';
   @Input() Page: string = '';
+
+  public chiefComplaints: string = '';
+  public loading = {
+    resetting: false,
+    submitting: false
+  }
+
+  public displayedColumns: string[] = ['row', 'chiefComplaintName'];
+  public ELEMENT_DATA: ChiefComplaintData[] = [];
+  public dataSource: any;
+
+  async ngOnInit() {
+    if(this.Page === 'opdManagement') {
+      this.ELEMENT_DATA = [];
+      const tableData = await this.service.getAllChiefComplaints();
+      let rn = 1;
+      tableData.forEach(x => {
+        this.ELEMENT_DATA.push({ value: x.value ,row: rn });
+        rn++;
+      });
+      this.dataSource = new MatTableDataSource<ChiefComplaintData>(this.ELEMENT_DATA);
+    }
+  }
 
   constructor(private service: DialogBoxService, private router: Router) { }
 
@@ -98,14 +132,35 @@ export class DialogBoxComponent {
   }
 
   public sendToOPD() {
-    this.router.navigate(['opd/opdmanagement',this.Id]);
+    this.router.navigate(['opd/opdmanagement', this.Id]);
   }
   public sendToIPD() {
-    
   }
-
 
   public closeDialog() {
     this.close.emit();
+  }
+
+  public async saveChiefComplaints() {
+    this.loading.submitting = true;
+    if (this.chiefComplaints.trim() !== '') {
+      const alertResponse = await this.service.saveChiefComplaint(this.chiefComplaints);
+      alert(alertResponse);
+      this.chiefComplaints = '';
+
+      const tableData = await this.service.getAllChiefComplaints();
+      let rn = 1;
+
+      this.ELEMENT_DATA = [];
+      tableData.forEach(x => {
+        this.ELEMENT_DATA.push({ value: x.value ,row: rn });
+        rn++;
+      });
+      this.dataSource = new MatTableDataSource<ChiefComplaintData>(this.ELEMENT_DATA);
+    }
+    else {
+      alert('Please Enter Chief Complaint');
+    }
+    this.loading.submitting = false;
   }
 }

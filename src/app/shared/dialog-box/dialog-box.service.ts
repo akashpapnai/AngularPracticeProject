@@ -233,6 +233,49 @@ export class DialogBoxService {
    })
   })
  }
+
+ public async getAllChiefComplaints(): Promise<ChiefComplaintInterface[]> {
+  return new Promise<ChiefComplaintInterface[]>(async (resolve) => {
+   const newComp = this.http.get<ChiefComplaintInterface[]>(this.apiUrl + '/Common/getAllChiefComplaints', { headers: this.token });
+   newComp.subscribe({
+    next: (data) => {
+     console.log(data);
+     resolve(data);
+    },
+    error: (error) => {
+     console.error(error);
+     resolve([]);
+    }
+   });
+  });
+ }
+
+ public async saveChiefComplaint(chiefComplaints: string) {
+  return new Promise<string>(async (resolve) => {
+   const resp = this.http.post<responseStatus>(this.apiUrl + "/Common/AddChiefComplaint", {
+    'chiefComplainName': chiefComplaints.trim(),
+    'token': localStorage.getItem('token')?.toString()
+   }, {
+    headers: this.token
+   });
+   resp.subscribe({
+    next: (response) => {
+     if (response.status > 0) {
+      resolve('Chief Complaint Added Successfully');
+     }
+     else if (response.status == -10) {
+      resolve('This Chief complaint name already exists');
+     }
+     else {
+      resolve('Something went wrong while Adding Chief Complaints');
+     }
+    },
+    error: () => {
+     resolve('Error Response from Server. Unable to Add Chief Complaints');
+    }
+   })
+  })
+ }
 }
 
 interface editInput {
@@ -257,4 +300,14 @@ interface editEmployeeInput {
 
 interface responseStatus {
  status: number
+}
+
+export interface ChiefComplaintData{
+ value: string,
+ row: number
+}
+
+export interface ChiefComplaintInterface {
+ key: number,
+ value: string
 }

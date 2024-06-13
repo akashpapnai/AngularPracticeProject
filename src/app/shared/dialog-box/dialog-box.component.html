@@ -27,6 +27,21 @@
     @else if (Page === 'PatientRegistered') {
     <p class="text-base font-bold mb-4 pr-6">Do you want to register patient to OPD or IPD?</p>
     }
+    @else if(Page === 'opdManagement') {
+    <div class="w-full md:w-full px-3 mb-6 md:mb-0 flex flex-col mt-1 pb-4">
+      <app-text-field [autoComplete]="'off'" [(ngModel)]="chiefComplaints" [value]="chiefComplaints" [name]="'chiefComplaints'"
+        [required]="true" [type]="'text'" [placeHolder]="'Chief Compaints'" [title]="'Chief Compaints'"
+        [disabled]="false"></app-text-field>
+    </div>
+    <div class="items-end flex flex-wrap justify-end -mx-3 mb-2">
+      <button [disabled]="loading.resetting || loading.submitting" mat-raised-button (click)="saveChiefComplaints()"
+        [ngClass]="{'cursor-not-allowed':(loading.resetting || loading.submitting)}" type="button"
+        class="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-xs px-3 py-2 me-2 mb-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700 opacity-50 hover:opacity-100">
+        <span *ngIf="!loading.submitting">Save</span>
+        <mat-spinner *ngIf="loading.submitting" [diameter]="16"></mat-spinner>
+      </button>
+    </div>
+    }
     <!-- Buttons -->
     <div class="flex justify-end">
       @if(Page === 'Department') {
@@ -54,6 +69,28 @@
         class="bg-blue-500 text-white px-2 py-2 rounded hover:bg-blue-700 mx-2">OPD</button>
       <button (click)="sendToIPD()" [disabled]="true"
         class="cursor-not-allowed bg-blue-500 text-white px-2 py-2 rounded hover:bg-blue-700">IPD</button>
+      }
+    </div>
+    <div class="table-container max-h-64 overflow-scroll">
+      @if(Page === 'opdManagement' && ELEMENT_DATA.length > 0) {
+      <div class="mat-elevation-z8 mt-4">
+        <table mat-table [dataSource]="dataSource">
+  
+          <ng-container matColumnDef="row">
+            <th mat-header-cell *matHeaderCellDef> S.R. No </th>
+            <td mat-cell *matCellDef="let element"> {{element.row}} </td>
+          </ng-container>
+  
+          <ng-container matColumnDef="chiefComplaintName">
+            <th mat-header-cell *matHeaderCellDef> Chief Complaint Name </th>
+            <td class="text-nowrap" mat-cell *matCellDef="let element"> {{element.value}}</td>
+          </ng-container>
+  
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  
+        </table>
+      </div>
       }
     </div>
   </div>

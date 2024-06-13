@@ -27,6 +27,7 @@ export class TextFieldComponent {
   @Input() placeHolder: string = '';
   @Input() required: boolean = false;
   @Input() type: string = 'text';
+  @Input() autoComplete: string = 'on';
 
   private onChange: (value: any) => void = () => {};
   private onTouched: () => void = () => {};

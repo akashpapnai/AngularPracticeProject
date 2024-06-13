@@ -136,8 +136,9 @@
     </div>
     <!-- Doctor -->
     <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col mt-1">
-      <app-drop-down (ngModelChange)="doctorChanged()" [(ngModel)]="managementClass.doctor" [value]="managementClass.doctor" [list]="doctorList"
-        [name]="'doctor'" [title]="'Doctor'" [disabled]="false" [required]="true"></app-drop-down>
+      <app-drop-down (ngModelChange)="doctorChanged()" [(ngModel)]="managementClass.doctor"
+        [value]="managementClass.doctor" [list]="doctorList" [name]="'doctor'" [title]="'Doctor'" [disabled]="false"
+        [required]="true"></app-drop-down>
     </div>
     <!-- Department -->
     <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col mt-1">
@@ -181,11 +182,25 @@
         [required]="true"></app-drop-down>
     </div>
     <!-- Chief Complain -->
-    <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col mt-1">
-      <app-drop-down [(ngModel)]="managementClass.chiefComplains" [value]="managementClass.chiefComplains"
-        [list]="chiefComplainsList" [name]="'chiefComplains'" [title]="'Chief Complains'" [disabled]="false"
-        [required]="true"></app-drop-down>
+    <div class="w-full md:w-1/4 flex flex-wrap">
+      <div class="w-11/12 md:w-11/12 ps-3 mb-6 md:mb-0 flex flex-col mt-1">
+        <app-drop-down [(ngModel)]="managementClass.chiefComplains" [value]="managementClass.chiefComplains"
+          [list]="chiefComplainsList" [name]="'chiefComplains'" [title]="'Chief Complains'" [disabled]="false"
+          [required]="true"></app-drop-down>
+      </div>
+      <div class="w-1/12 md:w-1/12 ps-2 pe-3 mb-6 md:mb-0 flex flex-col mt-1 items-center justify-center h-18 bg-white">
+        <label for="mlc" class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">
+          &nbsp;
+        </label>
+        <a class="cursor-pointer" (click)="openDialogBox()">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+            <rect x="10" y="4" width="4" height="16" />
+            <rect x="4" y="10" width="16" height="4" />
+          </svg>
+        </a>
+      </div>
     </div>
+
     <!-- Paid Amount -->
     <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col mt-1">
       <app-text-field [(ngModel)]="managementClass.paidAmount" [value]="managementClass.paidAmount"
@@ -297,3 +312,5 @@
     </button>
   </div>
 </form>
+
+<app-dialog-box *ngIf="openDialog" [Page]="'opdManagement'" (close)="hideDialogBox()"></app-dialog-box>

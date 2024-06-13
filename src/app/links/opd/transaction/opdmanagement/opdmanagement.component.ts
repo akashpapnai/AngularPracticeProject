@@ -18,6 +18,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner'
 import { OpdManagementService, managementClass } from '../../../../services/opd-management.service';
 import { ActivatedRoute } from '@angular/router';
 import { UserData } from './interfaces';
+import { DialogBoxComponent } from '../../../../shared/dialog-box/dialog-box.component';
 
 const moment = _rollupMoment || _moment;
 export const DATE_FORMATS = {
@@ -45,7 +46,8 @@ export const DATE_FORMATS = {
     AutoCompleteComponent,
     DropDownComponent,
     MatRadioModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    DialogBoxComponent
   ],
   providers: [
     provideNativeDateAdapter(),
@@ -81,6 +83,7 @@ export class OpdmanagementComponent {
   public paymentModes: any[];
   public managementClass = this.service.mClass;
   public idFromUrl: string = '';
+  public openDialog: boolean = false;
 
   uhidControl = new FormControl('');
   opidControl = new FormControl('');
@@ -265,5 +268,13 @@ export class OpdmanagementComponent {
 
       this.loading.resetting = false;
     }, 500);
+  }
+
+  public openDialogBox() {
+    this.openDialog = true;
+  }
+  public hideDialogBox() {
+    this.openDialog = false;
+    this.chiefComplainsList = this.service.getAllChiefComplains();
   }
 }

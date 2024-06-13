@@ -49,7 +49,7 @@ export interface consultationTypeResponse {
  whichConsultation: string;
 }
 export interface disApprovedByResponse {
- allAuthorizedDoctors: any[];
+ allAuthorizedEmployees: any[];
 }
 export interface chiefComplainsResponse {
  allComplains: any[];
