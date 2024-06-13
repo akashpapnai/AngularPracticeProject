@@ -189,6 +189,50 @@ export class DialogBoxService {
    })
   })
  }
+
+ public async EmployeeEdit(Id: number): Promise<string> {
+  return new Promise<string>(async (resolve) => {
+   const EmployeeData: editEmployeeInput = { EmployeeId: Id };
+   const resp = await this.http.put<responseStatus>(this.apiUrl + "/Employee/EditEmployee", JSON.stringify(EmployeeData));
+   resp.subscribe({
+    next: (response) => {
+     if (response.status > 0) {
+      resolve('Employee Edit Successful');
+     }
+     else {
+      resolve('Something went wrong while Editing');
+     }
+    },
+    error: () => {
+     resolve('Error Response from Server. Unable to Edit');
+    }
+   })
+  });
+ }
+
+ public async EmployeeDelete(Id: number): Promise<string> {
+  return new Promise<string>(async (resolve) => {
+   const resp = this.http.delete<responseStatus>(this.apiUrl + "/Employee/DeleteEmployee", {
+    headers: this.token, params: {
+     'EmployeeId': Id
+    }
+   });
+   resp.subscribe({
+    next: (response) => {
+     if (response.status > 0) {
+      resolve('Employee Delete Successful');
+
+     }
+     else {
+      resolve('Something went wrong while Deleting');
+     }
+    },
+    error: () => {
+     resolve('Error Response from Server. Unable to Delete');
+    }
+   })
+  })
+ }
 }
 
 interface editInput {
@@ -205,6 +249,10 @@ interface editCompanyInput {
 
 interface editDoctorInput {
  DoctorId: number
+}
+
+interface editEmployeeInput {
+ EmployeeId: number
 }
 
 interface responseStatus {

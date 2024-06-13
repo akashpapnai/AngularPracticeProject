@@ -81,6 +81,22 @@ export class DialogBoxComponent {
     }
   }
 
+  public async editEmployee() {
+    const alertResponse = await this.service.EmployeeEdit(this.Id);
+    alert(alertResponse);
+    if (typeof alertResponse !== 'undefined' && alertResponse === 'Employee Edit Successful') {
+      this.closeDialog();
+    }
+  }
+
+  public async deleteEmployee() {
+    const alertResponse = await this.service.EmployeeDelete(this.Id);
+    alert(alertResponse);
+    if (typeof alertResponse !== 'undefined' && alertResponse === 'Employee Delete Successful') {
+      this.closeDialog();
+    }
+  }
+
   public sendToOPD() {
     this.router.navigate(['opd/opdmanagement',this.Id]);
   }

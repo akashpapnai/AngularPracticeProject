@@ -1,0 +1,322 @@
+<app-navbar></app-navbar>
+
+<div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 mt-4">
+  <div class="w-full md:w-1/5 px-3 mb-6 md:mb-0">
+    <div class="items-start flex flex-wrap justify-start -mx-3 mb-2">
+      <button (click)="employeesList()" *ngIf="!showEmployees" matTooltip="All Existing Employees List"
+        mat-raised-button type="button"
+        class="cursor-pointer text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-xs px-3 py-2 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
+        All Employees
+      </button>
+
+      <button (click)="formToAddNewEmployee()" *ngIf="showEmployees" matTooltip="Add New Employee"
+        mat-raised-button type="button"
+        class="cursor-pointer text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-xs px-3 py-2 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
+        Add Employee
+      </button>
+    </div>
+  </div>
+</div>
+<div class="table-container ms-4 me-4 mb-0">
+  <div class="w-full px-3 mb-6 md:mb-0">
+    @if(addingEmployee === false) {
+    @if(ELEMENT_DATA.length > 0) {
+    <div class="mat-elevation-z8 mt-4">
+      <table mat-table [dataSource]="dataSource">
+
+        <ng-container matColumnDef="row">
+          <th mat-header-cell *matHeaderCellDef> S.R. No </th>
+          <td mat-cell *matCellDef="let element"> {{element.row}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="employeeName">
+          <th mat-header-cell *matHeaderCellDef> Employee Name </th>
+          <td class="text-nowrap" mat-cell *matCellDef="let element"> {{element.employeeName}}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="createdBy">
+          <th mat-header-cell *matHeaderCellDef> Created By </th>
+          <td mat-cell *matCellDef="let element"> {{element.createdBy}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="canAuthorizePatient">
+          <th mat-header-cell *matHeaderCellDef> Authorization </th>
+          <td class="flex items-start justify-start" mat-cell *matCellDef="let element">
+            <ng-container *ngIf="element.CanAuthorizePatients == true">
+              <svg viewBox="0 0 350 350" width="60px" height="60px" xmlns="http://www.w3.org/2000/svg"
+                xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1"
+                style="shape-rendering:geometricPrecision; text-rendering:geometricPrecision; image-rendering:optimizeQuality; fill-rule:evenodd; clip-rule:evenodd">
+                <g>
+                  <path style="opacity:1" fill="#3324b9"
+                    d="M 85.5,9.5 C 87.8383,11.0395 90.5049,11.7062 93.5,11.5C 98.1318,14.3892 103.132,16.7225 108.5,18.5C 108.973,19.9063 109.973,20.573 111.5,20.5C 112.262,22.2624 113.596,23.2624 115.5,23.5C 118.5,27.1667 121.833,30.5 125.5,33.5C 125.738,35.4044 126.738,36.7377 128.5,37.5C 128.427,39.0269 129.094,40.0269 130.5,40.5C 130.427,42.0269 131.094,43.0269 132.5,43.5C 133.674,44.5137 134.34,45.847 134.5,47.5C 134.861,51.9155 136.194,55.9155 138.5,59.5C 139.434,60.5676 139.768,61.901 139.5,63.5C 140.452,76.7855 139.118,89.7855 135.5,102.5C 133.787,103.635 133.12,105.302 133.5,107.5C 128.505,114.683 122.838,121.516 116.5,128C 111.434,131.522 106.434,135.022 101.5,138.5C 99.302,138.12 97.6354,138.787 96.5,140.5C 93.094,142.109 89.4273,143.276 85.5,144C 76.8333,144.667 68.1667,144.667 59.5,144C 57.9419,143.79 56.6085,143.29 55.5,142.5C 53.4855,141.076 51.1522,140.41 48.5,140.5C 45.0884,139.925 42.0884,138.592 39.5,136.5C 39.0269,135.094 38.0269,134.427 36.5,134.5C 36.0269,133.094 35.0269,132.427 33.5,132.5C 32.7377,130.738 31.4044,129.738 29.5,129.5C 17.0375,117.568 9.03755,103.234 5.5,86.5C 5.17336,77.3178 5.5067,68.3178 6.5,59.5C 9.22751,51.3782 13.0608,43.7116 18,36.5C 23.4001,29.5983 29.5668,23.5983 36.5,18.5C 38.674,18.2503 40.3406,17.2503 41.5,15.5C 46.5166,14.6072 51.1832,12.9405 55.5,10.5C 56.6085,9.71003 57.9419,9.21003 59.5,9C 68.3433,8.17639 77.0099,8.34305 85.5,9.5 Z M 29.5,113.5 C 29.2624,111.596 28.2624,110.262 26.5,109.5C 26.573,107.973 25.9063,106.973 24.5,106.5C 22.1281,101.098 19.7947,95.7651 17.5,90.5C 16.6869,82.8623 16.3536,75.1956 16.5,67.5C 17.6641,63.9892 18.6641,60.3225 19.5,56.5C 34.9723,26.1023 59.3056,15.269 92.5,24C 111.777,32.3697 123.611,46.8697 128,67.5C 130.236,101.882 114.736,123.382 81.5,132C 61.0297,134.456 43.6964,128.289 29.5,113.5 Z" />
+                </g>
+                <g>
+                  <path style="opacity:0.055" fill="#c7c2eb"
+                    d="M 85.5,9.5 C 88.4282,9.56513 91.0948,10.2318 93.5,11.5C 90.5049,11.7062 87.8383,11.0395 85.5,9.5 Z" />
+                </g>
+                <g>
+                  <path style="opacity:0.635" fill="#aca5e2"
+                    d="M 55.5,10.5 C 51.1832,12.9405 46.5166,14.6072 41.5,15.5C 45.6953,12.7459 50.3619,11.0792 55.5,10.5 Z" />
+                </g>
+                <g>
+                  <path style="opacity:0.216" fill="#c2bce9"
+                    d="M 93.5,11.5 C 99.1916,12.5144 104.192,14.8478 108.5,18.5C 103.132,16.7225 98.1318,14.3892 93.5,11.5 Z" />
+                </g>
+                <g>
+                  <path style="opacity:0.118" fill="#dedcf3"
+                    d="M 41.5,15.5 C 40.3406,17.2503 38.674,18.2503 36.5,18.5C 37.6594,16.7497 39.326,15.7497 41.5,15.5 Z" />
+                </g>
+                <g>
+                  <path style="opacity:0.125" fill="#d4d1f0"
+                    d="M 108.5,18.5 C 110.027,18.427 111.027,19.0937 111.5,20.5C 109.973,20.573 108.973,19.9063 108.5,18.5 Z" />
+                </g>
+                <g>
+                  <path style="opacity:0.02" fill="#d2ceef"
+                    d="M 111.5,20.5 C 113.404,20.7376 114.738,21.7376 115.5,23.5C 113.596,23.2624 112.262,22.2624 111.5,20.5 Z" />
+                </g>
+                <g>
+                  <path style="opacity:0.004" fill="#d9d6f1"
+                    d="M 115.5,23.5 C 119.833,25.8333 123.167,29.1667 125.5,33.5C 121.833,30.5 118.5,27.1667 115.5,23.5 Z" />
+                </g>
+                <g>
+                  <path style="opacity:0.255" fill="#d0cdef"
+                    d="M 36.5,18.5 C 29.5668,23.5983 23.4001,29.5983 18,36.5C 13.0608,43.7116 9.22751,51.3782 6.5,59.5C 10.4229,41.296 20.4229,27.6294 36.5,18.5 Z" />
+                </g>
+                <g>
+                  <path style="opacity:0.373" fill="#c2bfea"
+                    d="M 125.5,33.5 C 127.262,34.2623 128.262,35.5956 128.5,37.5C 126.738,36.7377 125.738,35.4044 125.5,33.5 Z" />
+                </g>
+                <g>
+                  <path style="opacity:0.251" fill="#ccc9ed"
+                    d="M 128.5,37.5 C 129.906,37.9731 130.573,38.9731 130.5,40.5C 129.094,40.0269 128.427,39.0269 128.5,37.5 Z" />
+                </g>
+                <g>
+                  <path style="opacity:0.157" fill="#dad8f2"
+                    d="M 130.5,40.5 C 131.906,40.9731 132.573,41.9731 132.5,43.5C 131.094,43.0269 130.427,42.0269 130.5,40.5 Z" />
+                </g>
+                <g>
+                  <path style="opacity:0.208" fill="#cbc7ed"
+                    d="M 29.5,113.5 C 43.6964,128.289 61.0297,134.456 81.5,132C 114.736,123.382 130.236,101.882 128,67.5C 123.611,46.8697 111.777,32.3697 92.5,24C 59.3056,15.269 34.9723,26.1023 19.5,56.5C 27.0063,35.8722 41.6729,23.3722 63.5,19C 98.6366,17.4793 120.803,33.6459 130,67.5C 130.879,107.953 111.212,130.286 71,134.5C 54.7973,133.564 41.1306,127.231 30,115.5C 29.5357,114.906 29.369,114.239 29.5,113.5 Z" />
+                </g>
+                <g>
+                  <path style="opacity:1" fill="#5fca2b"
+                    d="M 112.5,44.5 C 114.725,48.2347 117.558,51.568 121,54.5C 121.49,55.7932 121.657,57.1266 121.5,58.5C 101.167,78.1667 81.1667,98.1667 61.5,118.5C 59.8333,119.833 58.1667,119.833 56.5,118.5C 46.2021,107.702 35.7021,97.0349 25,86.5C 24.3333,84.5 24.3333,82.5 25,80.5C 27.8333,77.6667 30.6667,74.8333 33.5,72C 34.8333,71.3333 36.1667,71.3333 37.5,72C 44.1667,78.6667 50.8333,85.3333 57.5,92C 58.5,92.6667 59.5,92.6667 60.5,92C 76.1667,76.3333 91.8333,60.6667 107.5,45C 109.134,44.5065 110.801,44.3398 112.5,44.5 Z" />
+                </g>
+                <g>
+                  <path style="opacity:0.533" fill="#d1efc1"
+                    d="M 112.5,44.5 C 115.797,47.2956 118.964,50.2956 122,53.5C 122.78,55.3869 122.613,57.0536 121.5,58.5C 121.657,57.1266 121.49,55.7932 121,54.5C 117.558,51.568 114.725,48.2347 112.5,44.5 Z" />
+                </g>
+                <g>
+                  <path style="opacity:0.62" fill="#b4ade5"
+                    d="M 134.5,47.5 C 136.806,51.0845 138.139,55.0845 138.5,59.5C 136.194,55.9155 134.861,51.9155 134.5,47.5 Z" />
+                </g>
+                <g>
+                  <path style="opacity:0.329" fill="#c8c3ec"
+                    d="M 19.5,56.5 C 18.6641,60.3225 17.6641,63.9892 16.5,67.5C 16.1257,63.3526 17.1257,59.6859 19.5,56.5 Z" />
+                </g>
+                <g>
+                  <path style="opacity:0.055" fill="#dff4d4"
+                    d="M 112.5,44.5 C 110.801,44.3398 109.134,44.5065 107.5,45C 91.8333,60.6667 76.1667,76.3333 60.5,92C 59.5,92.6667 58.5,92.6667 57.5,92C 50.8333,85.3333 44.1667,78.6667 37.5,72C 36.1667,71.3333 34.8333,71.3333 33.5,72C 30.6667,74.8333 27.8333,77.6667 25,80.5C 24.3333,82.5 24.3333,84.5 25,86.5C 35.7021,97.0349 46.2021,107.702 56.5,118.5C 45.2534,108.757 34.4201,98.4237 24,87.5C 22.627,85.3046 22.2937,82.9712 23,80.5C 26.1667,77.3333 29.3333,74.1667 32.5,71C 34.5,70.3333 36.5,70.3333 38.5,71C 45.3333,77.8333 52.1667,84.6667 59,91.5C 74.8333,75.6667 90.6667,59.8333 106.5,44C 108.712,43.2109 110.712,43.3775 112.5,44.5 Z" />
+                </g>
+                <g>
+                  <path style="opacity:0.224" fill="#b3aee5"
+                    d="M 139.5,63.5 C 140.657,71.9901 140.824,80.6567 140,89.5C 139.249,94.2109 137.749,98.5443 135.5,102.5C 139.118,89.7855 140.452,76.7855 139.5,63.5 Z" />
+                </g>
+                <g>
+                  <path style="opacity:0.22" fill="#ccc8ed"
+                    d="M 5.5,86.5 C 9.03755,103.234 17.0375,117.568 29.5,129.5C 15.0409,118.928 7.04087,104.595 5.5,86.5 Z" />
+                </g>
+                <g>
+                  <path style="opacity:0.118" fill="#d2ceef"
+                    d="M 17.5,90.5 C 19.7947,95.7651 22.1281,101.098 24.5,106.5C 20.2509,102.113 17.9176,96.7797 17.5,90.5 Z" />
+                </g>
+                <g>
+                  <path style="opacity:0.463" fill="#b6afe6"
+                    d="M 135.5,102.5 C 135.598,104.553 134.931,106.22 133.5,107.5C 133.12,105.302 133.787,103.635 135.5,102.5 Z" />
+                </g>
+                <g>
+                  <path style="opacity:0.035" fill="#e9f7e2"
+                    d="M 121.5,58.5 C 102.753,78.7486 83.4201,98.5819 63.5,118C 62.9056,118.464 62.2389,118.631 61.5,118.5C 81.1667,98.1667 101.167,78.1667 121.5,58.5 Z" />
+                </g>
+                <g>
+                  <path style="opacity:0.157" fill="#dedcf3"
+                    d="M 24.5,106.5 C 25.9063,106.973 26.573,107.973 26.5,109.5C 25.0937,109.027 24.427,108.027 24.5,106.5 Z" />
+                </g>
+                <g>
+                  <path style="opacity:0.247" fill="#d6d4f0"
+                    d="M 26.5,109.5 C 28.2624,110.262 29.2624,111.596 29.5,113.5C 27.7376,112.738 26.7376,111.404 26.5,109.5 Z" />
+                </g>
+                <g>
+                  <path style="opacity:0.051" fill="#d3cfef"
+                    d="M 133.5,107.5 C 126.775,121.892 116.108,132.225 101.5,138.5C 106.434,135.022 111.434,131.522 116.5,128C 122.838,121.516 128.505,114.683 133.5,107.5 Z" />
+                </g>
+                <g>
+                  <path style="opacity:0.298" fill="#cfccee"
+                    d="M 29.5,129.5 C 31.4044,129.738 32.7377,130.738 33.5,132.5C 31.5956,132.262 30.2623,131.262 29.5,129.5 Z" />
+                </g>
+                <g>
+                  <path style="opacity:0.196" fill="#d6d4f0"
+                    d="M 33.5,132.5 C 35.0269,132.427 36.0269,133.094 36.5,134.5C 34.9731,134.573 33.9731,133.906 33.5,132.5 Z" />
+                </g>
+                <g>
+                  <path style="opacity:0.118" fill="#e1dff4"
+                    d="M 36.5,134.5 C 38.0269,134.427 39.0269,135.094 39.5,136.5C 37.9731,136.573 36.9731,135.906 36.5,134.5 Z" />
+                </g>
+                <g>
+                  <path style="opacity:0.102" fill="#cac6ec"
+                    d="M 101.5,138.5 C 100.07,139.537 98.403,140.204 96.5,140.5C 97.6354,138.787 99.302,138.12 101.5,138.5 Z" />
+                </g>
+                <g>
+                  <path style="opacity:0.545" fill="#bcb7e8"
+                    d="M 48.5,140.5 C 51.1522,140.41 53.4855,141.076 55.5,142.5C 52.8478,142.59 50.5145,141.924 48.5,140.5 Z" />
+                </g>
+              </svg>
+            </ng-container>
+            <ng-container *ngIf="element.CanAuthorizePatients == false">
+              <svg viewBox="0 0 350 350" width="60px" height="60px" xmlns="http://www.w3.org/2000/svg"
+                xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1"
+                style="shape-rendering:geometricPrecision; text-rendering:geometricPrecision; image-rendering:optimizeQuality; fill-rule:evenodd; clip-rule:evenodd">
+                <g>
+                  <path style="opacity:1" fill="#3324b9"
+                    d="M 90.5,10.5 C 92.4385,12.1628 94.7718,12.8294 97.5,12.5C 99.5529,12.4021 101.22,13.0687 102.5,14.5C 112.603,19.5926 121.603,26.2592 129.5,34.5C 132.841,40.1716 136.175,45.8383 139.5,51.5C 139.69,54.855 140.69,57.855 142.5,60.5C 143.493,69.3178 143.827,78.3178 143.5,87.5C 138.447,111.88 124.78,129.547 102.5,140.5C 99.2154,140.928 96.2154,141.928 93.5,143.5C 92.3915,144.29 91.0581,144.79 89.5,145C 80.8333,145.667 72.1667,145.667 63.5,145C 61.9419,144.79 60.6085,144.29 59.5,143.5C 57.4855,142.076 55.1522,141.41 52.5,141.5C 51.3646,139.787 49.698,139.12 47.5,139.5C 45.847,139.34 44.5137,138.674 43.5,137.5C 43.0269,136.094 42.0269,135.427 40.5,135.5C 40.0269,134.094 39.0269,133.427 37.5,133.5C 36.7377,131.738 35.4044,130.738 33.5,130.5C 29.5032,126.335 25.6699,122.002 22,117.5C 19.3922,112.603 16.5589,107.937 13.5,103.5C 12.6579,98.8987 11.3246,94.5654 9.5,90.5C 8.34305,82.0099 8.17639,73.3433 9,64.5C 9.21003,62.9419 9.71003,61.6085 10.5,60.5C 12.9405,56.1832 14.6072,51.5166 15.5,46.5C 15.3284,45.5084 15.6618,44.8417 16.5,44.5C 17.9063,44.0269 18.573,43.0269 18.5,41.5C 24.1305,34.2018 30.4639,27.5352 37.5,21.5C 39.0269,21.573 40.0269,20.9063 40.5,19.5C 42.0269,19.573 43.0269,18.9063 43.5,17.5C 43.8417,16.6618 44.5084,16.3284 45.5,16.5C 50.5166,15.6072 55.1832,13.9405 59.5,11.5C 60.6085,10.71 61.9419,10.21 63.5,10C 72.5779,9.19648 81.5779,9.36315 90.5,10.5 Z M 113.5,34.5 C 122.973,44.1163 129.307,55.4496 132.5,68.5C 132.646,76.1956 132.313,83.8623 131.5,91.5C 119.552,123.484 96.5517,136.984 62.5,132C 51.2087,128.695 41.542,122.862 33.5,114.5C 28.7011,107.235 24.7011,99.5685 21.5,91.5C 16.8865,57.5399 30.5531,34.7065 62.5,23C 74.0297,20.5664 85.3631,21.2331 96.5,25C 102.544,27.684 108.211,30.8506 113.5,34.5 Z" />
+                </g>
+                <g>
+                  <path style="opacity:0.506" fill="#b5afe6"
+                    d="M 90.5,10.5 C 93.0673,10.7215 95.4006,11.3882 97.5,12.5C 94.7718,12.8294 92.4385,12.1628 90.5,10.5 Z" />
+                </g>
+                <g>
+                  <path style="opacity:0.698" fill="#a097de"
+                    d="M 59.5,11.5 C 55.1832,13.9405 50.5166,15.6072 45.5,16.5C 49.6953,13.7459 54.3619,12.0792 59.5,11.5 Z" />
+                </g>
+                <g>
+                  <path style="opacity:0.42" fill="#c7c3eb"
+                    d="M 43.5,17.5 C 43.0269,18.9063 42.0269,19.573 40.5,19.5C 40.9731,18.0937 41.9731,17.427 43.5,17.5 Z" />
+                </g>
+                <g>
+                  <path style="opacity:0.471" fill="#bcb8e8"
+                    d="M 40.5,19.5 C 40.0269,20.9063 39.0269,21.573 37.5,21.5C 37.9731,20.0937 38.9731,19.427 40.5,19.5 Z" />
+                </g>
+                <g>
+                  <path style="opacity:0.208" fill="#d8d5f1"
+                    d="M 102.5,14.5 C 113.797,18.1386 122.797,24.8053 129.5,34.5C 121.603,26.2592 112.603,19.5926 102.5,14.5 Z" />
+                </g>
+                <g>
+                  <path style="opacity:0.004" fill="#d2ceef"
+                    d="M 113.5,34.5 C 108.211,30.8506 102.544,27.684 96.5,25C 85.3631,21.2331 74.0297,20.5664 62.5,23C 30.5531,34.7065 16.8865,57.5399 21.5,91.5C 15.1061,65.7401 22.7728,44.9068 44.5,29C 65.4731,16.4726 86.4731,16.4726 107.5,29C 109.996,30.331 111.996,32.1644 113.5,34.5 Z" />
+                </g>
+                <g>
+                  <path style="opacity:0.412" fill="#c5c1eb"
+                    d="M 37.5,21.5 C 30.4639,27.5352 24.1305,34.2018 18.5,41.5C 22.7806,32.886 29.1139,26.2194 37.5,21.5 Z" />
+                </g>
+                <g>
+                  <path style="opacity:0.231" fill="#cbc7ed"
+                    d="M 113.5,34.5 C 122.874,41.5445 129.04,50.8779 132,62.5C 132.495,64.4727 132.662,66.4727 132.5,68.5C 129.307,55.4496 122.973,44.1163 113.5,34.5 Z" />
+                </g>
+                <g>
+                  <path style="opacity:0.165" fill="#d9d7f2"
+                    d="M 18.5,41.5 C 18.573,43.0269 17.9063,44.0269 16.5,44.5C 16.427,42.9731 17.0937,41.9731 18.5,41.5 Z" />
+                </g>
+                <g>
+                  <path style="opacity:0.133" fill="#dad8f2"
+                    d="M 129.5,34.5 C 134.463,39.1474 137.796,44.8141 139.5,51.5C 136.175,45.8383 132.841,40.1716 129.5,34.5 Z" />
+                </g>
+                <g>
+                  <path style="opacity:0.533" fill="#b5afe6"
+                    d="M 15.5,46.5 C 14.6072,51.5166 12.9405,56.1832 10.5,60.5C 11.0792,55.3619 12.7459,50.6953 15.5,46.5 Z" />
+                </g>
+                <g>
+                  <path style="opacity:0.369" fill="#c8c4ec"
+                    d="M 139.5,51.5 C 141.472,54.0836 142.472,57.0836 142.5,60.5C 140.69,57.855 139.69,54.855 139.5,51.5 Z" />
+                </g>
+                <g>
+                  <path style="opacity:0.333" fill="#c3beeb"
+                    d="M 9.5,90.5 C 11.3246,94.5654 12.6579,98.8987 13.5,103.5C 11.1022,99.597 9.76887,95.2637 9.5,90.5 Z" />
+                </g>
+                <g>
+                  <path style="opacity:0.11" fill="#dedcf4"
+                    d="M 21.5,91.5 C 24.7011,99.5685 28.7011,107.235 33.5,114.5C 32.2058,113.71 31.0391,112.71 30,111.5C 25.7502,105.345 22.9168,98.6783 21.5,91.5 Z" />
+                </g>
+                <g>
+                  <path style="opacity:0.353" fill="#c5c0eb"
+                    d="M 13.5,103.5 C 16.5589,107.937 19.3922,112.603 22,117.5C 25.6699,122.002 29.5032,126.335 33.5,130.5C 23.8053,123.797 17.1386,114.797 13.5,103.5 Z" />
+                </g>
+                <g>
+                  <path style="opacity:0.161" fill="#cecaee"
+                    d="M 143.5,87.5 C 141.409,106.425 132.742,121.591 117.5,133C 113.025,136.571 108.025,139.071 102.5,140.5C 124.78,129.547 138.447,111.88 143.5,87.5 Z" />
+                </g>
+                <g>
+                  <path style="opacity:0.208" fill="#cac5ed"
+                    d="M 131.5,91.5 C 126.197,112.971 112.864,126.805 91.5,133C 72.8454,138.086 55.8454,134.753 40.5,123C 37.5532,120.564 35.2199,117.731 33.5,114.5C 41.542,122.862 51.2087,128.695 62.5,132C 96.5517,136.984 119.552,123.484 131.5,91.5 Z" />
+                </g>
+                <g>
+                  <path style="opacity:0.373" fill="#c3bfeb"
+                    d="M 33.5,130.5 C 35.4044,130.738 36.7377,131.738 37.5,133.5C 35.5956,133.262 34.2623,132.262 33.5,130.5 Z" />
+                </g>
+                <g>
+                  <path style="opacity:0.259" fill="#cbc9ed"
+                    d="M 37.5,133.5 C 39.0269,133.427 40.0269,134.094 40.5,135.5C 38.9731,135.573 37.9731,134.906 37.5,133.5 Z" />
+                </g>
+                <g>
+                  <path style="opacity:0.165" fill="#d9d7f2"
+                    d="M 40.5,135.5 C 42.0269,135.427 43.0269,136.094 43.5,137.5C 41.9731,137.573 40.9731,136.906 40.5,135.5 Z" />
+                </g>
+                <g>
+                  <path style="opacity:0.651" fill="#ada6e3"
+                    d="M 47.5,139.5 C 49.698,139.12 51.3646,139.787 52.5,141.5C 50.597,141.204 48.9303,140.537 47.5,139.5 Z" />
+                </g>
+                <g>
+                  <path style="opacity:0.565" fill="#b7b2e6"
+                    d="M 52.5,141.5 C 55.1522,141.41 57.4855,142.076 59.5,143.5C 56.8478,143.59 54.5145,142.924 52.5,141.5 Z" />
+                </g>
+                <g>
+                  <path style="opacity:0.012" fill="#dbd8f3"
+                    d="M 102.5,140.5 C 99.9164,142.472 96.9164,143.472 93.5,143.5C 96.2154,141.928 99.2154,140.928 102.5,140.5 Z" />
+                </g>
+              </svg>
+            </ng-container>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef> Actions </th>
+          <td mat-cell *matCellDef="let element"> <a (click)="employeeEdit(element.employeeId)"
+              class="hover:text-blue-600 cursor-pointer">Edit</a>&nbsp;
+            <a (click)="employeeDelete(element.employeeId)" class="hover:text-blue-600 cursor-pointer">Delete</a>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+      </table>
+      <mat-paginator [pageSizeOptions]="[5, 10, 20] " showFirstLastButtons aria-label="Select page of Employees"></mat-paginator>
+    </div>
+    }
+    }
+    @else {
+    <form #myForm="ngForm" class="mt-4 w-full max-w-7xl mx-auto">
+      <div class="flex flex-wrap -mx-3 mb-6">
+        <div class="w-4/5 md:w-4/5 px-3 mb-6 md:mb-0 mt-1">
+          <app-text-field [(ngModel)]="employeeName" [value]="employeeName" [disabled]="false"
+            [name]="'EmployeeName'" [required]="true" [type]="'text'" [placeHolder]="'Employee Name'"
+            [title]="'Employee Name'"></app-text-field>
+        </div>
+        <div class="w-1/5 md:w-1/5 px-3 mb-6 md:mb-0 flex flex-col mt-1">
+          <label for="canAuthorizePatient" class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">
+            Can Give Discount
+          </label>
+          <input type="checkbox" name="canAuthorizePatient" (change)="canAuthorizePatient=!canAuthorizePatient" [value]="canAuthorizePatient"
+            class="outline-none appearance-none block bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" />
+        </div>
+      </div>
+      <button [disabled]="loading.resetting || loading.submitting" (click)="addEmployee(myForm)"
+        matTooltip="Add New Employee" mat-raised-button type="button"
+        class="cursor-pointer text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-xs px-3 py-2 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
+        <span *ngIf="!loading.submitting">Add Employee</span>
+        <mat-spinner *ngIf="loading.submitting" [diameter]="16"></mat-spinner>
+      </button>
+    </form>
+    }
+  </div>
+  <app-snackbar [message]="snackBar.message" [show]="snackBar.show"></app-snackbar>
+  <app-dialog-box *ngIf="openDialog" [Page]="'Employee'" [Id]="changeEmployeeId" [Action]="action" (close)="hideDialog()"></app-dialog-box>

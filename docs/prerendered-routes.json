@@ -6,6 +6,7 @@
     "/admin/companymaster",
     "/admin/departmentmaster",
     "/admin/doctormaster",
+    "/admin/employeemaster",
     "/bloodbank",
     "/homePage",
     "/hrandpayroll",

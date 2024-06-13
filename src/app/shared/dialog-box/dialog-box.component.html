@@ -21,6 +21,9 @@
     @else if (Page === 'Doctor') {
     <h1>Doctor {{Action}} {{Id}}</h1>
     }
+    @else if (Page === 'Employee') {
+    <h1>Employee {{Action}} {{Id}}</h1>
+    }
     @else if (Page === 'PatientRegistered') {
     <p class="text-base font-bold mb-4 pr-6">Do you want to register patient to OPD or IPD?</p>
     }
@@ -40,6 +43,10 @@
       }
       @else if (Page === 'Doctor') {
       <button (click)="Action == 'Edit' ? editDoctor() : deleteDoctor()"
+        class=" bg-blue-500 text-white px-2 py-2 rounded hover:bg-blue-700">{{Action}}</button>
+      }
+      @else if (Page === 'Employee') {
+      <button (click)="Action == 'Edit' ? editEmployee() : deleteEmployee()"
         class=" bg-blue-500 text-white px-2 py-2 rounded hover:bg-blue-700">{{Action}}</button>
       }
       @else if (Page === 'PatientRegistered') {
