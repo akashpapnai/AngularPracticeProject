@@ -277,6 +277,26 @@
         </td>
       </ng-container>
 
+      <ng-container matColumnDef="firstTimeConsultationCharge">
+        <th mat-header-cell *matHeaderCellDef> First Time Consultation Charge </th>
+        <td mat-cell *matCellDef="let element">
+          <input *ngIf="element.doctorName !== 'Self'"
+            class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+            [value]="element.firstTimeConsultationCharge" [(ngModel)]="element.firstTimeConsultationCharge" [placeholder]="'First Time Consultation Charge'"
+            type="number" />
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="followUpConsultationCharge">
+        <th mat-header-cell *matHeaderCellDef> Follow Up Consultation Charge </th>
+        <td mat-cell *matCellDef="let element">
+          <input *ngIf="element.doctorName !== 'Self'"
+            class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+            [value]="element.followUpConsultationCharge" [(ngModel)]="element.followUpConsultationCharge" [placeholder]="'Follow Up Consultation Charge'"
+            type="number" />
+        </td>
+      </ng-container>
+
       <ng-container matColumnDef="actions">
         <th mat-header-cell *matHeaderCellDef> Actions </th>
         <td mat-cell *matCellDef="let element"> <a (click)="doctorEdit(element.doctorId)"
@@ -291,6 +311,14 @@
 
     <mat-paginator [pageSizeOptions]="[5, 10, 20] " showFirstLastButtons aria-label="Select page of Companies">
     </mat-paginator>
+  </div>
+  <div class="items-end flex flex-wrap justify-end -mx-3 mt-4 me-2">
+    <button [disabled]="loading.resetting || loading.submitting" type="button" (click)="saveClick()"
+      [ngClass]="{'cursor-not-allowed':(loading.resetting || loading.submitting)}"
+      class="cursor-pointer text-white bg-gray-700 hover:bg-gray-800 focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-xs px-3 py-2 me-2 mb-2 dark:bg-gray-600 dark:hover:bg-gray-700 focus:outline-none dark:focus:ring-gray-800">
+      <span *ngIf="!loading.submitting">Save</span>
+      <mat-spinner *ngIf="loading.submitting" [diameter]="16"></mat-spinner>
+    </button>
   </div>
   }
   }

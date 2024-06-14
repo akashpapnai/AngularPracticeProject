@@ -137,18 +137,13 @@
     <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col mt-1">
       <app-drop-down (ngModelChange)="doctorChanged()" [(ngModel)]="managementClass.doctor"
         [value]="managementClass.doctor" [list]="doctorList" [name]="'doctor'" [title]="'Doctor'" [disabled]="false"
-        [required]="true"></app-drop-down>
+        [required]="true" (ngModelChange)="getConsultationCharge()"></app-drop-down>
     </div>
     <!-- Department -->
     <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col mt-1">
       <app-drop-down [(ngModel)]="managementClass.department" [value]="managementClass.department"
-        [list]="departmentList" [disabled]="true" [name]="'department'" [title]="'Department'" [required]="true"
-        (ngModelChange)="departmentChanged($event)"></app-drop-down>
-    </div>
-    <!-- Unit -->
-    <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col mt-1">
-      <app-drop-down [(ngModel)]="managementClass.unit" [value]="managementClass.unit" [list]="unitList"
-        [disabled]="false" [name]="'unit'" [title]="'Unit'" [required]="true"></app-drop-down>
+        [list]="departmentList" [disabled]="true" [name]="'department'" [title]="'Department'"
+        [required]="true"></app-drop-down>
     </div>
     <!-- Cnnsultation -->
     <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col mt-1">
@@ -160,7 +155,7 @@
     <div *ngIf="managementClass.doctor !== ''" class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col mt-1">
       <app-text-field [(ngModel)]="managementClass.consultationCharge" [value]="managementClass.consultationCharge"
         [name]="'consultationCharge'" [required]="true" [type]="'text'" [placeHolder]="'Consultation Charge'"
-        [title]="'Consultation Charge'" (ngModelChange)="getConsultationCharge()" [disabled]="true"></app-text-field>
+        [title]="'Consultation Charge'" [disabled]="true"></app-text-field>
     </div>
     <!-- Referred By -->
     <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col mt-1">

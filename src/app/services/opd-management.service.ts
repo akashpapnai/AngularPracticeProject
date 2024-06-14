@@ -355,6 +355,7 @@ export class OpdManagementService {
     });
   }
   public getConsultationCharge(): string {
+    debugger;
     const token_header = new HttpHeaders({
       'Authorization': 'Bearer ' + localStorage.getItem('token')
     });
@@ -394,24 +395,27 @@ export class OpdManagementService {
     }
     return doctors;
   }
-  public getDepartmentOfDoctor(doctorId: number): Promise<number> {
-    return new Promise<number>(async (resolve) => {
+  public getDepartmentAndChargeOfDoctor(doctorId: number, whichConsultation: string): Promise<number[]> {
+    return new Promise<number[]>(async (resolve) => {
+      if(whichConsultation.trim() === '') {
+        resolve([0,-1]);
+      }
       if (typeof localStorage !== 'undefined') {
-  
         const token_header = new HttpHeaders({
           'Authorization': 'Bearer ' + localStorage.getItem('token')
         });
   
         const departments = this.http.get<GotDepartment>(this.lService.__apiURL__ + "/Department/GetDepartmentOfDoctor", { headers: token_header, params: {
-          'docId':doctorId
+          'docId':doctorId,
+          'whichConsultation': parseInt(whichConsultation)
         }});
   
         departments.subscribe({
           next: (data) => {
-            resolve(data.department);
+            resolve([data.department, data.consultationCharge]);
           },
           error: () => {
-            resolve(0);
+            resolve([0,0]);
           }
         });
       }

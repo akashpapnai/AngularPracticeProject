@@ -41,6 +41,7 @@ export interface doctorResponse {
 }
 export interface GotDepartment {
  department: number;
+ consultationCharge: number
 }
 export interface consultChargeResponse {
  consultationCharge: number;

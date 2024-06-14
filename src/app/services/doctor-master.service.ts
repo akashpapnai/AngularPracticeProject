@@ -42,6 +42,32 @@ export class DoctorMasterService {
     );
   }
 
+  public async updateDoctors(data: UpdateDoctorModel[]): Promise<any> {
+    return new Promise<any>(async (resolve) => {
+      let alrt: any = {};
+      console.log(data);
+      const newComp = await this.http.put<doctorAddStatus>(this.apiUrl + '/Doctor/UpdateDoctor', JSON.stringify(data), { headers: this.token });
+
+      newComp.subscribe(
+        {
+          next: (data) => {
+            if (data.status > 0) {
+              alrt = { message: 'Data Updated Successfully', status: 1 };
+            }
+            else {
+              alrt = { message: 'Something went wrong', status: 0 };
+            }
+            resolve(alrt);
+          },
+          error: (err) => {
+            alrt = { message: 'Server not responding', status: 0 };
+            resolve(alrt);
+          }
+        });
+    }
+    );
+  }
+
   public getAllDoctors(): Promise<Doctor[]> {
     return new Promise<Doctor[]>(async (resolve) => {
       const doctors = await this.http.get<DoctorData>(this.apiUrl + '/Doctor/GetAllDoctors', { headers: this.token, params: {
@@ -68,7 +94,15 @@ export interface AddDoctorModel {
   DoctorName: string | null,
   Token: string | null,
   DepartmentId: number,
-  isReferring: boolean
+  isReferring: boolean,
+  firstTimeConsultationCharge: number,
+  followUpConsultationCharge: number
+}
+
+export interface UpdateDoctorModel {
+  doctorId: number,
+  firstTimeConsultationCharge: number,
+  followUpConsultationCharge: number
 }
 
 export interface DoctorData {
@@ -77,9 +111,11 @@ export interface DoctorData {
 
 export interface Doctor {
   doctorId: number;
-  doctorName: number,
+  doctorName: string,
   isActive: string;
   createdBy: string;
   isReferring: boolean;
   row: number;
+  firstTimeConsultationCharge: number;
+  followUpConsultationCharge: number;
 }

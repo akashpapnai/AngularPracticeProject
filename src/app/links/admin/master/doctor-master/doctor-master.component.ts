@@ -11,7 +11,7 @@ import { CommonModule } from '@angular/common';
 import { SnackbarComponent } from '../../../../shared/snackbar/snackbar.component';
 import { TextFieldComponent } from '../../../../shared/inputs/text-field/text-field.component';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { AddDoctorModel, Doctor, DoctorMasterService } from '../../../../services/doctor-master.service';
+import { AddDoctorModel, Doctor, DoctorMasterService, UpdateDoctorModel } from '../../../../services/doctor-master.service';
 import { Title } from '@angular/platform-browser';
 import { DropDownComponent } from '../../../../shared/inputs/drop-down/drop-down.component';
 import { DepartmentMasterService } from '../../../../services/department-master.service';
@@ -54,7 +54,7 @@ export class DoctorMasterComponent {
   }
   public showDoctors: boolean = true;
   public addingDoctor: boolean = false;
-  public displayedColumns: string[] = ['row', 'doctorName', 'createdBy','referringDoctor', 'actions'];
+  public displayedColumns: string[] = ['row', 'doctorName', 'createdBy','referringDoctor','firstTimeConsultationCharge','followUpConsultationCharge', 'actions'];
   public doctorName: string = '';
   public departmentId: number = 0;
   public departmentsList: any[] = [];
@@ -84,6 +84,28 @@ export class DoctorMasterComponent {
     this.dataSource = new MatTableDataSource<Doctor>(this.ELEMENT_DATA);
   }
 
+  public async saveClick() {
+    if(this.validateTable()) {
+      this.loading.submitting = true;
+      const tableData = this.ELEMENT_DATA;
+      const dataToUpdate: UpdateDoctorModel[] = [];
+      tableData.forEach(x=> {
+        let pushData:UpdateDoctorModel = {
+          doctorId: x.doctorId,
+          firstTimeConsultationCharge: x.firstTimeConsultationCharge,
+          followUpConsultationCharge: x.followUpConsultationCharge
+        }
+        dataToUpdate.push(pushData);
+      });
+      const status = await this.service.updateDoctors(dataToUpdate);
+      alert(status.message);
+      this.loading.submitting = false;
+    }
+    else {
+      alert('Please Enter valid Data');
+    }
+  }
+
   public async addDoctor(form: NgForm) {
     this.loading.submitting = true;
     if (form.valid) {
@@ -91,7 +113,9 @@ export class DoctorMasterComponent {
         Token: localStorage.getItem('token'),
         DoctorName: form.value.DoctorName,
         DepartmentId: this.departmentId,
-        isReferring: this.referringDoc
+        isReferring: this.referringDoc,
+        firstTimeConsultationCharge: 0,
+        followUpConsultationCharge: 0
       }
       const status = await this.service.addDoctor(data);
       alert(status.message);
@@ -127,5 +151,18 @@ export class DoctorMasterComponent {
   public hideDialog() {
     this.openDialog = false;
     this.changeDoctorId = 0;
+  }
+
+  private validateTable(): boolean {
+    const tableData:Doctor[] = this.ELEMENT_DATA;
+    let isValid:boolean = true;
+
+    tableData.forEach(x => {
+      if(x.firstTimeConsultationCharge === null || x.followUpConsultationCharge === null) {
+        isValid = false;
+      }
+    })
+
+    return isValid;
   }
 }

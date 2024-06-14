@@ -73,7 +73,6 @@ export class OpdmanagementComponent {
   public bankNamesList: any[];
   public companiesList: any[];
   public departmentList: any[];
-  public unitList: any[];
   public consultationList: any[];
   public doctorList: any[];
   public refDocList: any[];
@@ -99,7 +98,6 @@ export class OpdmanagementComponent {
     this.companiesList = this.service.getCompanies();
     this.bankNamesList = this.service.getBanks();
     this.departmentList = this.service.getdepartmentList();
-    this.unitList = [];
     this.consultationList = this.constants.consultationList;
     this.doctorList = this.service.getDoctors();
     this.refDocList = this.service.getReferredDoctors();
@@ -145,14 +143,13 @@ export class OpdmanagementComponent {
         const status = await this.service.checkIfUhidExists(this.uhidControl.value);
         if (!status) {
           const opidValue = this.opidControl.value;
-          await this.resetClick(); 
+          await this.resetClick();
           this.age = '';
           alert('UHID did not exists');
           this.opidControl = new FormControl(opidValue);
-
         }
       }
-    }, 1);
+    }, 500);
   }
 
   public async onUhidChange(event: any) {
@@ -168,7 +165,7 @@ export class OpdmanagementComponent {
     await this.stateChanged(this.managementClass.stateId);
     this.managementClass.cityId = user.CityId;
 
-    const whichConsultation:string = await this.service.consultationSelect(this.opidControl.value ?? '');
+    const whichConsultation: string = await this.service.consultationSelect(this.opidControl.value ?? '');
     this.managementClass.consultation = whichConsultation;
   }
 
@@ -208,10 +205,6 @@ export class OpdmanagementComponent {
     this.citiesList = [];
     this.citiesList = await this.service.setCities($event, this.managementClass.countryId);
   }
-  public departmentChanged($event: any) {
-    const getUnits = this.service.getAllUnits();
-    this.unitList = getUnits;
-  }
   public paidAmountChanged() {
     this.managementClass.paymentMode = 0;
     this.paymentValuesReset();
@@ -228,8 +221,15 @@ export class OpdmanagementComponent {
 
   public doctorChanged() {
     setTimeout(async () => {
-      const deptId = await this.service.getDepartmentOfDoctor(parseInt(this.managementClass.doctor));
+      const Opdata: number[] = await this.service.getDepartmentAndChargeOfDoctor(parseInt(this.managementClass.doctor), this.managementClass.consultation);
+      const deptId = Opdata[0];
+      const consultationCharge = Opdata[1];
+      if (consultationCharge < 1) {
+        alert('Please enter patient first');
+        this.managementClass.doctor = '';
+      }
       this.managementClass.department = (deptId === 0 ? '' : deptId).toString();
+      this.managementClass.consultationCharge = consultationCharge.toString();
     }, 1);
   }
 
@@ -245,8 +245,9 @@ export class OpdmanagementComponent {
   }
 
   public async resetClick(): Promise<void> {
-    return new Promise<void>(async (resolve) => {this.loading.resetting = true;
-    
+    return new Promise<void>(async (resolve) => {
+      this.loading.resetting = true;
+
       this.managementClass = new managementClass();
       this.managementClass.uhid = '';
       this.uhidControl = new FormControl('');
@@ -268,7 +269,7 @@ export class OpdmanagementComponent {
 
       this.loading.resetting = false;
       resolve();
-  });
+    });
   }
 
   public openDialogBox() {
