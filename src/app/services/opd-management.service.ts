@@ -460,25 +460,18 @@ export class OpdManagementService {
     })
     return allEmployees;
   }
-  public getAllChiefComplains(): any[] {
-    const chiefComplains: any[] = [];
-    const token_header = new HttpHeaders({
-      'Authorization': 'Bearer ' + localStorage.getItem('token')
-    });
-
-    const chiefComplainsResp = this.http.get<chiefComplainsResponse>(this.lService.__apiURL__ + '/Common/getAllChiefComplains', {
-      headers: token_header
-    });
-
-    chiefComplainsResp.subscribe({
-      next: (data) => {
-        const obj: any[] = data.allComplains;
-        for (let doctor of obj) {
-          chiefComplains.push({ key: doctor.id, value: doctor.name });
-        }
-      }
-    })
-    return chiefComplains;
+  public async getAllChiefComplains(): Promise<any[]> {
+    return new Promise<any[]>(async (resolve) => {
+      const newComp = this.http.get<any[]>(this.apiUrl + '/Common/getAllChiefComplaints', { headers: this.token });
+      newComp.subscribe({
+       next: (data) => {
+        resolve(data);
+       },
+       error: (error) => {
+        resolve([]);
+       }
+      });
+     });
   }
   public getAllReligion(): any[] {
     const religions: any[] = this.constants.religionList;

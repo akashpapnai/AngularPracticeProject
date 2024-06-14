@@ -78,7 +78,7 @@ export class OpdmanagementComponent {
   public doctorList: any[];
   public refDocList: any[];
   public disApprovedByList: any[];
-  public chiefComplainsList: any[];
+  public chiefComplainsList: any[] = [];
   public religionList: any[];
   public paymentModes: any[];
   public managementClass = this.service.mClass;
@@ -104,7 +104,6 @@ export class OpdmanagementComponent {
     this.doctorList = this.service.getDoctors();
     this.refDocList = this.service.getReferredDoctors();
     this.disApprovedByList = this.service.getDiscountApprovedByList();
-    this.chiefComplainsList = this.service.getAllChiefComplains();
     this.religionList = this.service.getAllReligion();
     this.paymentModes = this.constants.paymentModes;
   }
@@ -120,11 +119,11 @@ export class OpdmanagementComponent {
       if (params.get('id') !== '') {
         this.uhidControl = new FormControl(params.get('id'));
       }
-      this.uhidoptions = await this.service.getUhids(this.uhidControl.value ?? '');
+      this.uhidoptions = await this.service.getUhids(this.uhidControl.value ?? 'u');
 
       this.uhidfilteredOptions = this.uhidControl.valueChanges.pipe(
         startWith(this.uhidControl.value),
-        switchMap(value => from(this._uhidfilter(value || ''))),
+        switchMap(value => from(this._uhidfilter(value || 'u'))),
       );
 
       const opd = await this.service.getOpid();
@@ -136,6 +135,8 @@ export class OpdmanagementComponent {
         switchMap(value => from(this._opidfilter(value || ''))),
       );
     });
+
+    this.chiefComplainsList = await this.service.getAllChiefComplains();
   }
 
   public checkUhid(): void {
@@ -144,14 +145,14 @@ export class OpdmanagementComponent {
         const status = await this.service.checkIfUhidExists(this.uhidControl.value);
         if (!status) {
           const opidValue = this.opidControl.value;
-          this.resetClick().then(() => {
-            this.opidControl = new FormControl(opidValue);
-            this.age = '';
-            alert('UHID did not exists');
-          });
+          await this.resetClick(); 
+          this.age = '';
+          alert('UHID did not exists');
+          this.opidControl = new FormControl(opidValue);
+
         }
       }
-    }, 500);
+    }, 1);
   }
 
   public async onUhidChange(event: any) {
@@ -244,8 +245,8 @@ export class OpdmanagementComponent {
   }
 
   public async resetClick(): Promise<void> {
-    this.loading.resetting = true;
-    setTimeout(async () => {
+    return new Promise<void>(async (resolve) => {this.loading.resetting = true;
+    
       this.managementClass = new managementClass();
       this.managementClass.uhid = '';
       this.uhidControl = new FormControl('');
@@ -262,19 +263,19 @@ export class OpdmanagementComponent {
         startWith('o'),
         switchMap(value => from(this._opidfilter(value || ''))),
       );
-
       this.opidControl = new FormControl('');
       this.opidfilteredOptions = new Observable<[]>;
 
       this.loading.resetting = false;
-    }, 500);
+      resolve();
+  });
   }
 
   public openDialogBox() {
     this.openDialog = true;
   }
-  public hideDialogBox() {
+  public async hideDialogBox() {
     this.openDialog = false;
-    this.chiefComplainsList = this.service.getAllChiefComplains();
+    this.chiefComplainsList = await this.service.getAllChiefComplains();
   }
 }
