@@ -52,6 +52,9 @@ export interface consultationTypeResponse {
 export interface disApprovedByResponse {
  allAuthorizedEmployees: any[];
 }
+export interface submitResponse {
+  status: number;
+}
 export interface chiefComplainsResponse {
  allComplains: any[];
 }
@@ -89,4 +92,39 @@ export interface UserData {
  StateId: string;
  Uhid: string;
  isActive: boolean;
+}
+
+export interface FinalData {
+  Id: number;
+  CreatedBy: number;
+  CreatedDate: Date;
+  ModifiedBy: number;
+  ModifiedDate: Date;
+  isActive: boolean;
+  Date: Date;
+  AppointmentNo: string;
+  Uhid: string;
+  Opid: string;
+  Company: number;
+  RefLetterNo: string;
+  IdCardNo: string;
+  Department: number;
+  Unit: number;
+  Doctor: number;
+  ConsultationCharge: number;
+  ReferredBy: number;
+  DiscountAmount: number;
+  DiscountApprovedBy: number;
+  ChiefComplaints: number;
+  PaidAmount: number;
+  MLC: boolean;
+  PaymentMode: number;
+  BankName: number;
+  ChequeDate: Date,
+  ChequeNo: string;
+  ChequeAmount: number;
+  PaymentType: string;
+  CardNo: string;
+  ReferenceNo: string;
+  UPIID: string;
 }

@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, ViewChild } from '@angular/core';
 import { NavbarComponent } from '../../../../shared/navbar/navbar.component';
-import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormsModule, NgForm, ReactiveFormsModule } from '@angular/forms';
 import * as _moment from 'moment';
 import { default as _rollupMoment } from 'moment';
 import { provideNativeDateAdapter } from '@angular/material/core';
@@ -16,8 +16,8 @@ import { Title } from '@angular/platform-browser';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner'
 import { OpdManagementService, managementClass } from './opd-management.service';
-import { ActivatedRoute } from '@angular/router';
-import { UserData } from './interfaces';
+import { ActivatedRoute, Router } from '@angular/router';
+import { FinalData, UserData } from './interfaces';
 import { DialogBoxComponent } from '../../../../shared/dialog-box/dialog-box.component';
 
 const moment = _rollupMoment || _moment;
@@ -91,7 +91,7 @@ export class OpdmanagementComponent {
   uhidfilteredOptions: Observable<string[]> = new Observable<string[]>;
   opidfilteredOptions: Observable<string[]> = new Observable<string[]>;
 
-  constructor(private constants: ConstantsService, private titleS: Title, private service: OpdManagementService, private router: ActivatedRoute) {
+  constructor(private constants: ConstantsService, private titleS: Title, private service: OpdManagementService, private router: ActivatedRoute, private route: Router) {
     this.countriesList = this.service.getCountries();
     this.statesList = [];
     this.citiesList = [];
@@ -242,6 +242,61 @@ export class OpdmanagementComponent {
     this.managementClass.cardNo = '';
     this.managementClass.UPIID = '';
     this.managementClass.referenceNo = '';
+  }
+
+  public async submitClick(form:NgForm) {
+    let x: FinalData = {
+      Id: 0,
+      CreatedBy: 0,
+      CreatedDate: new Date(),
+      ModifiedBy: 0,
+      ModifiedDate: new Date(),
+      isActive: true,
+      Date: this.managementClass.date.value,
+      AppointmentNo: this.managementClass.appointment,
+      Uhid: this.uhidControl.value ?? '',
+      Opid: this.opidControl.value ?? '',
+      Company: parseInt(this.setToZero(this.managementClass.company)),
+      RefLetterNo: this.managementClass.refLetterNo,
+      IdCardNo: this.managementClass.idCardNo,
+      Department: parseInt(this.setToZero(this.managementClass.department)),
+      Unit: parseInt(this.setToZero(this.managementClass.unit)),
+      Doctor: parseInt(this.setToZero(this.managementClass.doctor)),
+      ReferredBy: parseInt(this.setToZero(this.managementClass.refBy)),
+      DiscountAmount: parseFloat(this.setToZero(this.managementClass.discountAmt)),
+      DiscountApprovedBy: parseInt(this.setToZero(this.managementClass.disApprovedBy)),
+      ChiefComplaints: parseInt(this.setToZero(this.managementClass.chiefComplains)),
+      PaidAmount: parseFloat(this.setToZero(this.managementClass.paidAmount)),
+      MLC: this.managementClass.mlc,
+      PaymentMode: this.managementClass.paymentMode,
+      BankName: parseInt(this.setToZero(this.managementClass.bankName)),
+      ChequeDate: new Date(this.managementClass.chequeDate.value),
+      ChequeNo: this.managementClass.chequeNo,
+      ChequeAmount: parseFloat(this.setToZero(this.managementClass.chequeAmount)),
+      PaymentType: this.managementClass.paymentType,
+      CardNo: this.managementClass.cardNo,
+      ReferenceNo: this.managementClass.referenceNo,
+      ConsultationCharge: parseFloat(this.setToZero(this.managementClass.consultationCharge)),
+      UPIID: this.managementClass.UPIID
+    }
+
+    if(this.service.validate(x)) {
+      const token: string | null = localStorage.getItem('token');
+      const status:number = await this.service.submit(x, token);
+      if(status === 1) {
+        alert('Patient Renewed Successfully');
+        this.route.navigate(['/opd/opdmanagement']);
+      }
+      else {
+        alert('Could not renew patient');
+      }
+      alert(status);
+    }
+
+  }
+
+  private setToZero(value:string) {
+    return value === '' ? '0' : value;
   }
 
   public async resetClick(): Promise<void> {

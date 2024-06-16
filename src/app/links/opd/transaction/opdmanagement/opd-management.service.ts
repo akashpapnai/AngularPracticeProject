@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { LoginService } from '../../../../login.service';
 import { FormControl } from '@angular/forms';
 import { ConstantsService } from '../../../../constants.service';
-import { UserData, citiesResponse, companyResponse, departmentResponse, statesResponse, unitsResponse, bankResponse, latestOpidResponse, GotDepartment, consultationTypeResponse } from '../../../../links/opd/transaction/opdmanagement/interfaces';
+import { UserData, citiesResponse, companyResponse, departmentResponse, statesResponse, unitsResponse, bankResponse, latestOpidResponse, GotDepartment, consultationTypeResponse, FinalData, submitResponse } from '../../../../links/opd/transaction/opdmanagement/interfaces';
 import {
   chiefComplainsResponse, disApprovedByResponse, doctorResponse, consultChargeResponse, patientDataResponse, uhidResponse,
   opidResponse, countryResponse
@@ -26,7 +26,8 @@ export class OpdManagementService {
   public mClass = new managementClass();
 
   private token = new HttpHeaders({
-    'Authorization': 'Bearer ' + localStorage.getItem('token')
+    'Authorization': 'Bearer ' + localStorage.getItem('token'),
+    'Content-Type': 'application/json'
   });
 
   public fillData(user: UserData, managementClass: managementClass): any {
@@ -355,7 +356,6 @@ export class OpdManagementService {
     });
   }
   public getConsultationCharge(): string {
-    debugger;
     const token_header = new HttpHeaders({
       'Authorization': 'Bearer ' + localStorage.getItem('token')
     });
@@ -477,12 +477,94 @@ export class OpdManagementService {
       });
      });
   }
+
+  public submit(data: FinalData, token: string | null):Promise<number> {
+    return new Promise<number>(async (resolve) => {
+      console.log(data);
+      const request = this.http.post<submitResponse>(this.apiUrl + '/OPD/submitOpdData', { prn: data, token: token }, { headers: this.token });
+      request.subscribe({
+        next: (response) => {
+          if(response.status > 0) {
+            resolve(1);
+          }
+        },
+        error: (error) => {
+          resolve(0);
+        }
+      })
+    });
+  }
+
   public getAllReligion(): any[] {
     const religions: any[] = this.constants.religionList;
     return religions;
   }
   public convertToInt(str: string): number {
     return parseFloat(str);
+  }
+
+  public validate(x: FinalData):boolean {
+    if(x.Date === null || x.Uhid === '' || x.Opid === '' || x.Company === 0 || x.Doctor === 0 || x.Department === 0 || x.ReferredBy === 0 || x.ChiefComplaints === 0)  {
+      alert('Please enter all necessary details');
+      return false;
+    }
+    if(x.DiscountAmount > 0) {
+      if(x.DiscountApprovedBy === 0) {
+        alert('Please enter Discount Approved By');
+        return false;
+      }
+    }
+    if(x.PaidAmount > 0) {
+      if(x.PaymentMode == 0) {
+        alert('Enter Payment Mode');
+        return false;
+      }
+      else if(x.PaymentMode == 2) {
+        if(x.BankName === 0) {
+          alert('Please enter bank name');
+          return false;
+        }
+        if(x.ChequeDate === null) {
+          alert('Please enter Cheque Date');
+          return false;
+        }
+        if(x.ChequeNo === '') {
+          alert('Please enter Cheque Number');
+          return false;
+        }
+        if(x.ChequeAmount === null) {
+          alert('Please enter Cheque Amount');
+          return false;
+        }
+      }
+      else if(x.PaymentMode == 3) {
+        if(x.PaymentType !== 'UPI') {
+          if(x.CardNo === '') {
+            alert('Please enter card No.');
+            return false;
+          }
+          if(x.BankName === 0) {
+            alert('Please enter bank name');
+            return false;
+          }
+          if(x.ReferenceNo === '') {
+            alert('Please enter Reference Number');
+            return false;
+          }
+        }
+        else {
+          if(x.UPIID === '') {
+            alert('Please enter UPI ID');
+            return false;
+          }
+          if(x.ReferenceNo === '') {
+            alert('Please enter Reference Number');
+            return false;
+          }
+        }
+      }
+    }
+    return true;
   }
 }
 
