@@ -1,18 +1,18 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { LoginService } from '../login.service';
+import { LoginService } from '../../../../login.service';
 import { FormControl } from '@angular/forms';
-import { ConstantsService } from '../constants.service';
-import { UserData, citiesResponse, companyResponse, departmentResponse, statesResponse, unitsResponse, bankResponse, latestOpidResponse, GotDepartment, consultationTypeResponse } from '../links/opd/transaction/opdmanagement/interfaces';
+import { ConstantsService } from '../../../../constants.service';
+import { UserData, citiesResponse, companyResponse, departmentResponse, statesResponse, unitsResponse, bankResponse, latestOpidResponse, GotDepartment, consultationTypeResponse } from '../../../../links/opd/transaction/opdmanagement/interfaces';
 import {
   chiefComplainsResponse, disApprovedByResponse, doctorResponse, consultChargeResponse, patientDataResponse, uhidResponse,
   opidResponse, countryResponse
-} from '../links/opd/transaction/opdmanagement/interfaces';
+} from '../../../../links/opd/transaction/opdmanagement/interfaces';
 
 import { default as _rollupMoment } from 'moment';
 import * as _moment from 'moment';
-import { DoctorMasterService } from './doctor-master.service';
-import { Department } from './department-master.service';
+import { DoctorMasterService } from '../../../admin/master/doctor-master/doctor-master.service';
+import { Department } from '../../../admin/master/department-master/department-master.service';
 const moment = _rollupMoment || _moment;
 
 @Injectable({

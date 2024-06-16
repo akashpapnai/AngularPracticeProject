@@ -12,7 +12,7 @@ import * as _moment from 'moment';
 import { default as _rollupMoment, Moment } from 'moment';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { DropDownComponent } from '../../../../shared/inputs/drop-down/drop-down.component';
-import { PatientRegistrationService } from '../../../../services/patient-registration.service';
+import { PatientRegistrationService } from './patient-registration.service';
 import { TextFieldComponent } from '../../../../shared/inputs/text-field/text-field.component';
 import { DateComponent } from '../../../../shared/inputs/date/date.component';
 import { DialogBoxComponent } from '../../../../shared/dialog-box/dialog-box.component';

@@ -12,7 +12,7 @@ import { DialogBoxComponent } from '../../../../shared/dialog-box/dialog-box.com
 import { TextFieldComponent } from '../../../../shared/inputs/text-field/text-field.component';
 import { NavbarComponent } from '../../../../shared/navbar/navbar.component';
 import { SnackbarComponent } from '../../../../shared/snackbar/snackbar.component';
-import { AddEmployeeModel, Employee, EmployeeMasterService } from '../../../../services/employee-master.service';
+import { AddEmployeeModel, Employee, EmployeeMasterService } from './employee-master.service';
 import { Title } from '@angular/platform-browser';
 
 @Component({

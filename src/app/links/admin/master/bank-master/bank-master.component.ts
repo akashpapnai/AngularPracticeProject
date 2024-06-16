@@ -11,7 +11,7 @@ import { CommonModule } from '@angular/common';
 import { SnackbarComponent } from '../../../../shared/snackbar/snackbar.component';
 import { TextFieldComponent } from '../../../../shared/inputs/text-field/text-field.component';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { BankMasterService, Bank, AddBankModel } from '../../../../services/bank-master.service';
+import { BankMasterService, Bank, AddBankModel } from './bank-master.service';
 import { Title } from '@angular/platform-browser';
 import { DialogBoxComponent } from '../../../../shared/dialog-box/dialog-box.component';
 

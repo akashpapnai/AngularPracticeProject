@@ -15,7 +15,7 @@ import { DropDownComponent } from '../../../../shared/inputs/drop-down/drop-down
 import { Title } from '@angular/platform-browser';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner'
-import { OpdManagementService, managementClass } from '../../../../services/opd-management.service';
+import { OpdManagementService, managementClass } from './opd-management.service';
 import { ActivatedRoute } from '@angular/router';
 import { UserData } from './interfaces';
 import { DialogBoxComponent } from '../../../../shared/dialog-box/dialog-box.component';

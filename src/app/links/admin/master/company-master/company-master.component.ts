@@ -11,7 +11,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { CommonModule } from '@angular/common';
 import { SnackbarComponent } from '../../../../shared/snackbar/snackbar.component';
 import { TextFieldComponent } from '../../../../shared/inputs/text-field/text-field.component';
-import { CompanyMasterService, AddCompanyModel, CompaniesData } from '../../../../services/company-master.service';
+import { CompanyMasterService, AddCompanyModel, CompaniesData } from './company-master.service';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { DialogBoxComponent } from '../../../../shared/dialog-box/dialog-box.component';
 

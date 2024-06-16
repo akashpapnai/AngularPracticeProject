@@ -12,7 +12,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { TextFieldComponent } from '../../../../shared/inputs/text-field/text-field.component';
 import { SnackbarComponent } from '../../../../shared/snackbar/snackbar.component';
 import { Title } from '@angular/platform-browser';
-import { AddDepartmentModel, Department, DepartmentMasterService } from '../../../../services/department-master.service';
+import { AddDepartmentModel, Department, DepartmentMasterService } from './department-master.service';
 import { DialogBoxComponent } from '../../../../shared/dialog-box/dialog-box.component';
 
 /**

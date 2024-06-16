@@ -11,10 +11,10 @@ import { CommonModule } from '@angular/common';
 import { SnackbarComponent } from '../../../../shared/snackbar/snackbar.component';
 import { TextFieldComponent } from '../../../../shared/inputs/text-field/text-field.component';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { AddDoctorModel, Doctor, DoctorMasterService, UpdateDoctorModel } from '../../../../services/doctor-master.service';
+import { AddDoctorModel, Doctor, DoctorMasterService, UpdateDoctorModel } from './doctor-master.service';
 import { Title } from '@angular/platform-browser';
 import { DropDownComponent } from '../../../../shared/inputs/drop-down/drop-down.component';
-import { DepartmentMasterService } from '../../../../services/department-master.service';
+import { DepartmentMasterService } from '../department-master/department-master.service';
 import { DialogBoxComponent } from '../../../../shared/dialog-box/dialog-box.component';
 
 @Component({
