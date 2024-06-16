@@ -245,6 +245,9 @@ export class OpdmanagementComponent {
   }
 
   public async submitClick(form:NgForm) {
+
+    this.loading.submitting = true;
+
     let x: FinalData = {
       Id: 0,
       CreatedBy: 0,
@@ -285,12 +288,12 @@ export class OpdmanagementComponent {
       const status:number = await this.service.submit(x, token);
       if(status === 1) {
         alert('Patient Renewed Successfully');
-        this.route.navigate(['/opd/opdmanagement']);
+        window.location.reload();
       }
       else {
         alert('Could not renew patient');
+        this.loading.submitting = false;
       }
-      alert(status);
     }
 
   }

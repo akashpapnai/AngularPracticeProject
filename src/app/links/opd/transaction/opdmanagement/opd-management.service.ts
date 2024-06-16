@@ -480,7 +480,6 @@ export class OpdManagementService {
 
   public submit(data: FinalData, token: string | null):Promise<number> {
     return new Promise<number>(async (resolve) => {
-      console.log(data);
       const request = this.http.post<submitResponse>(this.apiUrl + '/OPD/submitOpdData', { prn: data, token: token }, { headers: this.token });
       request.subscribe({
         next: (response) => {
