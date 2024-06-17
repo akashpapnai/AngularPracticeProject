@@ -16,7 +16,16 @@
     <h1>Bank {{Action}} {{Id}}</h1>
     }
     @else if (Page === 'Company') {
-    <h1>Company {{Action}} {{Id}}</h1>
+    @if(Action === 'Edit') {
+    <div class="w-full md:w-full px-3 mb-6 md:mb-0 flex flex-col mt-1 pb-4">
+      <app-text-field [autoComplete]="'off'" [(ngModel)]="companyName" [value]="companyName" [name]="'companyName'"
+        [required]="true" [type]="'text'" [placeHolder]="'Chief Compaints'" [title]="'Company Name'"
+        [disabled]="false"></app-text-field>
+    </div>
+    }
+    @else if(Action === 'Delete') {
+    <h2>Are you sure you want to Delete {{companyName}}?</h2>
+    }
     }
     @else if (Page === 'Doctor') {
     <h1>Doctor {{Action}} {{Id}}</h1>
@@ -29,9 +38,9 @@
     }
     @else if(Page === 'opdManagement') {
     <div class="w-full md:w-full px-3 mb-6 md:mb-0 flex flex-col mt-1 pb-4">
-      <app-text-field [autoComplete]="'off'" [(ngModel)]="chiefComplaints" [value]="chiefComplaints" [name]="'chiefComplaints'"
-        [required]="true" [type]="'text'" [placeHolder]="'Chief Compaints'" [title]="'Chief Compaints'"
-        [disabled]="false"></app-text-field>
+      <app-text-field [autoComplete]="'off'" [(ngModel)]="chiefComplaints" [value]="chiefComplaints"
+        [name]="'chiefComplaints'" [required]="true" [type]="'text'" [placeHolder]="'Chief Compaints'"
+        [title]="'Chief Compaints'" [disabled]="false"></app-text-field>
     </div>
     <div class="items-end flex flex-wrap justify-end -mx-3 mb-2">
       <button [disabled]="loading.resetting || loading.submitting" mat-raised-button (click)="saveChiefComplaints()"
@@ -53,8 +62,25 @@
         class=" bg-blue-500 text-white px-2 py-2 rounded hover:bg-blue-700">{{Action}}</button>
       }
       @else if (Page === 'Company') {
-      <button (click)="Action == 'Edit' ? editCompany() : deleteCompany()"
-        class=" bg-blue-500 text-white px-2 py-2 rounded hover:bg-blue-700">{{Action}}</button>
+      <div class="items-end flex flex-wrap justify-end -mx-3 mb-2">
+        <button [disabled]="loading.resetting || loading.submitting" mat-raised-button
+          (click)="Action == 'Edit' ? editCompany() : deleteCompany()"
+          [ngClass]="{'cursor-not-allowed': (loading.resetting || loading.submitting), 
+            'text-red-900 bg-white border border-red-300 hover:bg-red-100 focus:ring-red-100 dark:bg-red-800 dark:border-red-600 dark:hover:bg-red-700 dark:hover:border-red-600 dark:focus:ring-red-700': Action === 'Delete'}"
+          type="button"
+          class="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-xs px-3 py-2 me-2 mb-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700 opacity-50 hover:opacity-100">
+          <span *ngIf="!loading.submitting">{{Action}}</span>
+          <mat-spinner *ngIf="loading.submitting" [diameter]="16"></mat-spinner>
+        </button>
+        @if(Action === 'Delete') {
+        <button [disabled]="loading.resetting || loading.submitting" mat-raised-button (click)="closeDialog()"
+          type="button"
+          class="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-xs px-3 py-2 me-2 mb-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700 opacity-50 hover:opacity-100">
+          <span *ngIf="!loading.resetting">No</span>
+          <mat-spinner *ngIf="loading.resetting" [diameter]="16"></mat-spinner>
+        </button>
+        }
+      </div>
       }
       @else if (Page === 'Doctor') {
       <button (click)="Action == 'Edit' ? editDoctor() : deleteDoctor()"
@@ -73,31 +99,31 @@
     </div>
     <div class="table-container max-h-64 overflow-scroll">
       @if(Page === 'opdManagement') {
-        @if(ELEMENT_DATA.length > 0) {
-          <div class="mat-elevation-z8 mt-4">
-            <table mat-table [dataSource]="dataSource">
-      
-              <ng-container matColumnDef="row">
-                <th mat-header-cell *matHeaderCellDef> S.R. No </th>
-                <td mat-cell *matCellDef="let element"> {{element.row}} </td>
-              </ng-container>
-      
-              <ng-container matColumnDef="chiefComplaintName">
-                <th mat-header-cell *matHeaderCellDef> Chief Complaint Name </th>
-                <td class="text-nowrap" mat-cell *matCellDef="let element"> {{element.value}}</td>
-              </ng-container>
-      
-              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-              <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-      
-            </table>
-          </div>
-        }
-        @else {
-          <div class="flex items-center justify-center">
-            <mat-spinner [diameter]="32"></mat-spinner>
-          </div>
-        }
+      @if(ELEMENT_DATA.length > 0) {
+      <div class="mat-elevation-z8 mt-4">
+        <table mat-table [dataSource]="dataSource">
+
+          <ng-container matColumnDef="row">
+            <th mat-header-cell *matHeaderCellDef> S.R. No </th>
+            <td mat-cell *matCellDef="let element"> {{element.row}} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="chiefComplaintName">
+            <th mat-header-cell *matHeaderCellDef> Chief Complaint Name </th>
+            <td class="text-nowrap" mat-cell *matCellDef="let element"> {{element.value}}</td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+        </table>
+      </div>
+      }
+      @else {
+      <div class="flex items-center justify-center">
+        <mat-spinner [diameter]="32"></mat-spinner>
+      </div>
+      }
       }
     </div>
   </div>

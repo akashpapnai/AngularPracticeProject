@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ChiefComplaintData, ChiefComplaintInterface, DialogBoxService } from './dialog-box.service';
 import { Router } from '@angular/router';
 import { TextFieldComponent } from '../inputs/text-field/text-field.component';
@@ -20,13 +20,14 @@ import { MatTableDataSource, MatTableModule } from '@angular/material/table';
   templateUrl: './dialog-box.component.html',
   styleUrl: './dialog-box.component.scss'
 })
-export class DialogBoxComponent {
+export class DialogBoxComponent implements OnInit {
   @Output() close = new EventEmitter<void>();
   @Input() Id: any = 0;
   @Input() Action: string = '';
   @Input() Page: string = '';
 
   public chiefComplaints: string = '';
+  public companyName: string = '';
   public loading = {
     resetting: false,
     submitting: false
@@ -46,6 +47,9 @@ export class DialogBoxComponent {
         rn++;
       });
       this.dataSource = new MatTableDataSource<ChiefComplaintData>(this.ELEMENT_DATA);
+    }
+    else if(this.Page === 'Company') {
+      this.companyName = await this.service.getCompanyNameById(this.Id);
     }
   }
 
@@ -84,19 +88,25 @@ export class DialogBoxComponent {
   }
 
   public async editCompany() {
-    const alertResponse = await this.service.CompanyEdit(this.Id);
+    this.loading.submitting = true;
+    const alertResponse = await this.service.CompanyEdit(this.Id, this.companyName);
     alert(alertResponse);
     if (typeof alertResponse !== 'undefined' && alertResponse === 'Company Edit Successful') {
       this.closeDialog();
+      window.location.reload();
     }
+    this.loading.submitting = false;
   }
 
   public async deleteCompany() {
+    this.loading.submitting = true;
     const alertResponse = await this.service.CompanyDelete(this.Id);
     alert(alertResponse);
     if (typeof alertResponse !== 'undefined' && alertResponse === 'Company Delete Successful') {
       this.closeDialog();
+      window.location.reload();
     }
+    this.loading.submitting = false;
   }
 
   public async editDoctor() {
