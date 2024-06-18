@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { LoginService } from '../../login.service';
-import { companyResponse } from '../../links/opd/transaction/opdmanagement/interfaces';
+import { bankResponse, companyResponse, departmentResponse } from '../../links/opd/transaction/opdmanagement/interfaces';
 
 @Injectable({
   providedIn: 'root'
@@ -33,10 +33,48 @@ export class DialogBoxService {
     });
   }
 
-  public async DepartmentEdit(Id: number): Promise<string> {
+  public async getBankNameById(Id: number): Promise<string> {
+
+    return new Promise<string>((resolve) => {
+      const allBanks = this.http.get<bankResponse>(this.lService.__apiURL__ + "/Bank/GetAllBanks", {
+        headers: this.token, params: {
+          'Id': Id
+        }
+      });
+
+      allBanks.subscribe({
+        next: (data) => {
+          debugger;
+          const banksData: any[] = data.allBanks;
+          resolve(banksData[0].bankName);
+        }
+      });
+    });
+  }
+
+  public async getDepartmentNameById(Id: number): Promise<string> {
+debugger;
+    return new Promise<string>((resolve) => {
+      const allDepartments = this.http.get<departmentResponse>(this.lService.__apiURL__ + "/Department/GetAllDepartments", {
+        headers: this.token, params: {
+          'Id': Id
+        }
+      });
+
+      allDepartments.subscribe({
+        next: (data) => {
+          debugger;
+          const departmentsData: any[] = data.allDepartments;
+          resolve(departmentsData[0].departmentName);
+        }
+      });
+    });
+  }
+
+  public async DepartmentEdit(Id: number, departmentName: string): Promise<string> {
     return new Promise<string>(async (resolve) => {
-      const departmentData: editInput = { DepartmentId: Id };
-      const resp = await this.http.put<responseStatus>(this.apiUrl + "/Department/EditDepartment", JSON.stringify(departmentData));
+      const departmentData: editDepartmentInput = { DepartmentId: Id, DepartmentName: departmentName, token: localStorage.getItem('token') };
+      const resp = this.http.put<responseStatus>(this.apiUrl + "/Department/EditDepartment", departmentData, {headers: this.token});
       resp.subscribe({
         next: (response) => {
           if (response.status > 0) {
@@ -55,7 +93,7 @@ export class DialogBoxService {
 
   public async DepartmentDelete(Id: number): Promise<string> {
     return new Promise<string>(async (resolve) => {
-      const resp = this.http.delete<responseStatus>(this.apiUrl + "/Department/EditDepartment", {
+      const resp = this.http.delete<responseStatus>(this.apiUrl + "/Department/DeleteDepartment", {
         headers: this.token, params: {
           'DepartmentId': Id
         }
@@ -77,10 +115,10 @@ export class DialogBoxService {
     })
   }
 
-  public async BankEdit(Id: number): Promise<string> {
+  public async BankEdit(Id: number, bankName: string): Promise<string> {
     return new Promise<string>(async (resolve) => {
-      const bankData: editBankInput = { BankId: Id };
-      const resp = await this.http.put<responseStatus>(this.apiUrl + "/Bank/EditBank", JSON.stringify(bankData));
+      const bankData: editBankInput = { BankId: Id, BankName: bankName, token: localStorage.getItem('token') };
+      const resp = this.http.put<responseStatus>(this.apiUrl + "/Bank/EditBank", bankData, {headers: this.token});
       resp.subscribe({
         next: (response) => {
           if (response.status > 0) {
@@ -99,7 +137,7 @@ export class DialogBoxService {
 
   public async BankDelete(Id: number): Promise<string> {
     return new Promise<string>(async (resolve) => {
-      const resp = this.http.delete<responseStatus>(this.apiUrl + "/Bank/EditBank", {
+      const resp = this.http.delete<responseStatus>(this.apiUrl + "/Bank/DeleteBank", {
         headers: this.token, params: {
           'BankId': Id
         }
@@ -301,8 +339,16 @@ interface editInput {
   DepartmentId: number,
 }
 
+interface editDepartmentInput {
+  DepartmentId: number,
+  DepartmentName: string;
+  token: string | null;
+}
+
 interface editBankInput {
   BankId: number,
+  BankName: string;
+  token: string | null;
 }
 
 interface editCompanyInput {

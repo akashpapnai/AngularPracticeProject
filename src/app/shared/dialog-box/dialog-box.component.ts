@@ -28,6 +28,8 @@ export class DialogBoxComponent implements OnInit {
 
   public chiefComplaints: string = '';
   public companyName: string = '';
+  public bankName: string = '';
+  public departmentName: string = '';
   public loading = {
     resetting: false,
     submitting: false
@@ -51,40 +53,58 @@ export class DialogBoxComponent implements OnInit {
     else if(this.Page === 'Company') {
       this.companyName = await this.service.getCompanyNameById(this.Id);
     }
+    else if(this.Page === 'Bank') {
+      this.bankName = await this.service.getBankNameById(this.Id);
+    }
+    else if(this.Page === 'Department') {
+      this.departmentName = await this.service.getDepartmentNameById(this.Id);
+    }
   }
 
   constructor(private service: DialogBoxService, private router: Router) { }
 
   public async editDepartment() {
-    const alertResponse = await this.service.DepartmentEdit(this.Id);
+    this.loading.submitting = true;
+    const alertResponse = await this.service.DepartmentEdit(this.Id, this.departmentName);
     alert(alertResponse);
     if (typeof alertResponse !== 'undefined' && alertResponse === 'Department Edit Successful') {
       this.closeDialog();
+      window.location.reload();
     }
+    this.loading.submitting = false;
   }
 
   public async deleteDepartment() {
+    this.loading.submitting = true;
     const alertResponse = await this.service.DepartmentDelete(this.Id);
     alert(alertResponse);
     if (typeof alertResponse !== 'undefined' && alertResponse === 'Department Delete Successful') {
       this.closeDialog();
+      window.location.reload();
     }
+    this.loading.submitting = false;
   }
 
   public async editBank() {
-    const alertResponse = await this.service.BankEdit(this.Id);
+    this.loading.submitting = true;
+    const alertResponse = await this.service.BankEdit(this.Id, this.bankName);
     alert(alertResponse);
     if (typeof alertResponse !== 'undefined' && alertResponse === 'Bank Edit Successful') {
       this.closeDialog();
+      window.location.reload();
     }
+    this.loading.submitting = false;
   }
 
   public async deleteBank() {
+    this.loading.submitting = true;
     const alertResponse = await this.service.BankDelete(this.Id);
     alert(alertResponse);
     if (typeof alertResponse !== 'undefined' && alertResponse === 'Bank Delete Successful') {
       this.closeDialog();
+      window.location.reload();
     }
+    this.loading.submitting = false;
   }
 
   public async editCompany() {
