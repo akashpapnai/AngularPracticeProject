@@ -42,7 +42,7 @@
       <ng-container matColumnDef="referringDoctor">
         <th mat-header-cell *matHeaderCellDef> Referring Doctor </th>
         <td class="flex items-start justify-start" mat-cell *matCellDef="let element">
-          <ng-container *ngIf="element.isReferring === true">
+          <ng-container *ngIf="element.isReferring === true && (element.doctorName | lowercase) !== 'self'">
             <svg viewBox="0 0 350 350" width="60px" height="60px" xmlns="http://www.w3.org/2000/svg"
               xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1"
               style="shape-rendering:geometricPrecision; text-rendering:geometricPrecision; image-rendering:optimizeQuality; fill-rule:evenodd; clip-rule:evenodd">
@@ -172,7 +172,7 @@
               </g>
             </svg>
           </ng-container>
-          <ng-container *ngIf="element.isReferring === false">
+          <ng-container *ngIf="element.isReferring === false && (element.doctorName | lowercase) !== 'self'">
             <svg viewBox="0 0 350 350" width="60px" height="60px" xmlns="http://www.w3.org/2000/svg"
               xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1"
               style="shape-rendering:geometricPrecision; text-rendering:geometricPrecision; image-rendering:optimizeQuality; fill-rule:evenodd; clip-rule:evenodd">
@@ -280,7 +280,7 @@
       <ng-container matColumnDef="firstTimeConsultationCharge">
         <th mat-header-cell *matHeaderCellDef> First Time Consultation Charge </th>
         <td mat-cell *matCellDef="let element">
-          <input *ngIf="element.doctorName !== 'Self'"
+          <input *ngIf="(element.doctorName | lowercase) !== 'self'"
             class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
             [value]="element.firstTimeConsultationCharge" [(ngModel)]="element.firstTimeConsultationCharge" [placeholder]="'First Time Consultation Charge'"
             type="number" />
@@ -290,7 +290,7 @@
       <ng-container matColumnDef="followUpConsultationCharge">
         <th mat-header-cell *matHeaderCellDef> Follow Up Consultation Charge </th>
         <td mat-cell *matCellDef="let element">
-          <input *ngIf="element.doctorName !== 'Self'"
+          <input *ngIf="(element.doctorName | lowercase) !== 'self'"
             class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
             [value]="element.followUpConsultationCharge" [(ngModel)]="element.followUpConsultationCharge" [placeholder]="'Follow Up Consultation Charge'"
             type="number" />
@@ -299,9 +299,9 @@
 
       <ng-container matColumnDef="actions">
         <th mat-header-cell *matHeaderCellDef> Actions </th>
-        <td mat-cell *matCellDef="let element"> <a (click)="doctorEdit(element.doctorId)"
+        <td mat-cell *matCellDef="let element"> <a *ngIf="(element.doctorName | lowercase) !== 'self'" (click)="doctorEdit(element.doctorId)"
             class="hover:text-blue-600 cursor-pointer">Edit</a>&nbsp;
-          <a (click)="doctorDelete(element.doctorId)" class="hover:text-blue-600 cursor-pointer">Delete</a>
+          <a *ngIf="(element.doctorName | lowercase) !== 'self'" (click)="doctorDelete(element.doctorId)" class="hover:text-blue-600 cursor-pointer">Delete</a>
         </td>
       </ng-container>
 

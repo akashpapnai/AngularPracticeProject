@@ -57,10 +57,10 @@
         [title]="'Department Name'" [required]="true" [list]="departmentsList"></app-drop-down>
     </div>
     <div class="w-full md:w-full px-3 mb-6 md:mb-0 flex flex-col mt-1">
-      <label for="referringDoctor" class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">
+      <label for="editreferringDoctor" class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">
         Referring Doctor
       </label>
-      <input type="checkbox" name="referringDoctor" (change)="doctor.editreferringDoctor=!doctor.editreferringDoctor"
+      <input type="checkbox" name="editreferringDoctor"
         [(ngModel)]="doctor.editreferringDoctor"
         class="outline-none appearance-none block bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" />
     </div>
@@ -81,8 +81,7 @@
         Can Give Discount
       </label>
       <input type="checkbox" name="canAuthorizePatient"
-        (change)="employee.canAuthorizePatients=!employee.canAuthorizePatients"
-        [(ngModel)]="employee.canAuthorizePatient"
+        [(ngModel)]="employee.canAuthorizePatients"
         class="outline-none appearance-none block bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" />
     </div>
     }
@@ -174,25 +173,25 @@
       </div>
       }
       @else if (Page === 'Doctor') {
-        <div class="items-end flex flex-wrap justify-end -mx-3 mb-2">
-          <button [disabled]="loading.resetting || loading.submitting" mat-raised-button
-            (click)="Action == 'Edit' ? editDoctor() : deleteDoctor()"
-            [ngClass]="{'cursor-not-allowed': (loading.resetting || loading.submitting), 
+      <div class="items-end flex flex-wrap justify-end -mx-3 mb-2">
+        <button [disabled]="loading.resetting || loading.submitting" mat-raised-button
+          (click)="Action == 'Edit' ? editDoctor() : deleteDoctor()"
+          [ngClass]="{'cursor-not-allowed': (loading.resetting || loading.submitting), 
                 'text-red-900 bg-white border border-red-300 hover:bg-red-100 focus:ring-red-100 dark:bg-red-800 dark:border-red-600 dark:hover:bg-red-700 dark:hover:border-red-600 dark:focus:ring-red-700': Action === 'Delete'}"
-            type="button"
-            class="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-xs px-3 py-2 me-2 mb-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700 opacity-50 hover:opacity-100">
-            <span *ngIf="!loading.submitting">{{Action}}</span>
-            <mat-spinner *ngIf="loading.submitting" [diameter]="16"></mat-spinner>
-          </button>
-          @if(Action === 'Delete') {
-          <button [disabled]="loading.resetting || loading.submitting" mat-raised-button (click)="closeDialog()"
-            type="button"
-            class="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-xs px-3 py-2 me-2 mb-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700 opacity-50 hover:opacity-100">
-            <span *ngIf="!loading.resetting">No</span>
-            <mat-spinner *ngIf="loading.resetting" [diameter]="16"></mat-spinner>
-          </button>
-          }
-        </div>
+          type="button"
+          class="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-xs px-3 py-2 me-2 mb-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700 opacity-50 hover:opacity-100">
+          <span *ngIf="!loading.submitting">{{Action}}</span>
+          <mat-spinner *ngIf="loading.submitting" [diameter]="16"></mat-spinner>
+        </button>
+        @if(Action === 'Delete') {
+        <button [disabled]="loading.resetting || loading.submitting" mat-raised-button (click)="closeDialog()"
+          type="button"
+          class="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-xs px-3 py-2 me-2 mb-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700 opacity-50 hover:opacity-100">
+          <span *ngIf="!loading.resetting">No</span>
+          <mat-spinner *ngIf="loading.resetting" [diameter]="16"></mat-spinner>
+        </button>
+        }
+      </div>
       }
       @else if (Page === 'Employee') {
       <div class="items-end flex flex-wrap justify-end -mx-3 mb-2">

@@ -160,7 +160,7 @@ export class DialogBoxComponent implements OnInit {
 
   public async editDoctor() {
     this.loading.submitting = true;
-    const alertResponse = await this.service.DoctorEdit(this.Id, this.doctor.doctorName, this.doctor.department, this.doctor.isReferring);
+    const alertResponse = await this.service.DoctorEdit(this.Id, this.doctor.doctorName, this.doctor.department, this.doctor.editreferringDoctor);
     alert(alertResponse);
     if (typeof alertResponse !== 'undefined' && alertResponse === 'Doctor Edit Successful') {
       this.closeDialog();
