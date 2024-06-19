@@ -36,6 +36,10 @@ export interface departmentResponse {
  allDepartments: any[]
 }
 
+export interface employeeResponse {
+  allEmployees: any[]
+ }
+
 export interface doctorResponse {
  allDoctors: any[];
 }

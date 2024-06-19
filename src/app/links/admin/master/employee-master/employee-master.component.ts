@@ -70,7 +70,6 @@ export class EmployeeMasterComponent {
       this.ELEMENT_DATA.push({ ...x, row: rn });
       rn++;
     });
-    debugger;
     this.dataSource = new MatTableDataSource<Employee>(this.ELEMENT_DATA);
   }
 

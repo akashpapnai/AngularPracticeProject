@@ -10,16 +10,16 @@
     </button>
     <!-- Main Content -->
     @if(Page === 'Department') {
-      @if(Action === 'Edit') {
-        <div class="w-full md:w-full px-3 mb-6 md:mb-0 flex flex-col mt-1 pb-4">
-          <app-text-field [autoComplete]="'off'" [(ngModel)]="departmentName" [value]="departmentName" [name]="'departmentName'"
-            [required]="true" [type]="'text'" [placeHolder]="'Department Name'" [title]="'Department Name'"
-            [disabled]="false"></app-text-field>
-        </div>
-        }
-        @else if(Action === 'Delete') {
-        <h2>Are you sure you want to Delete {{departmentName}}?</h2>
-        }
+    @if(Action === 'Edit') {
+    <div class="w-full md:w-full px-3 mb-6 md:mb-0 flex flex-col mt-1 pb-4">
+      <app-text-field [autoComplete]="'off'" [(ngModel)]="departmentName" [value]="departmentName"
+        [name]="'departmentName'" [required]="true" [type]="'text'" [placeHolder]="'Department Name'"
+        [title]="'Department Name'" [disabled]="false"></app-text-field>
+    </div>
+    }
+    @else if(Action === 'Delete') {
+    <h2>Are you sure you want to Delete {{departmentName}}?</h2>
+    }
     }
     @else if (Page === 'Bank') {
     @if(Action === 'Edit') {
@@ -37,7 +37,7 @@
     @if(Action === 'Edit') {
     <div class="w-full md:w-full px-3 mb-6 md:mb-0 flex flex-col mt-1 pb-4">
       <app-text-field [autoComplete]="'off'" [(ngModel)]="companyName" [value]="companyName" [name]="'companyName'"
-        [required]="true" [type]="'text'" [placeHolder]="'Chief Compaints'" [title]="'Company Name'"
+        [required]="true" [type]="'text'" [placeHolder]="'Company Name'" [title]="'Company Name'"
         [disabled]="false"></app-text-field>
     </div>
     }
@@ -46,10 +46,49 @@
     }
     }
     @else if (Page === 'Doctor') {
-    <h1>Doctor {{Action}} {{Id}}</h1>
+    @if(Action === 'Edit') {
+    <div class="w-full md:w-full px-3 mb-6 md:mb-0 flex flex-col mt-1 pb-4">
+      <app-text-field [autoComplete]="'off'" [(ngModel)]="doctor.doctorName" [value]="doctor.doctorName"
+        [name]="'doctorName'" [required]="true" [type]="'text'" [placeHolder]="'Doctor Name'" [title]="'Doctor Name'"
+        [disabled]="false"></app-text-field>
+    </div>
+    <div class="w-full md:w-full px-3 mb-6 md:mb-0 mt-1">
+      <app-drop-down [name]="'departmentId'" [(ngModel)]="doctor.department" [value]="doctor.department"
+        [title]="'Department Name'" [required]="true" [list]="departmentsList"></app-drop-down>
+    </div>
+    <div class="w-full md:w-full px-3 mb-6 md:mb-0 flex flex-col mt-1">
+      <label for="referringDoctor" class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">
+        Referring Doctor
+      </label>
+      <input type="checkbox" name="referringDoctor" (change)="doctor.editreferringDoctor=!doctor.editreferringDoctor"
+        [(ngModel)]="doctor.editreferringDoctor"
+        class="outline-none appearance-none block bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" />
+    </div>
+    }
+    @else if(Action === 'Delete') {
+    <h2>Are you sure you want to Delete {{doctor.doctorName}}?</h2>
+    }
     }
     @else if (Page === 'Employee') {
-    <h1>Employee {{Action}} {{Id}}</h1>
+    @if(Action === 'Edit') {
+    <div class="w-full md:w-full px-3 mb-6 md:mb-0 flex flex-col mt-1 pb-4">
+      <app-text-field [autoComplete]="'off'" [(ngModel)]="employee.employeeName" [value]="employee.employeeName"
+        [name]="'employeeName'" [required]="true" [type]="'text'" [placeHolder]="'Employyee Name'"
+        [title]="'Employee Name'" [disabled]="false"></app-text-field>
+    </div>
+    <div class="w-full md:w-full px-3 mb-6 md:mb-0 flex flex-col mt-1">
+      <label for="canAuthorizePatient" class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">
+        Can Give Discount
+      </label>
+      <input type="checkbox" name="canAuthorizePatient"
+        (change)="employee.canAuthorizePatients=!employee.canAuthorizePatients"
+        [(ngModel)]="employee.canAuthorizePatient"
+        class="outline-none appearance-none block bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" />
+    </div>
+    }
+    @else if(Action === 'Delete') {
+    <h2>Are you sure you want to Delete {{employee.employeeName}}?</h2>
+    }
     }
     @else if (Page === 'PatientRegistered') {
     <p class="text-base font-bold mb-4 pr-6">Do you want to register patient to OPD or IPD?</p>
@@ -72,25 +111,25 @@
     <!-- Buttons -->
     <div class="flex justify-end">
       @if(Page === 'Department') {
-        <div class="items-end flex flex-wrap justify-end -mx-3 mb-2">
-          <button [disabled]="loading.resetting || loading.submitting" mat-raised-button
-            (click)="Action == 'Edit' ? editDepartment() : deleteDepartment()"
-            [ngClass]="{'cursor-not-allowed': (loading.resetting || loading.submitting), 
+      <div class="items-end flex flex-wrap justify-end -mx-3 mb-2">
+        <button [disabled]="loading.resetting || loading.submitting" mat-raised-button
+          (click)="Action == 'Edit' ? editDepartment() : deleteDepartment()"
+          [ngClass]="{'cursor-not-allowed': (loading.resetting || loading.submitting), 
                 'text-red-900 bg-white border border-red-300 hover:bg-red-100 focus:ring-red-100 dark:bg-red-800 dark:border-red-600 dark:hover:bg-red-700 dark:hover:border-red-600 dark:focus:ring-red-700': Action === 'Delete'}"
-            type="button"
-            class="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-xs px-3 py-2 me-2 mb-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700 opacity-50 hover:opacity-100">
-            <span *ngIf="!loading.submitting">{{Action}}</span>
-            <mat-spinner *ngIf="loading.submitting" [diameter]="16"></mat-spinner>
-          </button>
-          @if(Action === 'Delete') {
-          <button [disabled]="loading.resetting || loading.submitting" mat-raised-button (click)="closeDialog()"
-            type="button"
-            class="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-xs px-3 py-2 me-2 mb-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700 opacity-50 hover:opacity-100">
-            <span *ngIf="!loading.resetting">No</span>
-            <mat-spinner *ngIf="loading.resetting" [diameter]="16"></mat-spinner>
-          </button>
-          }
-        </div>
+          type="button"
+          class="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-xs px-3 py-2 me-2 mb-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700 opacity-50 hover:opacity-100">
+          <span *ngIf="!loading.submitting">{{Action}}</span>
+          <mat-spinner *ngIf="loading.submitting" [diameter]="16"></mat-spinner>
+        </button>
+        @if(Action === 'Delete') {
+        <button [disabled]="loading.resetting || loading.submitting" mat-raised-button (click)="closeDialog()"
+          type="button"
+          class="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-xs px-3 py-2 me-2 mb-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700 opacity-50 hover:opacity-100">
+          <span *ngIf="!loading.resetting">No</span>
+          <mat-spinner *ngIf="loading.resetting" [diameter]="16"></mat-spinner>
+        </button>
+        }
+      </div>
       }
       @else if (Page === 'Bank') {
       <div class="items-end flex flex-wrap justify-end -mx-3 mb-2">
@@ -135,12 +174,46 @@
       </div>
       }
       @else if (Page === 'Doctor') {
-      <button (click)="Action == 'Edit' ? editDoctor() : deleteDoctor()"
-        class=" bg-blue-500 text-white px-2 py-2 rounded hover:bg-blue-700">{{Action}}</button>
+        <div class="items-end flex flex-wrap justify-end -mx-3 mb-2">
+          <button [disabled]="loading.resetting || loading.submitting" mat-raised-button
+            (click)="Action == 'Edit' ? editDoctor() : deleteDoctor()"
+            [ngClass]="{'cursor-not-allowed': (loading.resetting || loading.submitting), 
+                'text-red-900 bg-white border border-red-300 hover:bg-red-100 focus:ring-red-100 dark:bg-red-800 dark:border-red-600 dark:hover:bg-red-700 dark:hover:border-red-600 dark:focus:ring-red-700': Action === 'Delete'}"
+            type="button"
+            class="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-xs px-3 py-2 me-2 mb-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700 opacity-50 hover:opacity-100">
+            <span *ngIf="!loading.submitting">{{Action}}</span>
+            <mat-spinner *ngIf="loading.submitting" [diameter]="16"></mat-spinner>
+          </button>
+          @if(Action === 'Delete') {
+          <button [disabled]="loading.resetting || loading.submitting" mat-raised-button (click)="closeDialog()"
+            type="button"
+            class="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-xs px-3 py-2 me-2 mb-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700 opacity-50 hover:opacity-100">
+            <span *ngIf="!loading.resetting">No</span>
+            <mat-spinner *ngIf="loading.resetting" [diameter]="16"></mat-spinner>
+          </button>
+          }
+        </div>
       }
       @else if (Page === 'Employee') {
-      <button (click)="Action == 'Edit' ? editEmployee() : deleteEmployee()"
-        class=" bg-blue-500 text-white px-2 py-2 rounded hover:bg-blue-700">{{Action}}</button>
+      <div class="items-end flex flex-wrap justify-end -mx-3 mb-2">
+        <button [disabled]="loading.resetting || loading.submitting" mat-raised-button
+          (click)="Action == 'Edit' ? editEmployee() : deleteEmployee()"
+          [ngClass]="{'cursor-not-allowed': (loading.resetting || loading.submitting), 
+              'text-red-900 bg-white border border-red-300 hover:bg-red-100 focus:ring-red-100 dark:bg-red-800 dark:border-red-600 dark:hover:bg-red-700 dark:hover:border-red-600 dark:focus:ring-red-700': Action === 'Delete'}"
+          type="button"
+          class="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-xs px-3 py-2 me-2 mb-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700 opacity-50 hover:opacity-100">
+          <span *ngIf="!loading.submitting">{{Action}}</span>
+          <mat-spinner *ngIf="loading.submitting" [diameter]="16"></mat-spinner>
+        </button>
+        @if(Action === 'Delete') {
+        <button [disabled]="loading.resetting || loading.submitting" mat-raised-button (click)="closeDialog()"
+          type="button"
+          class="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-xs px-3 py-2 me-2 mb-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700 opacity-50 hover:opacity-100">
+          <span *ngIf="!loading.resetting">No</span>
+          <mat-spinner *ngIf="loading.resetting" [diameter]="16"></mat-spinner>
+        </button>
+        }
+      </div>
       }
       @else if (Page === 'PatientRegistered') {
       <button (click)="sendToOPD()" [disabled]="false"

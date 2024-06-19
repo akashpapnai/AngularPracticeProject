@@ -6,6 +6,8 @@ import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
+import { DropDownComponent } from '../inputs/drop-down/drop-down.component';
+import { DepartmentMasterService } from '../../links/admin/master/department-master/department-master.service';
 
 @Component({
   selector: 'app-dialog-box',
@@ -15,7 +17,8 @@ import { MatTableDataSource, MatTableModule } from '@angular/material/table';
     FormsModule,
     CommonModule,
     MatProgressSpinnerModule,
-    MatTableModule
+    MatTableModule,
+    DropDownComponent
   ],
   templateUrl: './dialog-box.component.html',
   styleUrl: './dialog-box.component.scss'
@@ -30,6 +33,16 @@ export class DialogBoxComponent implements OnInit {
   public companyName: string = '';
   public bankName: string = '';
   public departmentName: string = '';
+  public departmentsList: any[] = [];
+  public employee: any = {
+    employeeName: '',
+    canAuthorizePatients: false
+  };
+  public doctor: any = {
+    doctorName: '',
+    department: 0,
+    editreferringDoctor: false
+  };
   public loading = {
     resetting: false,
     submitting: false
@@ -59,9 +72,25 @@ export class DialogBoxComponent implements OnInit {
     else if(this.Page === 'Department') {
       this.departmentName = await this.service.getDepartmentNameById(this.Id);
     }
+    else if(this.Page === 'Employee') {
+      const resp = await this.service.getEmployeeNameById(this.Id);
+      this.employee.employeeName = resp.empName;
+      this.employee.canAuthorizePatients = resp.canAuthorize;
+    }
+    else if(this.Page === 'Doctor') {
+      const allDepts = await this.deptService.getAllDepartments();
+      allDepts.forEach(x => {
+        this.departmentsList.push({ key: x.departmentId, value: x.departmentName });
+      });
+
+      const resp = await this.service.getDoctorNameById(this.Id);
+      this.doctor.doctorName = resp.docName;
+      this.doctor.editreferringDoctor = resp.referringDoctor;
+      this.doctor.department = resp.department;
+    }
   }
 
-  constructor(private service: DialogBoxService, private router: Router) { }
+  constructor(private service: DialogBoxService, private deptService: DepartmentMasterService, private router: Router) { }
 
   public async editDepartment() {
     this.loading.submitting = true;
@@ -130,35 +159,47 @@ export class DialogBoxComponent implements OnInit {
   }
 
   public async editDoctor() {
-    const alertResponse = await this.service.DoctorEdit(this.Id);
+    this.loading.submitting = true;
+    const alertResponse = await this.service.DoctorEdit(this.Id, this.doctor.doctorName, this.doctor.department, this.doctor.isReferring);
     alert(alertResponse);
     if (typeof alertResponse !== 'undefined' && alertResponse === 'Doctor Edit Successful') {
       this.closeDialog();
+      window.location.reload();
     }
+    this.loading.submitting = false;
   }
 
   public async deleteDoctor() {
+    this.loading.submitting = true;
     const alertResponse = await this.service.DoctorDelete(this.Id);
     alert(alertResponse);
     if (typeof alertResponse !== 'undefined' && alertResponse === 'Doctor Delete Successful') {
       this.closeDialog();
+      window.location.reload();
     }
+    this.loading.submitting = false;
   }
 
   public async editEmployee() {
-    const alertResponse = await this.service.EmployeeEdit(this.Id);
+    this.loading.submitting = true;
+    const alertResponse = await this.service.EmployeeEdit(this.Id, this.employee.employeeName, this.employee.canAuthorizePatients);
     alert(alertResponse);
     if (typeof alertResponse !== 'undefined' && alertResponse === 'Employee Edit Successful') {
       this.closeDialog();
+      window.location.reload();
     }
+    this.loading.submitting = false;
   }
 
   public async deleteEmployee() {
+    this.loading.submitting = true;
     const alertResponse = await this.service.EmployeeDelete(this.Id);
     alert(alertResponse);
     if (typeof alertResponse !== 'undefined' && alertResponse === 'Employee Delete Successful') {
       this.closeDialog();
+      window.location.reload();
     }
+    this.loading.submitting = false;
   }
 
   public sendToOPD() {

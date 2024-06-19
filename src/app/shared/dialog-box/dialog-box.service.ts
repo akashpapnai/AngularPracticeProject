@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { LoginService } from '../../login.service';
-import { bankResponse, companyResponse, departmentResponse } from '../../links/opd/transaction/opdmanagement/interfaces';
+import { bankResponse, companyResponse, departmentResponse, doctorResponse, employeeResponse } from '../../links/opd/transaction/opdmanagement/interfaces';
 
 @Injectable({
   providedIn: 'root'
@@ -44,7 +44,6 @@ export class DialogBoxService {
 
       allBanks.subscribe({
         next: (data) => {
-          debugger;
           const banksData: any[] = data.allBanks;
           resolve(banksData[0].bankName);
         }
@@ -52,8 +51,41 @@ export class DialogBoxService {
     });
   }
 
+  public async getDoctorNameById(Id: number): Promise<any> {
+    return new Promise<any>((resolve) => {
+      const allDoctors = this.http.get<doctorResponse>(this.lService.__apiURL__ + "/Doctor/GetAllDoctors", {
+        headers: this.token, params: {
+          'Id': Id
+        }
+      });
+
+      allDoctors.subscribe({
+        next: (data) => {
+          const doctorsData: any[] = data.allDoctors;
+          resolve({docName: doctorsData[0].doctorName, referringDoctor: doctorsData[0].isReferring, department: doctorsData[0].department});
+        }
+      });
+    });
+  }
+
+  public async getEmployeeNameById(Id: number): Promise<any> {
+    return new Promise<any>((resolve) => {
+      const allEmployees = this.http.get<employeeResponse>(this.lService.__apiURL__ + "/Employee/GetAllEmployees", {
+        headers: this.token, params: {
+          'Id': Id
+        }
+      });
+
+      allEmployees.subscribe({
+        next: (data) => {
+          const employeesData: any[] = data.allEmployees;
+          resolve({empName: employeesData[0].employeeName, canAuthorize: employeesData[0].CanAuthorizePatients});
+        }
+      });
+    });
+  }
+
   public async getDepartmentNameById(Id: number): Promise<string> {
-debugger;
     return new Promise<string>((resolve) => {
       const allDepartments = this.http.get<departmentResponse>(this.lService.__apiURL__ + "/Department/GetAllDepartments", {
         headers: this.token, params: {
@@ -63,7 +95,6 @@ debugger;
 
       allDepartments.subscribe({
         next: (data) => {
-          debugger;
           const departmentsData: any[] = data.allDepartments;
           resolve(departmentsData[0].departmentName);
         }
@@ -203,10 +234,10 @@ debugger;
     })
   }
 
-  public async DoctorEdit(Id: number): Promise<string> {
+  public async DoctorEdit(Id: number, doctorName: string, department: number, isReferring: boolean): Promise<string> {
     return new Promise<string>(async (resolve) => {
-      const doctorData: editDoctorInput = { DoctorId: Id };
-      const resp = await this.http.put<responseStatus>(this.apiUrl + "/Doctor/EditDoctor", JSON.stringify(doctorData));
+      const doctorData: editDoctorInput = { DoctorId: Id, DoctorName: doctorName, department: department, isReferring: isReferring, token: localStorage.getItem('token') };
+      const resp = this.http.put<responseStatus>(this.apiUrl + "/Doctor/EditDoctor", doctorData, {headers: this.token});
       resp.subscribe({
         next: (response) => {
           if (response.status > 0) {
@@ -247,10 +278,10 @@ debugger;
     })
   }
 
-  public async EmployeeEdit(Id: number): Promise<string> {
+  public async EmployeeEdit(Id: number, employeeName: string, canAuthorize: boolean): Promise<string> {
     return new Promise<string>(async (resolve) => {
-      const EmployeeData: editEmployeeInput = { EmployeeId: Id };
-      const resp = await this.http.put<responseStatus>(this.apiUrl + "/Employee/EditEmployee", JSON.stringify(EmployeeData));
+      const employeeData: editEmployeeInput = { EmployeeId: Id, EmployeeName: employeeName, CanAuthorizePatients: canAuthorize, token: localStorage.getItem('token') };
+      const resp = this.http.put<responseStatus>(this.apiUrl + "/Employee/EditEmployee", JSON.stringify(employeeData), {headers: this.token});
       resp.subscribe({
         next: (response) => {
           if (response.status > 0) {
@@ -358,11 +389,18 @@ interface editCompanyInput {
 }
 
 interface editDoctorInput {
-  DoctorId: number
+  DoctorId: number,
+  DoctorName: string;
+  department: number;
+  isReferring: boolean;
+  token: string | null;
 }
 
 interface editEmployeeInput {
-  EmployeeId: number
+  EmployeeId: number;
+  EmployeeName: string;
+  CanAuthorizePatients: boolean;
+  token: string | null;
 }
 
 interface responseStatus {
