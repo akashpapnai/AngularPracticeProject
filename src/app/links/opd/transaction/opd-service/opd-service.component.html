@@ -1,0 +1,57 @@
+<app-navbar />
+
+<form #myForm="ngForm" class="mt-4 mx-auto">
+  <div class="w-full flex flex-wrap">
+    <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 mt-1">
+      <app-date [value]="opdService.date" [title]="'Date'" [name]="'date'" [placeHolder]="'DD-MMM-YYYY'"
+        [required]="true"></app-date>
+    </div>
+  </div>
+  <div class="w-full flex flex-wrap">
+    <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col mt-1">
+      <app-text-field [(ngModel)]="opdService.uhid" [value]="opdService.uhid" [name]="'uhid'" [type]="'text'"
+        [placeHolder]="'UHID'" [title]="'Uhid'" [disabled]="true"></app-text-field>
+    </div>
+    <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col mt-1">
+      <app-text-field [(ngModel)]="opdService.opid" [value]="opdService.opid" [name]="'opid'" [type]="'text'"
+        [placeHolder]="'OPID'" [title]="'OPID'" [disabled]="true"></app-text-field>
+    </div>
+    <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col mt-1">
+      <app-text-field [(ngModel)]="opdService.receiptNo" [value]="opdService.receiptNo" [name]="'receiptNo'"
+        [type]="'text'" [placeHolder]="'Receipt No'" [title]="'Receipt No'" [disabled]="true"></app-text-field>
+    </div>
+    <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col mt-1">
+      <app-text-field [(ngModel)]="opdService.patientName" [value]="opdService.patientName" [name]="'patientName'"
+        [type]="'text'" [placeHolder]="'Patient Name'" [title]="'Patient Name'" [disabled]="true"></app-text-field>
+    </div>
+    <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col mt-1">
+      <app-text-field [(ngModel)]="opdService.gender" [value]="opdService.gender" [name]="'gender'" [type]="'text'"
+        [placeHolder]="'Gender'" [title]="'Gender'" [disabled]="true"></app-text-field>
+    </div>
+    <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col mt-1">
+      <app-text-field [(ngModel)]="opdService.age" [value]="opdService.age" [name]="'age'" [type]="'text'"
+        [placeHolder]="'Age'" [title]="'Age'" [disabled]="true"></app-text-field>
+    </div>
+    <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col mt-1">
+      <app-drop-down [(ngModel)]="opdService.department" [value]="opdService.department"
+        [disabled]="true" [name]="'department'" [title]="'Department'" [list]="departmentsList"></app-drop-down>
+    </div>
+    <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col mt-1">
+      <app-drop-down [(ngModel)]="opdService.company" [value]="opdService.company" [list]="companiesList"
+        [disabled]="true" [name]="'company'" [title]="'Company'"></app-drop-down>
+    </div>
+    <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col mt-1">
+      <app-text-field [(ngModel)]="opdService.type" [value]="opdService.type" [name]="'type'" [type]="'text'"
+        [placeHolder]="'Type'" [title]="'Type'" [disabled]="true"></app-text-field>
+    </div>
+    <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col mt-1">
+      <app-drop-down [(ngModel)]="opdService.doctor" [value]="opdService.doctor" [list]="doctorsList"
+        [disabled]="true" [name]="'doctor'" [title]="'Doctor'"></app-drop-down>
+    </div>
+  </div>
+  <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="start" [selectedIndex]="2">
+    <mat-tab label="Charge"> Charge Content </mat-tab>
+    <mat-tab label="Package"> Package Content </mat-tab>
+    <mat-tab label="Patients"> Patients Content </mat-tab>
+  </mat-tab-group>
+</form>

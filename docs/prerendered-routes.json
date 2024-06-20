@@ -15,6 +15,7 @@
     "/opd",
     "/opd/opdmanagement",
     "/opd/opdpatientsreport",
+    "/opd/opdservice",
     "/opd/patientregistration",
     "/opd/patientregistrationreport",
     "/print",

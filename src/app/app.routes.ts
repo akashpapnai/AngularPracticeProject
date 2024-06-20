@@ -14,6 +14,7 @@ import { DoctorMasterComponent } from './links/admin/master/doctor-master/doctor
 import { DepartmentMasterComponent } from './links/admin/master/department-master/department-master.component';
 import { EmployeeMasterComponent } from './links/admin/master/employee-master/employee-master.component';
 import { OpdPatientsReportComponent } from './links/opd/reports/opd-patients-report/opd-patients-report.component';
+import { OpdServiceComponent } from './links/opd/transaction/opd-service/opd-service.component';
 
 export const routes: Routes = [
     { path:'',component: HomePageComponent,pathMatch:'full' },
@@ -35,5 +36,6 @@ export const routes: Routes = [
     { path:'opd/opdmanagement/:id', component: OpdmanagementComponent, canActivate:[AuthGuard] },
     { path:'opd/patientregistrationreport', component: PatientsRegisteredReportComponent, canActivate:[AuthGuard] },
     { path:'opd/opdpatientsreport', component: OpdPatientsReportComponent, canActivate:[AuthGuard] },
+    { path:'opd/opdservice',component: OpdServiceComponent, canActivate: [AuthGuard] },
     { path:'print', component: PrintComponent, canActivate: [AuthGuard] }
 ];
