@@ -337,6 +337,7 @@ export class OpdManagementService {
   }
   public consultationSelect(uhid: string): Promise<string> {
     return new Promise<string>((resolve) => {
+      debugger;
       const token_header = new HttpHeaders({
         'Authorization': 'Bearer ' + localStorage.getItem('token')
       });

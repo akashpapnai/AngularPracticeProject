@@ -165,7 +165,7 @@ export class OpdmanagementComponent {
     await this.stateChanged(this.managementClass.stateId);
     this.managementClass.cityId = user.CityId;
 
-    const whichConsultation: string = await this.service.consultationSelect(this.opidControl.value ?? '');
+    const whichConsultation: string = await this.service.consultationSelect(this.uhidControl.value ?? '');
     this.managementClass.consultation = whichConsultation;
   }
 
