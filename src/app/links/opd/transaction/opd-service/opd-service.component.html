@@ -33,8 +33,8 @@
         [placeHolder]="'Age'" [title]="'Age'" [disabled]="true"></app-text-field>
     </div>
     <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col mt-1">
-      <app-drop-down [(ngModel)]="opdService.department" [value]="opdService.department"
-        [disabled]="true" [name]="'department'" [title]="'Department'" [list]="departmentsList"></app-drop-down>
+      <app-drop-down [(ngModel)]="opdService.department" [value]="opdService.department" [disabled]="true"
+        [name]="'department'" [title]="'Department'" [list]="departmentsList"></app-drop-down>
     </div>
     <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col mt-1">
       <app-drop-down [(ngModel)]="opdService.company" [value]="opdService.company" [list]="companiesList"
@@ -45,13 +45,70 @@
         [placeHolder]="'Type'" [title]="'Type'" [disabled]="true"></app-text-field>
     </div>
     <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col mt-1">
-      <app-drop-down [(ngModel)]="opdService.doctor" [value]="opdService.doctor" [list]="doctorsList"
-        [disabled]="true" [name]="'doctor'" [title]="'Doctor'"></app-drop-down>
+      <app-drop-down [(ngModel)]="opdService.doctor" [value]="opdService.doctor" [list]="doctorsList" [disabled]="true"
+        [name]="'doctor'" [title]="'Doctor'"></app-drop-down>
     </div>
   </div>
-  <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="start" [selectedIndex]="2">
-    <mat-tab label="Charge"> Charge Content </mat-tab>
-    <mat-tab label="Package"> Package Content </mat-tab>
-    <mat-tab label="Patients"> Patients Content </mat-tab>
-  </mat-tab-group>
 </form>
+<mat-tab-group mat-stretch-tabs="false" mat-align-tabs="start" [selectedIndex]="2">
+  <mat-tab label="Charge"> Charge Content </mat-tab>
+  <mat-tab label="Package"> Package Content </mat-tab>
+  <mat-tab label="Patients">
+    @if(dataSource.data.length > 0) {
+
+    <mat-form-field class="mt-2 px-2">
+      <mat-label>Filter</mat-label>
+      <input matInput (keyup)="applyFilter($event)" #input>
+    </mat-form-field>
+
+    <div class="mat-elevation-z8 px-2">
+      <table mat-table [dataSource]="dataSource" matSort>
+
+        <!-- OPID Column -->
+        <ng-container matColumnDef="opid">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> OPID </th>
+          <td mat-cell *matCellDef="let row"> <a class="text-blue-800 cursor-pointer" (click)="loadPatientsDetails(row.opid)">{{row.opid}}</a> </td>
+        </ng-container>
+
+        <!-- UHID Column -->
+        <ng-container matColumnDef="uhid">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> UHID </th>
+          <td mat-cell *matCellDef="let row"> {{row.uhid}} </td>
+        </ng-container>
+
+        <!-- Patients Name Column -->
+        <ng-container matColumnDef="patientsName">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Patients Name </th>
+          <td mat-cell *matCellDef="let row"> {{row.patientsName}} </td>
+        </ng-container>
+
+
+        <!-- Company Name Column -->
+        <ng-container matColumnDef="companyName">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Company Name </th>
+          <td mat-cell *matCellDef="let row"> {{row.companyName}} </td>
+        </ng-container>
+
+        <!-- Company Name Column -->
+        <ng-container matColumnDef="admissionDate">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Admission Date </th>
+          <td mat-cell *matCellDef="let row"> {{row.admissionDate}} </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+        <!-- Row shown when there is no matching data. -->
+        <tr class="mat-row" *matNoDataRow>
+          <td class="mat-cell" colspan="4">No data matching the filter "{{input.value}}"</td>
+        </tr>
+      </table>
+
+      <!-- <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]" aria-label="Select page of patients"></mat-paginator> -->
+    </div>
+    }
+    @else if(dataLoaded === false) {
+    <mat-spinner class="ms-6" [diameter]="32" />
+    }
+  </mat-tab>
+</mat-tab-group>

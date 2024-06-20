@@ -16,7 +16,6 @@ export class ProfileComponent implements OnInit {
   ) {}
 
   async ngOnInit(): Promise<void> {
-    debugger;
     if(localStorage.getItem('token')) {
       const token = localStorage.getItem('token')
 

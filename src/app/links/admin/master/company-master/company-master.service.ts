@@ -16,7 +16,6 @@ export class CompanyMasterService {
 
   public async addCompany(data: AddCompanyModel): Promise<any> {
     return new Promise<any>(async (resolve) => {
-      debugger;
       let alrt: any = {};
       const newComp = await this.http.post<compAddStatus>(this.apiUrl + '/Company/AddCompany', JSON.stringify(data), { headers: this.token });
 
