@@ -59,7 +59,7 @@
             [name]="'subService'" [title]="'Sub Service'" [list]="subServicesList"></app-drop-down>
         </div>
         <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col mt-1">
-          <app-auto-complete (click)="getProcedures()" [title]="'Procedure'" [formControl]="procedureControl"
+          <app-auto-complete [title]="'Procedure'" [formControl]="procedureControl"
             [placeHolder]="'Enter procedure'" [autoCompleteOptions]="procedureControlOptions" [name]="'procedure'"
             #procedure (valueChanged)="onProcedureChange($event)"></app-auto-complete>
         </div>

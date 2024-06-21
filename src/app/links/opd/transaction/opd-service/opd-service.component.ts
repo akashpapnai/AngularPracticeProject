@@ -98,6 +98,12 @@ export class OpdServiceComponent implements OnInit {
     this.dataSource = new MatTableDataSource(patients);
     this.dataLoaded = true;
 
+    this.procedureOptions = await this.service.getProcedures((this.procedureControl.value ?? "a"));
+
+    this.procedureControlOptions = this.procedureControl.valueChanges.pipe(
+      startWith(this.procedureControl.value),
+      switchMap(value => from(this._procedurefilter(value || 'a'))),
+    );
   }
 
   public companiesList: any[] = [];
@@ -139,16 +145,6 @@ export class OpdServiceComponent implements OnInit {
       //TODO: Call Service And Sub Service Drop Down
     }
   }
-
-  public async getProcedures() {
-    this.procedureOptions = await this.service.getProcedures((this.procedureControl.value ?? "a"));
-
-    this.procedureControlOptions = this.procedureControl.valueChanges.pipe(
-      startWith(this.procedureControl.value),
-      switchMap(value => from(this._procedurefilter(value || 'a'))),
-    );
-  }
-
 
   public async loadPatientsDetails(opid: string) {
     const data: PatientDetails = await this.service.loadPatientsDetails(opid);
