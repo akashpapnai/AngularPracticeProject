@@ -41,13 +41,31 @@
         [placeHolder]="'Type'" [title]="'Type'" [disabled]="true"></app-text-field>
     </div>
     <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col mt-1">
-      <app-drop-down [(ngModel)]="opdService.doctorId" [value]="opdService.doctorId" [list]="doctorsList" [disabled]="true"
-        [name]="'doctor'" [title]="'Doctor'"></app-drop-down>
+      <app-drop-down [(ngModel)]="opdService.doctorId" [value]="opdService.doctorId" [list]="doctorsList"
+        [disabled]="true" [name]="'doctor'" [title]="'Doctor'"></app-drop-down>
     </div>
   </div>
 </form>
-<mat-tab-group mat-stretch-tabs="false" mat-align-tabs="start" [selectedIndex]="2">
-  <mat-tab label="Charge"> Charge Content </mat-tab>
+<mat-tab-group mat-stretch-tabs="false" mat-align-tabs="start" [selectedIndex]="2" (selectedTabChange)="tabChanged($event)">
+  <mat-tab label="Charge">
+    <div class="mx-auto mt-4">
+      <div class="w-full flex flex-wrap">
+        <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col mt-1">
+          <app-drop-down [(ngModel)]="charge.service" [value]="charge.service" [disabled]="true" [name]="'service'"
+            [title]="'Service'" [list]="servicesList"></app-drop-down>
+        </div>
+        <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col mt-1">
+          <app-drop-down [(ngModel)]="charge.subService" [value]="charge.subService" [disabled]="true"
+            [name]="'subService'" [title]="'Sub Service'" [list]="subServicesList"></app-drop-down>
+        </div>
+        <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col mt-1">
+          <app-auto-complete (click)="getProcedures()" [title]="'Procedure'" [formControl]="procedureControl"
+            [placeHolder]="'Enter procedure'" [autoCompleteOptions]="procedureControlOptions" [name]="'procedure'"
+            #procedure (valueChanged)="onProcedureChange($event)"></app-auto-complete>
+        </div>
+      </div>
+    </div>
+  </mat-tab>
   <mat-tab label="Package"> Package Content </mat-tab>
   <mat-tab label="Patients">
     @if(dataSource.data.length > 0) {
@@ -63,7 +81,8 @@
         <!-- OPID Column -->
         <ng-container matColumnDef="opid">
           <th mat-header-cell *matHeaderCellDef mat-sort-header> OPID </th>
-          <td mat-cell *matCellDef="let row"> <a class="text-blue-800 cursor-pointer" (click)="loadPatientsDetails(row.opid)">{{row.opid}}</a> </td>
+          <td mat-cell *matCellDef="let row"> <a class="text-blue-800 cursor-pointer"
+              (click)="loadPatientsDetails(row.opid)">{{row.opid}}</a> </td>
         </ng-container>
 
         <!-- UHID Column -->

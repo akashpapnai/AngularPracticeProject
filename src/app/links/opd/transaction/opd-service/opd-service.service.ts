@@ -6,13 +6,13 @@ import { LoginService } from "../../../../login.service";
   providedIn: 'root'
 })
 export class OpdServiceService {
-  constructor(private http:HttpClient, private lService: LoginService){}
+  constructor(private http: HttpClient, private lService: LoginService) { }
   private apiUrl = this.lService.__apiURL__;
   private token = new HttpHeaders({
     'Authorization': 'Bearer ' + localStorage.getItem('token'),
     'Content-Type': 'application/json',
   });
-  
+
   public async getnDaysPatients(nDays: number): Promise<opdObjectResponse[]> {
     return new Promise<opdObjectResponse[]>((resolve) => {
       const allPatients = this.http.get<opdResponse>(this.lService.__apiURL__ + "/OPD/GetNDaysOPDPatients", {
@@ -31,7 +31,7 @@ export class OpdServiceService {
   }
 
   public async loadPatientsDetails(opid: string): Promise<PatientDetails> {
-    return new Promise<PatientDetails>((resolve)=> {
+    return new Promise<PatientDetails>((resolve) => {
       const patient = this.http.get<PatientDetails>(this.lService.__apiURL__ + "/OPD/GetPatientDetailsByOpid", {
         headers: this.token, params: {
           'opid': opid
@@ -45,10 +45,37 @@ export class OpdServiceService {
       });
     });
   }
+
+  public getProcedures(startWith: string): Promise<string[]> {
+    const toSend = new Promise<string[]>(resolve => {
+
+      if (startWith === '') {
+        resolve([]);
+      }
+
+      const data = this.http.get<procedureResponse>(this.apiUrl + '/Procedure/getProcedureStartsWith', {
+        headers: this.token, params: {
+          'startsWith': startWith
+        }
+      });
+
+      data.subscribe({
+        next: (response) => {
+          resolve(response.procedures);
+        }
+      })
+    });
+
+    return toSend;
+  }
 }
 
 interface opdResponse {
   nOPDPatients: any[]
+}
+
+interface procedureResponse {
+  procedures: string[]
 }
 
 export interface PatientDetails {

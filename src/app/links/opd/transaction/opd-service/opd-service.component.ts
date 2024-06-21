@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { NavbarComponent } from '../../../../shared/navbar/navbar.component';
 import { Title } from '@angular/platform-browser';
-import { FormControl, FormsModule } from '@angular/forms';
+import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DateComponent } from '../../../../shared/inputs/date/date.component';
 import { provideMomentDateAdapter } from '@angular/material-moment-adapter';
 import { provideNativeDateAdapter } from '@angular/material/core';
@@ -12,7 +12,7 @@ import { DepartmentMasterService } from '../../../admin/master/department-master
 import { DoctorMasterService } from '../../../admin/master/doctor-master/doctor-master.service';
 import { CommonModule } from '@angular/common';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatTabsModule } from '@angular/material/tabs';
+import { MatTabChangeEvent, MatTabsModule } from '@angular/material/tabs';
 import { OpdServiceService, PatientDetails, opdObjectResponse } from './opd-service.service';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -20,6 +20,8 @@ import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatInputModule } from '@angular/material/input';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import moment from 'moment';
+import { AutoCompleteComponent } from '../../../../shared/inputs/auto-complete/auto-complete.component';
+import { Observable, from, startWith, switchMap } from 'rxjs';
 
 export const DATE_FORMATS = {
   parse: {
@@ -33,45 +35,6 @@ export const DATE_FORMATS = {
   }
 };
 
-const FRUITS: string[] = [
-  'blueberry',
-  'lychee',
-  'kiwi',
-  'mango',
-  'peach',
-  'lime',
-  'pomegranate',
-  'pineapple',
-];
-const NAMES: string[] = [
-  'Maia',
-  'Asher',
-  'Olivia',
-  'Atticus',
-  'Amelia',
-  'Jack',
-  'Charlotte',
-  'Theodore',
-  'Isla',
-  'Oliver',
-  'Isabella',
-  'Jasper',
-  'Cora',
-  'Levi',
-  'Violet',
-  'Arthur',
-  'Mia',
-  'Thomas',
-  'Elizabeth',
-];
-
-export interface UserData {
-  id: string;
-  name: string;
-  progress: string;
-  fruit: string;
-}
-
 @Component({
   selector: 'app-opd-service',
   standalone: true,
@@ -80,6 +43,8 @@ export interface UserData {
     FormsModule,
     DateComponent,
     TextFieldComponent,
+    AutoCompleteComponent,
+    ReactiveFormsModule,
     DropDownComponent,
     CommonModule,
     MatProgressSpinnerModule,
@@ -100,10 +65,9 @@ export interface UserData {
 export class OpdServiceComponent implements OnInit {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
+  @ViewChild('procedure') uhid!: AutoCompleteComponent;
 
-  constructor(private title: Title, private service: OpdServiceService, private compServ: CompanyMasterService, private deptServ: DepartmentMasterService, private docServ: DoctorMasterService) {
-
-  }
+  constructor(private title: Title, private service: OpdServiceService, private compServ: CompanyMasterService, private deptServ: DepartmentMasterService, private docServ: DoctorMasterService) { }
 
   ngAfterViewInit() {
     this.dataSource.paginator = this.paginator;
@@ -133,14 +97,20 @@ export class OpdServiceComponent implements OnInit {
     const patients = allPatients;
     this.dataSource = new MatTableDataSource(patients);
     this.dataLoaded = true;
+
   }
 
   public companiesList: any[] = [];
   public departmentsList: any[] = [];
   public doctorsList: any[] = [];
+  public servicesList: any[] = [];
+  public subServicesList: any[] = [];
   public displayedColumns: string[] = ['opid', 'uhid', 'patientsName', 'companyName', 'admissionDate'];
   public dataSource: MatTableDataSource<opdObjectResponse> = new MatTableDataSource();
+  public procedureControlOptions: Observable<string[]> = new Observable<string[]>;
+  public procedureOptions: string[] = [];
   public dataLoaded: boolean = false;
+  public procedureControl = new FormControl('');
 
   public loading: any = {
     resetting: false,
@@ -159,11 +129,32 @@ export class OpdServiceComponent implements OnInit {
     'doctorId': 0
   }
 
+  public charge: ChargeSection = {
+    service: 0,
+    subService: 0
+  }
+
+  public async tabChanged(event: MatTabChangeEvent) {
+    if (event.tab.textLabel === 'Charge') {
+      //TODO: Call Service And Sub Service Drop Down
+    }
+  }
+
+  public async getProcedures() {
+    this.procedureOptions = await this.service.getProcedures((this.procedureControl.value ?? "a"));
+
+    this.procedureControlOptions = this.procedureControl.valueChanges.pipe(
+      startWith(this.procedureControl.value),
+      switchMap(value => from(this._procedurefilter(value || 'a'))),
+    );
+  }
+
+
   public async loadPatientsDetails(opid: string) {
     const data: PatientDetails = await this.service.loadPatientsDetails(opid);
     console.log(data);
     this.opdService = {
-      date: new FormControl({ value: moment(data.date) , disabled: true }),
+      date: new FormControl({ value: moment(data.date), disabled: true }),
       uhid: data.uhid,
       opid: data.opid,
       receiptNo: data.receiptNo,
@@ -185,6 +176,25 @@ export class OpdServiceComponent implements OnInit {
       this.dataSource.paginator.firstPage();
     }
   }
+
+  private async _procedurefilter(value: string): Promise<string[]> {
+    this.procedureOptions = await this.service.getProcedures(value);
+
+    const filterValue = value.toLowerCase();
+
+    return this.procedureOptions.filter(option => option.toLowerCase().includes(filterValue));
+  }
+
+  public async onProcedureChange(proc: string) {
+    if (proc !== '') {
+      this.procedureOptions = await this.service.getProcedures(this.procedureControl.value ?? '');
+
+      this.procedureControlOptions = this.procedureControl.valueChanges.pipe(
+        startWith(this.procedureControl.value),
+        switchMap(value => from(this._procedurefilter(value || ''))),
+      );
+    }
+  }
 }
 
 interface opdServiceData {
@@ -198,4 +208,9 @@ interface opdServiceData {
   companyId: number,
   type: string,
   doctorId: number
+}
+
+interface ChargeSection {
+  service: number;
+  subService: number
 }
