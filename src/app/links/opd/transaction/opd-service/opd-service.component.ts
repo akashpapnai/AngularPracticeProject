@@ -13,12 +13,13 @@ import { DoctorMasterService } from '../../../admin/master/doctor-master/doctor-
 import { CommonModule } from '@angular/common';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTabsModule } from '@angular/material/tabs';
-import { OpdServiceService, opdObjectResponse } from './opd-service.service';
+import { OpdServiceService, PatientDetails, opdObjectResponse } from './opd-service.service';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatInputModule } from '@angular/material/input';
 import { MatSort, MatSortModule } from '@angular/material/sort';
+import moment from 'moment';
 
 export const DATE_FORMATS = {
   parse: {
@@ -145,12 +146,35 @@ export class OpdServiceComponent implements OnInit {
     resetting: false,
     submitting: false,
   }
-  public opdService: any = {
-    'date': new FormControl({ value: '', disabled: true })
+  public opdService: opdServiceData = {
+    'date': new FormControl({ value: '', disabled: true }),
+    'uhid': '',
+    'opid': '',
+    'receiptNo': '',
+    'patientName': '',
+    'age': '',
+    'departmentId': 0,
+    'companyId': 0,
+    'type': '',
+    'doctorId': 0
   }
 
-  public loadPatientsDetails(opid: string) {
-
+  public async loadPatientsDetails(opid: string) {
+    const data: PatientDetails = await this.service.loadPatientsDetails(opid);
+    console.log(data);
+    this.opdService = {
+      date: new FormControl({ value: moment(data.date) , disabled: true }),
+      uhid: data.uhid,
+      opid: data.opid,
+      receiptNo: data.receiptNo,
+      patientName: data.patientsName,
+      age: data.age,
+      departmentId: data.departmentId,
+      companyId: data.companyId,
+      type: data.type,
+      doctorId: data.doctorId
+    }
+    console.log(this.opdService);
   }
 
   public applyFilter(event: Event) {
@@ -161,4 +185,17 @@ export class OpdServiceComponent implements OnInit {
       this.dataSource.paginator.firstPage();
     }
   }
+}
+
+interface opdServiceData {
+  date: FormControl,
+  uhid: string,
+  opid: string,
+  receiptNo: string,
+  patientName: string
+  age: string,
+  departmentId: number,
+  companyId: number,
+  type: string,
+  doctorId: number
 }

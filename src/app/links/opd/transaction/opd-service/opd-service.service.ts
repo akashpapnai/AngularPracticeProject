@@ -29,10 +29,39 @@ export class OpdServiceService {
       });
     });
   }
+
+  public async loadPatientsDetails(opid: string): Promise<PatientDetails> {
+    return new Promise<PatientDetails>((resolve)=> {
+      const patient = this.http.get<PatientDetails>(this.lService.__apiURL__ + "/OPD/GetPatientDetailsByOpid", {
+        headers: this.token, params: {
+          'opid': opid
+        }
+      });
+
+      patient.subscribe({
+        next: (data) => {
+          resolve(data);
+        }
+      });
+    });
+  }
 }
 
 interface opdResponse {
   nOPDPatients: any[]
+}
+
+export interface PatientDetails {
+  date: Date,
+  uhid: string,
+  opid: string,
+  receiptNo: string,
+  patientsName: string,
+  age: string,
+  departmentId: number,
+  companyId: number,
+  type: string, // Cash Patient, Cheque Patient or Online Patient
+  doctorId: number
 }
 
 export interface opdObjectResponse {

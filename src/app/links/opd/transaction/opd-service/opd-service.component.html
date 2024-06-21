@@ -25,19 +25,15 @@
         [type]="'text'" [placeHolder]="'Patient Name'" [title]="'Patient Name'" [disabled]="true"></app-text-field>
     </div>
     <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col mt-1">
-      <app-text-field [(ngModel)]="opdService.gender" [value]="opdService.gender" [name]="'gender'" [type]="'text'"
-        [placeHolder]="'Gender'" [title]="'Gender'" [disabled]="true"></app-text-field>
-    </div>
-    <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col mt-1">
       <app-text-field [(ngModel)]="opdService.age" [value]="opdService.age" [name]="'age'" [type]="'text'"
         [placeHolder]="'Age'" [title]="'Age'" [disabled]="true"></app-text-field>
     </div>
     <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col mt-1">
-      <app-drop-down [(ngModel)]="opdService.department" [value]="opdService.department" [disabled]="true"
+      <app-drop-down [(ngModel)]="opdService.departmentId" [value]="opdService.departmentId" [disabled]="true"
         [name]="'department'" [title]="'Department'" [list]="departmentsList"></app-drop-down>
     </div>
     <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col mt-1">
-      <app-drop-down [(ngModel)]="opdService.company" [value]="opdService.company" [list]="companiesList"
+      <app-drop-down [(ngModel)]="opdService.companyId" [value]="opdService.companyId" [list]="companiesList"
         [disabled]="true" [name]="'company'" [title]="'Company'"></app-drop-down>
     </div>
     <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col mt-1">
@@ -45,7 +41,7 @@
         [placeHolder]="'Type'" [title]="'Type'" [disabled]="true"></app-text-field>
     </div>
     <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col mt-1">
-      <app-drop-down [(ngModel)]="opdService.doctor" [value]="opdService.doctor" [list]="doctorsList" [disabled]="true"
+      <app-drop-down [(ngModel)]="opdService.doctorId" [value]="opdService.doctorId" [list]="doctorsList" [disabled]="true"
         [name]="'doctor'" [title]="'Doctor'"></app-drop-down>
     </div>
   </div>
