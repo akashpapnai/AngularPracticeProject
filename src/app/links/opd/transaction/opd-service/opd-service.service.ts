@@ -30,6 +30,38 @@ export class OpdServiceService {
     });
   }
 
+  public async getAllServices(procedureName: string | null =  null): Promise<dropDownResponse[]> {
+    return new Promise<dropDownResponse[]>((resolve) => {
+      const allServices = this.http.get<dropDownResponse[]>(this.lService.__apiURL__ + "/Service/GetAllServices", {
+        headers: this.token, params: {
+          procedureName: procedureName ?? ""
+        }
+      });
+
+      allServices.subscribe({
+        next: (data) => {
+          resolve(data);
+        }
+      });
+    });
+  }
+
+  public async getAllSubServices(serviceId: number): Promise<dropDownResponse[]> {
+    return new Promise<dropDownResponse[]>((resolve) => {
+      const allSubServices = this.http.get<dropDownResponse[]>(this.lService.__apiURL__ + "/SubService/GetAllSubServices", {
+        headers: this.token, params: {
+          'serviceId': serviceId
+        }
+      });
+
+      allSubServices.subscribe({
+        next: (data) => {
+          resolve(data);
+        }
+      });
+    });
+  }
+
   public async loadPatientsDetails(opid: string): Promise<PatientDetails> {
     return new Promise<PatientDetails>((resolve) => {
       const patient = this.http.get<PatientDetails>(this.lService.__apiURL__ + "/OPD/GetPatientDetailsByOpid", {
@@ -72,6 +104,11 @@ export class OpdServiceService {
 
 interface opdResponse {
   nOPDPatients: any[]
+}
+
+interface dropDownResponse {
+  key: number;
+  value: string;
 }
 
 interface procedureResponse {

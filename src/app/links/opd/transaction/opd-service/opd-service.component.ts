@@ -142,8 +142,12 @@ export class OpdServiceComponent implements OnInit {
 
   public async tabChanged(event: MatTabChangeEvent) {
     if (event.tab.textLabel === 'Charge') {
-      //TODO: Call Service And Sub Service Drop Down
+      this.servicesList = await this.service.getAllServices();
     }
+  }
+
+  public async getSubService() {
+    this.subServicesList = await this.service.getAllSubServices(this.charge.service);
   }
 
   public async loadPatientsDetails(opid: string) {
@@ -179,6 +183,22 @@ export class OpdServiceComponent implements OnInit {
     const filterValue = value.toLowerCase();
 
     return this.procedureOptions.filter(option => option.toLowerCase().includes(filterValue));
+  }
+
+  public changeService() {
+    setTimeout(async () => {
+      if(this.procedureControl.value !== null) {
+        this.servicesList = await this.service.getAllServices(this.procedureControl.value);
+        if(this.servicesList.length > 0) {
+          this.charge.service = this.servicesList[0].key;
+          this.subServicesList = await this.service.getAllSubServices(this.charge.service);
+          debugger;
+          if(this.subServicesList.length > 0) {
+            this.charge.subService = this.subServicesList[0].key;
+          }
+        }
+      }
+    },500);
   }
 
   public async onProcedureChange(proc: string) {

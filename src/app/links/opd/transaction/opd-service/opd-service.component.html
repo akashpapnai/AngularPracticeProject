@@ -46,20 +46,37 @@
     </div>
   </div>
 </form>
-<mat-tab-group mat-stretch-tabs="false" mat-align-tabs="start" [selectedIndex]="2" (selectedTabChange)="tabChanged($event)">
+<mat-tab-group mat-stretch-tabs="false" mat-align-tabs="start" [selectedIndex]="2"
+  (selectedTabChange)="tabChanged($event)">
   <mat-tab label="Charge">
     <div class="mx-auto mt-4">
       <div class="w-full flex flex-wrap">
+        <!-- Services -->
         <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col mt-1">
-          <app-drop-down [(ngModel)]="charge.service" [value]="charge.service" [disabled]="true" [name]="'service'"
-            [title]="'Service'" [list]="servicesList"></app-drop-down>
+          <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" [htmlFor]="'service'">
+            {{'Service'}}
+          </label>
+          <select
+            class="appearance-none block w-full bg-gray-200 border border-gray-200 text-gray-700 py-2 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+            [name]="'service'" [(ngModel)]="charge.service" [value]="charge.service" (ngModelChange)="getSubService()">
+            <option value="0" selected>--Select One--</option>
+            <option *ngFor="let m of servicesList" [value]="m.key">{{m.value}}</option>
+          </select>
+        </div>
+        <!-- Sub Services -->
+        <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col mt-1">
+          <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" [htmlFor]="'subService'">
+            {{'Sub Service'}}
+          </label>
+          <select
+            class="appearance-none block w-full bg-gray-200 border border-gray-200 text-gray-700 py-2 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+            [name]="'subService'" [(ngModel)]="charge.subService" [value]="charge.subService">
+            <option value="0" selected>--Select One--</option>
+            <option *ngFor="let m of subServicesList" [value]="m.key">{{m.value}}</option>
+          </select>
         </div>
         <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col mt-1">
-          <app-drop-down [(ngModel)]="charge.subService" [value]="charge.subService" [disabled]="true"
-            [name]="'subService'" [title]="'Sub Service'" [list]="subServicesList"></app-drop-down>
-        </div>
-        <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col mt-1">
-          <app-auto-complete [title]="'Procedure'" [formControl]="procedureControl"
+          <app-auto-complete (focusout)="changeService()" [title]="'Procedure'" [formControl]="procedureControl"
             [placeHolder]="'Enter procedure'" [autoCompleteOptions]="procedureControlOptions" [name]="'procedure'"
             #procedure (valueChanged)="onProcedureChange($event)"></app-auto-complete>
         </div>
