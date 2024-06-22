@@ -38,7 +38,7 @@
     </div>
     <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col mt-1">
       <app-text-field [(ngModel)]="opdService.type" [value]="opdService.type" [name]="'type'" [type]="'text'"
-        [placeHolder]="'Type'" [title]="'Type'" [disabled]="true"></app-text-field>
+        [placeHolder]="'Type'" [title]="'Type'" [highlight]="true" [disabled]="true"></app-text-field>
     </div>
     <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col mt-1">
       <app-drop-down [(ngModel)]="opdService.doctorId" [value]="opdService.doctorId" [list]="doctorsList"
@@ -48,13 +48,13 @@
 </form>
 <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="start" [selectedIndex]="2"
   (selectedTabChange)="tabChanged($event)">
-  <mat-tab label="Charge">
+  <mat-tab [disabled]="patientDetailsLoaded === false" label="Charge">
     <div class="mx-auto mt-4">
       <div class="w-full flex flex-wrap">
         <!-- Services -->
         <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col mt-1">
           <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" [htmlFor]="'service'">
-            {{'Service'}}
+            {{'Service'}}&nbsp;<span class="text-red-900">*</span>
           </label>
           <select
             class="appearance-none block w-full bg-gray-200 border border-gray-200 text-gray-700 py-2 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
@@ -66,7 +66,7 @@
         <!-- Sub Services -->
         <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col mt-1">
           <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" [htmlFor]="'subService'">
-            {{'Sub Service'}}
+            {{'Sub Service'}}&nbsp;<span class="text-red-900">*</span>
           </label>
           <select
             class="appearance-none block w-full bg-gray-200 border border-gray-200 text-gray-700 py-2 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
@@ -75,15 +75,105 @@
             <option *ngFor="let m of subServicesList" [value]="m.key">{{m.value}}</option>
           </select>
         </div>
+        <!-- Procedure -->
         <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col mt-1">
           <app-auto-complete (focusout)="changeService()" [title]="'Procedure'" [formControl]="procedureControl"
-            [placeHolder]="'Enter procedure'" [autoCompleteOptions]="procedureControlOptions" [name]="'procedure'"
+            [placeHolder]="'Enter procedure'" [required]="true" [autoCompleteOptions]="procedureControlOptions" [name]="'procedure'"
             #procedure (valueChanged)="onProcedureChange($event)"></app-auto-complete>
         </div>
+        <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col mt-1">
+          <app-drop-down [title]="'Doctor'" [required]="true" [name]="'Doctor'" [(ngModel)]="charge.doctor"
+            [value]="charge.doctor === 0 ? '' : charge.doctor" [list]="doctorsList"></app-drop-down>
+        </div>
+        <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col mt-1">
+          <app-text-field [title]="'Quantity'" [type]="'number'" [required]="true" [value]="charge.quantity.toString()"
+            [name]="'quantity'" [placeHolder]="'Quantity'" [(ngModel)]="charge.quantity"></app-text-field>
+        </div>
+        <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col mt-1">
+          <app-text-field [title]="'Charge'" [type]="'number'" [required]="true" [value]="charge.charge.toString()"
+            [(ngModel)]="charge.charge" (ngModelChange)="amountChanged()"></app-text-field>
+        </div>
+        <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col mt-1">
+          <app-text-field [title]="'Discount(%)'" [type]="'text'" [value]="charge.discountPercent.toString()"
+            [(ngModel)]="charge.discountPercent" (ngModelChange)="discountPercentChanged()"></app-text-field>
+        </div>
+        <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col mt-1">
+          <app-text-field [title]="'Discount(Rs.)'" [type]="'text'" [value]="charge.discountRs.toString()"
+            [(ngModel)]="charge.discountRs" (ngModelChange)="discountRsChanged()"></app-text-field>
+        </div>
+        <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col mt-1">
+          <app-text-field [disabled]="true" [title]="'Net Charge'" [type]="'text'" [value]="charge.netCharge.toString()"
+            [(ngModel)]="charge.netCharge"></app-text-field>
+        </div>
+      </div>
+      <div class="w-full items-end flex flex-wrap justify-end -mx-3 mb-2">
+        <button [disabled]="loading.resetting || loading.submitting" type="button" (click)="addClick()"
+          [ngClass]="{'cursor-not-allowed':(loading.resetting || loading.submitting)}"
+          class="cursor-pointer text-white bg-gray-700 hover:bg-gray-800 focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-xs px-3 py-2 me-2 mb-2 dark:bg-gray-600 dark:hover:bg-gray-700 focus:outline-none dark:focus:ring-gray-800">
+          <span *ngIf="!loading.submitting">Add</span>
+          <mat-spinner *ngIf="loading.submitting" [diameter]="16"></mat-spinner>
+        </button>
+      </div>
+
+      <div class="w-full flex flex-wrap">
+        <div class="w-full items-end md:items-center flex flex-wrap justify-end -mx-3 mb-2">
+          <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 mt-1">
+            <app-text-field [title]="'Total Amount'" [type]="'text'" [value]="charge.totalAmount.toString()"
+              [(ngModel)]="charge.totalAmount"></app-text-field>
+          </div>
+        </div>
+        <div class="w-full items-end flex flex-wrap justify-end -mx-3 mb-2">
+          <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 mt-1">
+            <app-text-field [title]="'Total Discount'" [type]="'text'" [value]="charge.totalDiscount.toString()"
+              [(ngModel)]="charge.totalDiscount"></app-text-field>
+          </div>
+        </div>
+        <div class="w-full items-end flex flex-wrap justify-end -mx-3 mb-2">
+          <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 mt-1">
+            <app-text-field [title]="'Total Charge'" [type]="'text'" [value]="charge.totalCharge.toString()"
+              [(ngModel)]="charge.totalCharge"></app-text-field>
+          </div>
+        </div>
+        <div class="w-full items-end flex flex-wrap justify-end -mx-3 mb-2">
+          <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 mt-1">
+            <app-text-field [title]="'Paid Amount'" [type]="'text'" [value]="charge.paidAmount.toString()"
+              [(ngModel)]="charge.paidAmount"></app-text-field>
+          </div>
+        </div>
+      </div>
+      <div class="w-full flex flex-wrap -mx-3 mb-2">
+        <div class="w-full flex items-start justify-between">
+          <div class="ms-2 w-full md:w-1/4 px-3 mb-6 md:mb-0 mt-1">
+            <app-drop-down [title]="'Referred By'" [name]="'referredBy'" [(ngModel)]="charge.referredBy"
+              [value]="charge.referredBy === 0 ? '' : charge.referredBy" [list]="referredByList"></app-drop-down>
+          </div>
+          <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 mt-1">
+            <app-text-field [required]="true" [title]="'Remarks'" [type]="'text'" [value]="charge.remarks.toString()"
+              [(ngModel)]="charge.remarks"></app-text-field>
+          </div>
+          <div class="w-full md:w-1/4 ps-4 pe-1 mb-6 md:mb-0 mt-1 ml-auto me-2">
+            <app-text-field [title]="'Balance Amount'" [type]="'text'" [value]="charge.balanceAmount.toString()"
+              [(ngModel)]="charge.balanceAmount"></app-text-field>
+          </div>
+        </div>
+      </div>
+      <div class="w-full items-end flex flex-wrap justify-end -mx-3 mb-2">
+        <button [disabled]="loading.resetting || loading.submitting" type="button" (click)="resetClick()"
+          [ngClass]="{'cursor-not-allowed':(loading.resetting || loading.submitting)}"
+          class="cursor-pointer text-white bg-gray-700 hover:bg-gray-800 focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-xs px-3 py-2 me-2 mb-2 dark:bg-gray-600 dark:hover:bg-gray-700 focus:outline-none dark:focus:ring-gray-800">
+          <span *ngIf="!loading.resetting">Reset</span>
+          <mat-spinner *ngIf="loading.resetting" [diameter]="16"></mat-spinner>
+        </button>
+        <button [disabled]="loading.resetting || loading.submitting" type="button" (click)="submitClick()"
+          [ngClass]="{'cursor-not-allowed':(loading.resetting || loading.submitting)}"
+          class="cursor-pointer text-white bg-gray-700 hover:bg-gray-800 focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-xs px-3 py-2 me-2 mb-2 dark:bg-gray-600 dark:hover:bg-gray-700 focus:outline-none dark:focus:ring-gray-800">
+          <span *ngIf="!loading.submitting">Submit</span>
+          <mat-spinner *ngIf="loading.submitting" [diameter]="16"></mat-spinner>
+        </button>
       </div>
     </div>
   </mat-tab>
-  <mat-tab label="Package"> Package Content </mat-tab>
+  <mat-tab [disabled]="patientDetailsLoaded === false" label="Package"> Package Content </mat-tab>
   <mat-tab label="Patients">
     @if(dataSource.data.length > 0) {
 

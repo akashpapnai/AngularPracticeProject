@@ -28,6 +28,7 @@ export class TextFieldComponent {
   @Input() required: boolean = false;
   @Input() type: string = 'text';
   @Input() autoComplete: string = 'on';
+  @Input() highlight: boolean = false;
 
   private onChange: (value: any) => void = () => {};
   private onTouched: () => void = () => {};
@@ -35,12 +36,12 @@ export class TextFieldComponent {
   public onInputChange(event: Event): void {
     const input = event.target as HTMLInputElement;
     const value = input.value;
-    this.value = value;
-    this.onChange(value);
+    this.value = value.toString();
+    this.onChange(value.toString());
   }
   
   writeValue(value: any): void {
-    this.value = value || '';
+    this.value = (value !== null ? value.toString() : '');
   }
 
   registerOnChange(fn: any): void {

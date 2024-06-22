@@ -22,6 +22,7 @@ import { MatSort, MatSortModule } from '@angular/material/sort';
 import moment from 'moment';
 import { AutoCompleteComponent } from '../../../../shared/inputs/auto-complete/auto-complete.component';
 import { Observable, from, startWith, switchMap } from 'rxjs';
+import { OpdManagementService } from '../opdmanagement/opd-management.service';
 
 export const DATE_FORMATS = {
   parse: {
@@ -67,7 +68,7 @@ export class OpdServiceComponent implements OnInit {
   @ViewChild(MatSort) sort!: MatSort;
   @ViewChild('procedure') uhid!: AutoCompleteComponent;
 
-  constructor(private title: Title, private service: OpdServiceService, private compServ: CompanyMasterService, private deptServ: DepartmentMasterService, private docServ: DoctorMasterService) { }
+  constructor(private title: Title, private service: OpdServiceService, private compServ: CompanyMasterService, private deptServ: DepartmentMasterService, private docServ: DoctorMasterService, private opdServ: OpdManagementService) { }
 
   ngAfterViewInit() {
     this.dataSource.paginator = this.paginator;
@@ -111,13 +112,14 @@ export class OpdServiceComponent implements OnInit {
   public doctorsList: any[] = [];
   public servicesList: any[] = [];
   public subServicesList: any[] = [];
+  public referredByList: any[] = [];
   public displayedColumns: string[] = ['opid', 'uhid', 'patientsName', 'companyName', 'admissionDate'];
   public dataSource: MatTableDataSource<opdObjectResponse> = new MatTableDataSource();
   public procedureControlOptions: Observable<string[]> = new Observable<string[]>;
   public procedureOptions: string[] = [];
   public dataLoaded: boolean = false;
   public procedureControl = new FormControl('');
-
+  public patientDetailsLoaded = false;
   public loading: any = {
     resetting: false,
     submitting: false,
@@ -137,12 +139,33 @@ export class OpdServiceComponent implements OnInit {
 
   public charge: ChargeSection = {
     service: 0,
-    subService: 0
+    subService: 0,
+    doctor: 0,
+    quantity: 1,
+    charge: 0,
+    discountPercent: 0,
+    discountRs: 0,
+    netCharge: 0,
+    
+    totalAmount: 0,
+    totalDiscount: 0,
+    totalCharge: 0,
+    paidAmount: 0,
+    balanceAmount: 0,
+    
+    referredBy: 0,
+    remarks: ''
   }
 
   public async tabChanged(event: MatTabChangeEvent) {
     if (event.tab.textLabel === 'Charge') {
-      this.servicesList = await this.service.getAllServices();
+      const [allService, referringDoctors] = await Promise.all([
+        this.service.getAllServices(),
+        this.opdServ.getReferredDoctors()
+      ]);
+
+      this.servicesList = allService;
+      this.referredByList = referringDoctors;
     }
   }
 
@@ -150,9 +173,46 @@ export class OpdServiceComponent implements OnInit {
     this.subServicesList = await this.service.getAllSubServices(this.charge.service);
   }
 
+  public amountChanged() {
+    this.charge.discountPercent = 0;
+    this.charge.discountRs = 0;
+
+    this.charge.netCharge = this.charge.charge - this.charge.discountRs;
+  }
+
+  public discountPercentChanged() {
+    this.charge.discountPercent = parseFloat(this.charge.discountPercent.toString());
+    if (isNaN(this.charge.discountPercent)) {
+      this.charge.discountPercent = 0;
+    }
+
+    this.charge.discountRs = parseFloat(((this.charge.discountPercent / 100) * this.charge.charge).toFixed(2));
+
+    if (this.charge.discountPercent < 0 || this.charge.discountPercent > 100) {
+      this.charge.discountPercent = 0;
+      this.charge.discountRs = 0;
+    }
+
+    this.charge.netCharge = this.charge.charge - this.charge.discountRs;
+  }
+
+  public discountRsChanged() {
+    this.charge.discountRs = parseFloat(this.charge.discountRs.toString());
+    if (isNaN(this.charge.discountRs)) {
+      this.charge.discountRs = 0;
+    }
+
+    this.charge.discountPercent = (this.charge.charge > 0 ? parseFloat(((this.charge.discountRs / this.charge.charge) * 100).toFixed(2)) : 0);
+    if (this.charge.discountRs > this.charge.charge) {
+      this.charge.discountPercent = 0;
+      this.charge.discountRs = 0;
+    }
+
+    this.charge.netCharge = this.charge.charge - this.charge.discountRs;
+  }
+
   public async loadPatientsDetails(opid: string) {
     const data: PatientDetails = await this.service.loadPatientsDetails(opid);
-    console.log(data);
     this.opdService = {
       date: new FormControl({ value: moment(data.date), disabled: true }),
       uhid: data.uhid,
@@ -165,7 +225,7 @@ export class OpdServiceComponent implements OnInit {
       type: data.type,
       doctorId: data.doctorId
     }
-    console.log(this.opdService);
+    this.patientDetailsLoaded = true;
   }
 
   public applyFilter(event: Event) {
@@ -187,18 +247,30 @@ export class OpdServiceComponent implements OnInit {
 
   public changeService() {
     setTimeout(async () => {
-      if(this.procedureControl.value !== null) {
+      if (this.procedureControl.value !== null) {
         this.servicesList = await this.service.getAllServices(this.procedureControl.value);
-        if(this.servicesList.length > 0) {
+        if (this.servicesList.length > 0) {
           this.charge.service = this.servicesList[0].key;
           this.subServicesList = await this.service.getAllSubServices(this.charge.service);
           debugger;
-          if(this.subServicesList.length > 0) {
+          if (this.subServicesList.length > 0) {
             this.charge.subService = this.subServicesList[0].key;
           }
         }
       }
-    },500);
+    }, 500);
+  }
+
+  public async addClick() {
+    this.loading.submitting = true;
+  }
+
+  public async resetClick() {
+
+  }
+
+  public async submitClick() {
+
   }
 
   public async onProcedureChange(proc: string) {
@@ -228,5 +300,20 @@ interface opdServiceData {
 
 interface ChargeSection {
   service: number;
-  subService: number
+  subService: number;
+  doctor: number;
+  quantity: number;
+  charge: number;
+  discountPercent: number;
+  discountRs: number;
+  netCharge: number;
+  
+  totalAmount: number;
+  totalDiscount: number;
+  totalCharge: number;
+  paidAmount: number;
+  balanceAmount: number;
+
+  referredBy: number;
+  remarks: string;
 }
