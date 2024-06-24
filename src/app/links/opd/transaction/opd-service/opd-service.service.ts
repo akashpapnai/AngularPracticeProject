@@ -30,7 +30,7 @@ export class OpdServiceService {
     });
   }
 
-  public async getAllServices(procedureName: string | null =  null): Promise<dropDownResponse[]> {
+  public async getAllServices(procedureName: string | null = null): Promise<dropDownResponse[]> {
     return new Promise<dropDownResponse[]>((resolve) => {
       const allServices = this.http.get<dropDownResponse[]>(this.lService.__apiURL__ + "/Service/GetAllServices", {
         headers: this.token, params: {
@@ -100,6 +100,47 @@ export class OpdServiceService {
 
     return toSend;
   }
+
+  public procedureIsValid(procedure: string): boolean {
+    //TODO: Check if procedure is valid
+    return true;
+  }
+
+  public validateAdd(charge: ChargeSection, procedure: string | null, addedProceduresList: chargeSummaryResponse[]): boolean {
+    if (procedure === null) {
+      alert('Please enter Procedure');
+      return false;
+    }
+    else if (addedProceduresList !== null && addedProceduresList.find(proc => proc.procedureName === procedure) != undefined) {
+      alert('This Procedure already exists');
+      return false;
+    }
+    else if (!this.procedureIsValid(procedure)) {
+      alert('Please enter valid procedure');
+      return false;
+    }
+    else if (charge.service === 0) {
+      alert('Please enter Service');
+      return false;
+    }
+    else if (charge.subService === 0) {
+      alert('Please enter sub service');
+      return false;
+    }
+    else if (charge.doctor === 0) {
+      alert('Please enter doctor');
+      return false;
+    }
+    else if (charge.quantity === 0) {
+      alert('Quantity should be atleast one');
+      return false;
+    }
+    else if (charge.charge === 0) {
+      alert('Please enter some charging amount of service');
+      return false;
+    }
+    return true;
+  }
 }
 
 interface opdResponse {
@@ -134,4 +175,39 @@ export interface opdObjectResponse {
   patientsName: string;
   companyName: string;
   admissionDate: Date
+}
+
+export interface chargeSummaryResponse {
+  row: number;
+  serviceId: number;
+  serviceName: string;
+  subServiceId: number;
+  subServiceName: string;
+  procedureName: string;
+  doctorId: number;
+  doctorName: string;
+  charge: number;
+  quantity: number;
+  discountRs: number;
+  netCharge: number;
+}
+
+export interface ChargeSection {
+  service: number;
+  subService: number;
+  doctor: number;
+  quantity: number;
+  charge: number;
+  discountPercent: number;
+  discountRs: number;
+  netCharge: number;
+
+  totalAmount: number;
+  totalDiscount: number;
+  totalCharge: number;
+  paidAmount: number;
+  balanceAmount: number;
+
+  referredBy: number;
+  remarks: string;
 }

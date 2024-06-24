@@ -13,7 +13,7 @@ import { DoctorMasterService } from '../../../admin/master/doctor-master/doctor-
 import { CommonModule } from '@angular/common';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTabChangeEvent, MatTabsModule } from '@angular/material/tabs';
-import { OpdServiceService, PatientDetails, opdObjectResponse } from './opd-service.service';
+import { ChargeSection, OpdServiceService, PatientDetails, chargeSummaryResponse, opdObjectResponse } from './opd-service.service';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
@@ -95,8 +95,7 @@ export class OpdServiceComponent implements OnInit {
     allDocts.forEach(x => {
       this.doctorsList.push({ key: x.doctorId, value: x.doctorName });
     });
-    const patients = allPatients;
-    this.dataSource = new MatTableDataSource(patients);
+    this.dataSource = new MatTableDataSource(allPatients);
     this.dataLoaded = true;
 
     this.procedureOptions = await this.service.getProcedures((this.procedureControl.value ?? "a"));
@@ -114,13 +113,16 @@ export class OpdServiceComponent implements OnInit {
   public subServicesList: any[] = [];
   public referredByList: any[] = [];
   public displayedColumns: string[] = ['opid', 'uhid', 'patientsName', 'companyName', 'admissionDate'];
+  public chargeSummaryColumns: string[] = ['row', 'serviceName', 'subServiceName', 'procedureName', 'doctorName', 'quantity', 'charge', 'discountRs', 'netCharge'];
   public dataSource: MatTableDataSource<opdObjectResponse> = new MatTableDataSource();
+  public chargeSummaryTable: MatTableDataSource<chargeSummaryResponse> = new MatTableDataSource();
   public procedureControlOptions: Observable<string[]> = new Observable<string[]>;
   public procedureOptions: string[] = [];
   public dataLoaded: boolean = false;
   public procedureControl = new FormControl('');
   public patientDetailsLoaded = false;
   public loading: any = {
+    adding: false,
     resetting: false,
     submitting: false,
   }
@@ -146,13 +148,13 @@ export class OpdServiceComponent implements OnInit {
     discountPercent: 0,
     discountRs: 0,
     netCharge: 0,
-    
+
     totalAmount: 0,
     totalDiscount: 0,
     totalCharge: 0,
     paidAmount: 0,
     balanceAmount: 0,
-    
+
     referredBy: 0,
     remarks: ''
   }
@@ -177,7 +179,20 @@ export class OpdServiceComponent implements OnInit {
     this.charge.discountPercent = 0;
     this.charge.discountRs = 0;
 
-    this.charge.netCharge = this.charge.charge - this.charge.discountRs;
+    this.charge.netCharge = (this.charge.charge * this.charge.quantity) - this.charge.discountRs;
+  }
+
+  public paidAmountChanged() {
+    this.charge.paidAmount = parseFloat(this.charge.paidAmount.toString());
+    if (isNaN(this.charge.paidAmount)) {
+      this.charge.paidAmount = 0;
+    }
+
+    // if (this.charge.paidAmount < 0 || this.charge.paidAmount > this.charge.totalCharge) {
+    //   this.charge.paidAmount = 0;
+    // }
+    
+    this.charge.balanceAmount = this.charge.totalCharge - this.charge.paidAmount;
   }
 
   public discountPercentChanged() {
@@ -193,7 +208,7 @@ export class OpdServiceComponent implements OnInit {
       this.charge.discountRs = 0;
     }
 
-    this.charge.netCharge = this.charge.charge - this.charge.discountRs;
+    this.charge.netCharge = (this.charge.charge * this.charge.quantity) - this.charge.discountRs;
   }
 
   public discountRsChanged() {
@@ -202,13 +217,13 @@ export class OpdServiceComponent implements OnInit {
       this.charge.discountRs = 0;
     }
 
-    this.charge.discountPercent = (this.charge.charge > 0 ? parseFloat(((this.charge.discountRs / this.charge.charge) * 100).toFixed(2)) : 0);
-    if (this.charge.discountRs > this.charge.charge) {
+    this.charge.discountPercent = ((this.charge.charge * this.charge.quantity) > 0 ? parseFloat(((this.charge.discountRs / (this.charge.charge * this.charge.quantity)) * 100).toFixed(2)) : 0);
+    if (this.charge.discountRs > (this.charge.charge * this.charge.quantity)) {
       this.charge.discountPercent = 0;
       this.charge.discountRs = 0;
     }
 
-    this.charge.netCharge = this.charge.charge - this.charge.discountRs;
+    this.charge.netCharge = (this.charge.charge * this.charge.quantity) - this.charge.discountRs;
   }
 
   public async loadPatientsDetails(opid: string) {
@@ -252,7 +267,6 @@ export class OpdServiceComponent implements OnInit {
         if (this.servicesList.length > 0) {
           this.charge.service = this.servicesList[0].key;
           this.subServicesList = await this.service.getAllSubServices(this.charge.service);
-          debugger;
           if (this.subServicesList.length > 0) {
             this.charge.subService = this.subServicesList[0].key;
           }
@@ -262,15 +276,73 @@ export class OpdServiceComponent implements OnInit {
   }
 
   public async addClick() {
-    this.loading.submitting = true;
+    if (this.service.validateAdd(this.charge, this.procedureControl.value, this.chargeSummaryTable.data)) {
+      this.loading.adding = true;
+      const addData: chargeSummaryResponse = {
+        row: this.chargeSummaryTable.data.length + 1,
+        serviceId: this.charge.service,
+        serviceName: this.servicesList.find(service => service.key === this.charge.service).value,
+        subServiceId: this.charge.subService,
+        subServiceName: this.subServicesList.find(subService => subService.key === this.charge.subService).value,
+        doctorId: this.charge.doctor,
+        doctorName: this.doctorsList.find(doctor => doctor.key === this.charge.doctor).value,
+        charge: this.charge.charge,
+        quantity: this.charge.quantity,
+        discountRs: this.charge.discountRs,
+        netCharge: this.charge.netCharge,
+        procedureName: this.procedureControl.value ?? ''
+      }
+
+      let addDataList: chargeSummaryResponse[] = this.chargeSummaryTable.data;
+      addDataList.push(addData);
+      const pushData = new MatTableDataSource(addDataList);
+
+      this.chargeSummaryTable = pushData;
+
+      let [totalAmount, totalDiscount, totalCharge, totalNetCharge] = [0, 0, 0, 0];
+      addDataList.forEach(x => {
+        totalAmount += x.charge * x.quantity;
+        totalDiscount += x.discountRs;
+        totalCharge += x.netCharge;
+      });
+
+      totalNetCharge = totalAmount - totalDiscount;
+      [this.charge.totalAmount, this.charge.totalDiscount, this.charge.totalCharge, this.charge.balanceAmount] = [totalAmount, totalDiscount, totalNetCharge, totalNetCharge];
+
+      [this.charge.service, this.charge.subService, this.procedureControl, this.charge.charge, this.charge.quantity, this.charge.discountPercent, this.charge.discountRs, this.charge.netCharge, this.charge.doctor] =
+        [0, 0, new FormControl(''), 0, 1, 0, 0, 0, 0];
+
+
+      this.procedureOptions = await this.service.getProcedures((this.procedureControl.value ?? "a"));
+
+      this.procedureControlOptions = this.procedureControl.valueChanges.pipe(
+        startWith(this.procedureControl.value),
+        switchMap(value => from(this._procedurefilter(value || 'a'))),
+      );
+
+      const [allService, referringDoctors] = await Promise.all([
+        this.service.getAllServices(),
+        this.opdServ.getReferredDoctors()
+      ]);
+
+      this.servicesList = allService;
+      this.subServicesList = [];
+      this.referredByList = referringDoctors;
+
+      this.loading.adding = false;
+    }
   }
 
   public async resetClick() {
-
+    this.loading.resetting = true;
+    //TODO: Reset Button Functioning
+    this.loading.resetting = false;
   }
 
   public async submitClick() {
-
+    this.loading.submitting = true;
+    //TODO: Submit Button Functioning
+    this.loading.submitting = false;
   }
 
   public async onProcedureChange(proc: string) {
@@ -296,24 +368,4 @@ interface opdServiceData {
   companyId: number,
   type: string,
   doctorId: number
-}
-
-interface ChargeSection {
-  service: number;
-  subService: number;
-  doctor: number;
-  quantity: number;
-  charge: number;
-  discountPercent: number;
-  discountRs: number;
-  netCharge: number;
-  
-  totalAmount: number;
-  totalDiscount: number;
-  totalCharge: number;
-  paidAmount: number;
-  balanceAmount: number;
-
-  referredBy: number;
-  remarks: string;
 }
