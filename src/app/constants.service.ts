@@ -8,6 +8,7 @@ import { Moment } from 'moment';
 export class ConstantsService {
   public nDaysForNewConsultation: number = 3;
   public letterHeadImgUrl: string = 'assets/images/letterHead/ambition_hospital.jpg';
+  public avaliableModules: string[] = [];
   public dockColor: string = '#19212C'
   public baseUrlForPrint = '/AngularPracticeProject/browser'
   public ModulesConstData: any[] = [

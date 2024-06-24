@@ -1,0 +1,46 @@
+#sidenav {
+    transform: translateX(0);
+}
+
+#sidenav {
+    transform: translateX(0) rotateY(0);
+    transform-origin: left center;
+    perspective: 1000px;
+}
+
+#sidenav.open {
+    transform: translateX(0) rotateY(0deg);
+}
+
+#sidenav.closed {
+    transform: translateX(-100%) rotateY(-45deg);
+}
+
+.submenu {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease-out;
+  }
+  
+  .submenu.open {
+    max-height: 200px;
+  }
+
+::-webkit-scrollbar {
+    width: 0;
+    background: transparent;
+}
+
+::-webkit-scrollbar:hover {
+    width: 8px;
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.3);
+    border-radius: 4px;
+}

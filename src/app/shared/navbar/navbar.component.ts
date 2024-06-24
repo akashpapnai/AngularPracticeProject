@@ -1,6 +1,5 @@
-import { Component, Input } from '@angular/core';
+import { Component, ElementRef, HostListener, Renderer2 } from '@angular/core';
 import { Router } from '@angular/router';
-import { AuthService } from '../../auth.service';
 import { CommonModule } from '@angular/common';
 import { ConstantsService } from '../../constants.service';
 import { HttpClient } from '@angular/common/http';
@@ -18,16 +17,66 @@ import { LoginService } from '../../login.service';
 export class NavbarComponent {
 
   public url: string = getURL(this.router.url);
+  public openSideNav: boolean = false;
   public dockColor: string = this.constants.dockColor;
   public authenticationChecker: boolean | null = null;
+  public sidenavOpen: boolean = false;
+  public sidenavModules: string[] = [];
+  public moduleClick: modulesBoolean[] = [];
 
   constructor(
     private router: Router,
-    private aService: AuthService,
     private constants: ConstantsService,
     private http: HttpClient,
-    private lService: LoginService
-  ) { }
+    private lService: LoginService,
+    private renderer: Renderer2, private el: ElementRef
+  ) {
+    this.renderer.listen('document', 'click', (event: Event) => {
+      this.handleClickOutside(event);
+    });
+  }
+
+  @HostListener('window:resize', ['$event'])
+  onResize(event: Event) {
+    const screenWidth = window.innerWidth;
+    const sidenav = this.el.nativeElement.querySelector('#sidenav');
+    if (screenWidth <= 768) {
+      this.sidenavOpen = false;
+      sidenav.classList.remove('open');
+      sidenav.classList.add('closed');
+    }
+  }
+
+  handleClickOutside(event: Event) {
+    const sidenav = this.el.nativeElement.querySelector('#sidenav');
+    const toggleButton = this.el.nativeElement.querySelector('#toggleButton');
+    if (this.sidenavOpen && !sidenav.contains(event.target) && !toggleButton.contains(event.target)) {
+      this.sidenavOpen = false;
+      sidenav.classList.remove('open');
+      sidenav.classList.add('closed');
+    }
+  }
+
+  public trackByIndex(index: number, item: any) {
+    return index;
+  }
+
+  public toggleSidenav() {
+    this.sidenavModules = this.constants.avaliableModules;
+    this.sidenavModules.forEach(x => {
+      this.moduleClick.push({title: x, clicked: false});
+    });
+
+    this.sidenavOpen = !this.sidenavOpen;
+    const sidenav = document.getElementById('sidenav');
+    if (this.sidenavOpen) {
+      sidenav!.classList.remove('closed');
+      sidenav!.classList.add('open');
+    } else {
+      sidenav!.classList.remove('open');
+      sidenav!.classList.add('closed');
+    }
+  }
 
   ngOnInit() {
     if (typeof localStorage != 'undefined') {
@@ -63,6 +112,18 @@ export class NavbarComponent {
     this.router.navigate(['/login']);
   }
 
+  moduleClicked(module: string) {
+    const moduleObj = this.moduleClick.find(x => x.title === module);
+    
+    if (moduleObj) {
+      const updatedModuleObj = { ...moduleObj, clicked: !moduleObj.clicked };
+      const index = this.moduleClick.indexOf(moduleObj);
+      if (index !== -1) {
+        this.moduleClick[index] = updatedModuleObj;
+      }
+    }
+  }
+
   public LogOut() {
     const confirmation = confirm('Are you sure you want to Log Out?');
     if (confirmation) {
@@ -95,6 +156,7 @@ export class NavbarComponent {
   }
   HomeClick() {
     this.router.navigate(['/']);
+    // this.openSideNav = !this.openSideNav;
   }
 }
 function getURL(url: string): string {
@@ -110,10 +172,14 @@ function getURL(url: string): string {
       return 'Blood Bank';
     default:
       const splitted = curr_url.split(' ');
-      if(splitted.length == 1) {
+      if (splitted.length == 1) {
         return splitted[0].charAt(0).toUpperCase() + splitted[0].slice(1);
       }
       return '';
   }
 }
 
+interface modulesBoolean {
+  title: string;
+  clicked: boolean;
+}

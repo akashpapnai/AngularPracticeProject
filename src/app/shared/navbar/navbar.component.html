@@ -1,15 +1,43 @@
+@if(authenticationChecker ?? false) {
+<div class="absolute z-50 h-screen flex border-zinc-200">
+  <!-- Sidenav -->
+  <div id="sidenav"
+    class="w-64 closed rounded-e-2xl shadow-2xl h-screen bg-gray-800 text-white fixed transform transition-transform duration-500 ease-in-out overflow-scroll">
+    <h2 class="text-2xl font-bold pt-4 ps-4 pe-4">Modules</h2>
+    <hr class="pb-4"/>
+
+    <ul *ngFor="let item of sidenavModules; let i = index; trackBy: trackByIndex">
+      <li class="p-4 ms-4 me-4 hover:bg-gray-700 rounded-2xl hover:shadow-2xl">
+        <a (click)="moduleClicked(item)" class="cursor-pointer mb-4 w-full">{{ item }}</a>
+        <ul [ngClass]="{'submenu': true, 'open': moduleClick[i].clicked}" class="transform transition-transform duration-500 ease-in-out">
+          <li class="p-2 ms-4 me-4 hover:bg-gray-800 rounded-2xl hover:shadow-2xl">
+            Master
+          </li>
+          <li class="p-2 ms-4 me-4 hover:bg-gray-800 rounded-2xl hover:shadow-2xl">
+            Transaction
+          </li>
+          <li class="p-2 ms-4 me-4 hover:bg-gray-800 rounded-2xl hover:shadow-2xl">
+            Report
+          </li>
+        </ul>
+      </li>
+    </ul>    
+  </div>
+</div>
+}
+
 <nav class="shadow-2xl rounded-xl ml-1 mr-1" [ngStyle]="{'background-color':dockColor}">
   <div class="max-w-1xl mx-auto px-2 sm:px-6 lg:px-8">
     <div class="flex justify-between h-16">
       <div class="flex">
         <!-- Logo -->
-        <div class="flex-shrink-0 flex items-center">
-          <a (click)="url && HomeClick() " [ngClass]="{'cursor-pointer': url !== ''}"><img
-              class="block lg:hidden h-8 w-auto"
+        <div id="toggleButton" class="flex-shrink-0 flex items-center">
+          <a (click)="toggleSidenav()"><img
+              class="cursor-pointer block lg:hidden h-8 w-auto"
               src="https://imgs.search.brave.com/FV8pf8uSxvyokm6oNzBIwlNFTctmbjKV9vSVglCOBa8/rs:fit:860:0:0/g:ce/aHR0cHM6Ly9jZG4t/aWNvbnMtcG5nLmZy/ZWVwaWsuY29tLzI1/Ni82MzYyLzYzNjI1/MjAucG5n"
               alt="Workflow"></a>
-          <a (click)="url && HomeClick()" [ngClass]="{'cursor-pointer': url !== ''}"><img
-              class="hidden lg:block h-8 w-auto"
+          <a (click)="toggleSidenav()"><img
+              class="cursor-pointer hidden lg:block h-8 w-auto"
               src="https://imgs.search.brave.com/FV8pf8uSxvyokm6oNzBIwlNFTctmbjKV9vSVglCOBa8/rs:fit:860:0:0/g:ce/aHR0cHM6Ly9jZG4t/aWNvbnMtcG5nLmZy/ZWVwaWsuY29tLzI1/Ni82MzYyLzYzNjI1/MjAucG5n"
               alt="Workflow"></a>
         </div>
