@@ -19,11 +19,23 @@
 .submenu {
     max-height: 0;
     overflow: hidden;
-    transition: max-height 0.3s ease-out;
+    transition: max-height 0.5s ease-out;
   }
   
   .submenu.open {
     max-height: 200px;
+    overflow-y: scroll;
+  }
+
+  .subsubmenu {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.5s ease-out;
+  }
+  
+  .subsubmenu.open {
+    max-height: 200px;
+    overflow-y: scroll;
   }
 
 ::-webkit-scrollbar {

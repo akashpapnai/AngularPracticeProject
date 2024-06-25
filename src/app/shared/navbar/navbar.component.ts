@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { ConstantsService } from '../../constants.service';
 import { HttpClient } from '@angular/common/http';
 import { LoginService } from '../../login.service';
+import { NavbarService, pages } from './navbar.service';
 
 @Component({
   selector: 'app-navbar',
@@ -21,15 +22,22 @@ export class NavbarComponent {
   public dockColor: string = this.constants.dockColor;
   public authenticationChecker: boolean | null = null;
   public sidenavOpen: boolean = false;
+  public subModuleNameClicked: string = '';
   public sidenavModules: string[] = [];
+  public sidenavSubModules: string[] = [];
+  public sideNavPages: string[] = [];
+  public pages: pages[] = [];
   public moduleClick: modulesBoolean[] = [];
+  public subModuleClick: modulesBoolean[] = [];
 
   constructor(
     private router: Router,
     private constants: ConstantsService,
     private http: HttpClient,
     private lService: LoginService,
-    private renderer: Renderer2, private el: ElementRef
+    private service: NavbarService,
+    private renderer: Renderer2,
+    private el: ElementRef
   ) {
     this.renderer.listen('document', 'click', (event: Event) => {
       this.handleClickOutside(event);
@@ -57,15 +65,32 @@ export class NavbarComponent {
     }
   }
 
-  public trackByIndex(index: number, item: any) {
+  public trackByModuleIndex(index: number, item: any) {
+    return index;
+  }
+
+  public trackBySubModuleIndex(index: number, item: any) {
     return index;
   }
 
   public toggleSidenav() {
-    this.sidenavModules = this.constants.avaliableModules;
+    const modules_list = localStorage.getItem('modulesList') ?? "";
+    let sideNav: string[] = [];
+    if (modules_list !== null) {
+      const splitted: string[] = modules_list.split(',');
+      splitted.forEach(x => {
+        sideNav.push(x);
+      });
+    }
+    this.sidenavModules = sideNav;
     this.sidenavModules.forEach(x => {
-      this.moduleClick.push({title: x, clicked: false});
+      this.moduleClick.push({ title: x, clicked: false });
     });
+
+    this.subModuleClick = [ { title: 'Master', clicked: false }, 
+                            { title: 'Transaction', clicked: false }, 
+                            { title: 'Report', clicked: false }
+                          ]
 
     this.sidenavOpen = !this.sidenavOpen;
     const sidenav = document.getElementById('sidenav');
@@ -112,16 +137,36 @@ export class NavbarComponent {
     this.router.navigate(['/login']);
   }
 
-  moduleClicked(module: string) {
-    const moduleObj = this.moduleClick.find(x => x.title === module);
-    
-    if (moduleObj) {
-      const updatedModuleObj = { ...moduleObj, clicked: !moduleObj.clicked };
-      const index = this.moduleClick.indexOf(moduleObj);
-      if (index !== -1) {
-        this.moduleClick[index] = updatedModuleObj;
+  public moduleClicked(module: string) {
+
+    this.pages = [];
+    this.sideNavPages = [];
+    this.moduleClick.forEach(x => {
+      if (x.title !== module) {
+        x.clicked = false;
       }
-    }
+      else {
+        x.clicked = !x.clicked;
+      }
+    });
+
+    this.sidenavSubModules = ['Master','Transaction','Report']
+  }
+
+  public async subModuleClicked(module: string, subModule: string) {
+    this.subModuleClick.forEach(x => {
+      if(x.title !== subModule) {
+        x.clicked = false;
+      }
+      else {
+        x.clicked = !x.clicked;
+      }
+    });
+    this.sideNavPages = [];
+    this.pages = await this.service.getAllPages(module, subModule);
+    this.pages.forEach(x => {
+      this.sideNavPages.push(x.title);
+    });
   }
 
   public LogOut() {

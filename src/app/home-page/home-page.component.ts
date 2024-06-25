@@ -5,7 +5,6 @@ import { HttpClient, HttpHeaders, provideHttpClient, withInterceptorsFromDi } fr
 import { CardComponent } from '../shared/card/card.component';
 import {CommonModule} from '@angular/common'
 import { Router } from '@angular/router';
-import { ConstantsService } from '../constants.service';
 
 @Component({ selector: 'app-home-page',
     standalone: true,
@@ -21,8 +20,7 @@ export class HomePageComponent {
   constructor(
     private lService: LoginService,
     private http: HttpClient,
-    private router: Router,
-    private constants: ConstantsService
+    private router: Router
   ) {}
 
   private apiURL = this.lService.__apiURL__;
@@ -86,8 +84,7 @@ export class HomePageComponent {
                   let push_data = {imageSource: 'assets/images/'+ module.toLowerCase().replaceAll(' ','') + '.png',altText: module+' Image', title: module, description: module+' Description', tags: [], clicked: ''};
                   this.cardData.push(push_data);
                 }
-
-                this.constants.avaliableModules = modules_list;                
+                localStorage.setItem('modulesList',modules_list);              
                 this.marketingContent = false;
               }
             },
