@@ -23,6 +23,9 @@ import moment from 'moment';
 import { AutoCompleteComponent } from '../../../../shared/inputs/auto-complete/auto-complete.component';
 import { Observable, from, startWith, switchMap } from 'rxjs';
 import { OpdManagementService } from '../opdmanagement/opd-management.service';
+import { ConstantsService } from '../../../../constants.service';
+import { MatRadioModule } from '@angular/material/radio';
+import { BankMasterService } from '../../../admin/master/bank-master/bank-master.service';
 
 export const DATE_FORMATS = {
   parse: {
@@ -54,7 +57,8 @@ export const DATE_FORMATS = {
     MatInputModule,
     MatSortModule,
     MatPaginatorModule,
-    MatFormFieldModule
+    MatFormFieldModule,
+    MatRadioModule
   ],
   templateUrl: './opd-service.component.html',
   styleUrl: './opd-service.component.scss',
@@ -68,7 +72,17 @@ export class OpdServiceComponent implements OnInit {
   @ViewChild(MatSort) sort!: MatSort;
   @ViewChild('procedure') uhid!: AutoCompleteComponent;
 
-  constructor(private title: Title, private service: OpdServiceService, private compServ: CompanyMasterService, private deptServ: DepartmentMasterService, private docServ: DoctorMasterService, private opdServ: OpdManagementService) { }
+  constructor(private title: Title,
+    private service: OpdServiceService,
+    private compServ: CompanyMasterService,
+    private deptServ: DepartmentMasterService,
+    private docServ: DoctorMasterService,
+    private opdServ: OpdManagementService,
+    private constants: ConstantsService,
+    private bnkSrvc: BankMasterService
+  ) {
+    this.paymentModes = this.constants.paymentModes;
+  }
 
   ngAfterViewInit() {
     this.dataSource.paginator = this.paginator;
@@ -112,6 +126,9 @@ export class OpdServiceComponent implements OnInit {
   public servicesList: any[] = [];
   public subServicesList: any[] = [];
   public referredByList: any[] = [];
+  public paymentModes: any[] = [];
+  public bankNamesList: any[] = [];
+  public paymentTypeList: any[] = [];
   public displayedColumns: string[] = ['opid', 'uhid', 'patientsName', 'companyName', 'admissionDate'];
   public chargeSummaryColumns: string[] = ['row', 'serviceName', 'subServiceName', 'procedureName', 'doctorName', 'quantity', 'charge', 'discountRs', 'netCharge'];
   public dataSource: MatTableDataSource<opdObjectResponse> = new MatTableDataSource();
@@ -156,23 +173,60 @@ export class OpdServiceComponent implements OnInit {
     balanceAmount: 0,
 
     referredBy: 0,
-    remarks: ''
+    remarks: '',
+
+    paymentMode: 0,
+    bankName: '',
+    chequeDate: new FormControl(''),
+    chequeNo: '',
+    chequeAmount: 0,
+    paymentType: '',
+    referenceNo: '',
+    cardNo: '',
+    UPIID: '',
+  }
+
+  public paymentTypeChanged() {
+    this.charge.cardNo = '';
+    this.charge.UPIID = '';
+    this.charge.bankName = '';
+  }
+
+  public paymentModeChanged() {
+    this.charge.bankName = '';
+    this.charge.chequeDate = new FormControl('');
+    this.charge.chequeNo = '';
+    this.charge.chequeAmount = 0;
+    this.charge.paymentType = '';
+    this.charge.cardNo = '';
+    this.charge.UPIID = '';
+    this.charge.referenceNo = '';
   }
 
   public async tabChanged(event: MatTabChangeEvent) {
     if (event.tab.textLabel === 'Charge') {
-      const [allService, referringDoctors] = await Promise.all([
+      const [allService, referringDoctors, allBanks] = await Promise.all([
         this.service.getAllServices(),
-        this.opdServ.getReferredDoctors()
+        this.opdServ.getReferredDoctors(),
+        this.bnkSrvc.getAllBanks()
       ]);
 
       this.servicesList = allService;
       this.referredByList = referringDoctors;
+
+      const list = this.constants.paymentTypeList;
+      list.forEach(l => {
+        this.paymentTypeList.push(l);
+      });
+      
+      allBanks.forEach(x => {
+        this.bankNamesList.push({key:x.bankId, value: x.bankName});
+      })
     }
   }
 
   public async getSubService() {
-    this.subServicesList = await this.service.getAllSubServices(this.charge.service);
+    this.subServicesList = await this.service.getAllSubServices(this.charge.service, null);
   }
 
   public amountChanged() {
@@ -191,7 +245,7 @@ export class OpdServiceComponent implements OnInit {
     // if (this.charge.paidAmount < 0 || this.charge.paidAmount > this.charge.totalCharge) {
     //   this.charge.paidAmount = 0;
     // }
-    
+
     this.charge.balanceAmount = this.charge.totalCharge - this.charge.paidAmount;
   }
 
@@ -201,7 +255,7 @@ export class OpdServiceComponent implements OnInit {
       this.charge.discountPercent = 0;
     }
 
-    this.charge.discountRs = parseFloat(((this.charge.discountPercent / 100) * this.charge.charge).toFixed(2));
+    this.charge.discountRs = parseFloat(((this.charge.discountPercent / 100) * (this.charge.charge * this.charge.quantity)).toFixed(2));
 
     if (this.charge.discountPercent < 0 || this.charge.discountPercent > 100) {
       this.charge.discountPercent = 0;
@@ -266,10 +320,16 @@ export class OpdServiceComponent implements OnInit {
         this.servicesList = await this.service.getAllServices(this.procedureControl.value);
         if (this.servicesList.length > 0) {
           this.charge.service = this.servicesList[0].key;
-          this.subServicesList = await this.service.getAllSubServices(this.charge.service);
+          this.subServicesList = await this.service.getAllSubServices(this.charge.service, this.procedureControl.value);
           if (this.subServicesList.length > 0) {
             this.charge.subService = this.subServicesList[0].key;
           }
+          else {
+            this.charge.subService = 0;
+          }
+        }
+        else {
+          this.charge.service = 0;
         }
       }
     }, 500);

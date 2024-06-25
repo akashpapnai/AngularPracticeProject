@@ -210,6 +210,78 @@
           </div>
         </div>
       </div>
+      <div class="w-full md:w-full px-3 mb-6 md:mb-0 flex flex-col mt-1">
+        <!-- Payment Mode -->
+        <div *ngIf="charge.paidAmount > 0" class="w-full md:w-full mb-6 md:mb-0 flex flex-col mt-1">
+          <label for="paymentMode" class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">
+            Payment Mode&nbsp;<span class="text-red-900">*</span>
+          </label>
+          <mat-radio-group (change)="paymentModeChanged()" class="flex" aria-label="Select an option" [(ngModel)]="charge.paymentMode"
+            [name]="'payMode'" [required]="charge.paidAmount > 0">
+            <div *ngFor="let paymentMode of paymentModes">
+              <mat-radio-button [value]="paymentMode.key">{{paymentMode.value}}</mat-radio-button>
+            </div>
+          </mat-radio-group>
+        </div>
+        <div class="flex flex-wrap -mx-3 mb-6">
+          @if(charge.paymentMode == 2) { <!-- Cheque -->
+          <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col mt-1">
+            <app-drop-down [(ngModel)]="charge.bankName" [value]="charge.bankName"
+              [list]="bankNamesList" [name]="'bankName'" [title]="'Bank Name'" [disabled]="false"
+              [required]="charge.paymentMode == 2"></app-drop-down>
+          </div>
+          <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 mt-1">
+            <app-date [value]="charge.chequeDate" [title]="'Cheque Date'" [name]="'chequedate'"
+              [placeHolder]="'DD-MMM-YYYY'" [required]="charge.paymentMode == 2"></app-date>
+          </div>
+          <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col mt-1">
+            <app-text-field [(ngModel)]="charge.chequeNo" [value]="charge.chequeNo"
+              [name]="'chequeNo'" [required]="charge.paymentMode == 2" [type]="'text'"
+              [placeHolder]="'Cheque Number'" [title]="'Cheque No.'" [disabled]="false"></app-text-field>
+          </div>
+          <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col mt-1">
+            <app-text-field [(ngModel)]="charge.chequeAmount" [value]="charge.chequeAmount.toString()"
+              [name]="'chequeAmount'" [required]="charge.paymentMode == 2" [type]="'number'"
+              [placeHolder]="'Cheque Amount'" [title]="'Cheque Amount'" [disabled]="false"></app-text-field>
+          </div>
+          }
+          @else if(charge.paymentMode == 3) {
+          <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col mt-1">
+            <app-drop-down [(ngModel)]="charge.paymentType" [value]="charge.paymentType"
+              [list]="paymentTypeList" [name]="'paymentType'" [title]="'Payment Type'" [disabled]="false"
+              [required]="charge.paymentMode == 3" (ngModelChange)="paymentTypeChanged()"></app-drop-down>
+          </div>
+          }
+        </div>
+        <div class="flex flex-wrap -mx-3 mb-6">
+          <div *ngIf="charge.paymentType !== '' && charge.paymentType !== 'UPI'"
+            class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col mt-1">
+            <app-text-field [(ngModel)]="charge.cardNo" [value]="charge.cardNo" [name]="'cardNo'"
+              [required]="charge.paymentType !== ''" [type]="'nmmber'" [placeHolder]="'Card Number'"
+              [title]="'Card No.'" [disabled]="false"></app-text-field>
+          </div>
+
+          <div *ngIf="charge.paymentType !== '' && charge.paymentType !== 'UPI'"
+            class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col mt-1">
+            <app-drop-down [(ngModel)]="charge.bankName" [value]="charge.bankName"
+              [list]="bankNamesList" [name]="'bankName'" [title]="'Bank Name'" [disabled]="false"
+              [required]="charge.paymentType !== ''"></app-drop-down>
+          </div>
+
+          <div *ngIf="charge.paymentType === 'UPI'"
+            class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col mt-1">
+            <app-text-field [(ngModel)]="charge.UPIID" [value]="charge.UPIID" [name]="'UPIID'"
+              [required]="charge.paymentType === 'UPI'" [type]="'text'" [placeHolder]="'UPI ID'"
+              [title]="'UPI Id'" [disabled]="false"></app-text-field>
+          </div>
+
+          <div *ngIf="charge.paymentType !== ''" class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col mt-1">
+            <app-text-field [(ngModel)]="charge.referenceNo" [value]="charge.referenceNo"
+              [name]="'referenceNo'" [required]="charge.paymentType !== ''" [type]="'text'"
+              [placeHolder]="'Reference Number'" [title]="'Reference No.'" [disabled]="false"></app-text-field>
+          </div>
+        </div>
+      </div>
       <div class="w-full items-end flex flex-wrap justify-end -mx-3 mb-2">
         <button [disabled]="loading.resetting" type="button" (click)="resetClick()"
           [ngClass]="{'cursor-not-allowed':(loading.resetting)}"

@@ -1,6 +1,7 @@
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { LoginService } from "../../../../login.service";
+import { FormControl } from "@angular/forms";
 
 @Injectable({
   providedIn: 'root'
@@ -46,11 +47,12 @@ export class OpdServiceService {
     });
   }
 
-  public async getAllSubServices(serviceId: number): Promise<dropDownResponse[]> {
+  public async getAllSubServices(serviceId: number, procName: string | null): Promise<dropDownResponse[]> {
     return new Promise<dropDownResponse[]>((resolve) => {
       const allSubServices = this.http.get<dropDownResponse[]>(this.lService.__apiURL__ + "/SubService/GetAllSubServices", {
         headers: this.token, params: {
-          'serviceId': serviceId
+          'serviceId': serviceId,
+          'procName': procName ?? ''
         }
       });
 
@@ -101,9 +103,23 @@ export class OpdServiceService {
     return toSend;
   }
 
-  public procedureIsValid(procedure: string): boolean {
-    //TODO: Check if procedure is valid
-    return true;
+  public procedureIsValid(procedure: string): Promise<boolean> {
+    return new Promise<boolean>((resolve) => {
+      const data = this.http.get<boolean>(this.apiUrl + '/Procedure/IsProcedureValid', {
+        headers: this.token, params: {
+          'procName': procedure
+        }
+      });
+
+      data.subscribe({
+        next: (response) => {
+          resolve(response);
+        },
+        error: () => {
+          resolve(false);
+        }
+      })
+    });
   }
 
   public validateAdd(charge: ChargeSection, procedure: string | null, addedProceduresList: chargeSummaryResponse[]): boolean {
@@ -210,4 +226,14 @@ export interface ChargeSection {
 
   referredBy: number;
   remarks: string;
+
+  paymentMode: number;
+  bankName: string;
+  chequeDate: FormControl;
+  chequeNo: string;
+  chequeAmount: number;
+  paymentType: string;
+  referenceNo: string;
+  cardNo: string;
+  UPIID: string;
 }
