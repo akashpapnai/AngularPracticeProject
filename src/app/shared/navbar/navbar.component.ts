@@ -29,6 +29,7 @@ export class NavbarComponent {
   public pages: pages[] = [];
   public moduleClick: modulesBoolean[] = [];
   public subModuleClick: modulesBoolean[] = [];
+  public baseUrl: string = this.lService.baseUrlForPrint;
 
   constructor(
     private router: Router,

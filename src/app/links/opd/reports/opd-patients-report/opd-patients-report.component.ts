@@ -119,7 +119,7 @@ export class OpdPatientsReportComponent {
     localStorage.setItem('tableData', encodedData);
     // window.open('/print','_blank');
 
-    window.open(this.constants.baseUrlForPrint + '/print', '_blank');
+    window.open(this.lService.baseUrlForPrint + '/print', '_blank');
   }
 
   public async filterTable(): Promise<void | undefined> {

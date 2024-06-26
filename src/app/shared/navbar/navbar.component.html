@@ -41,7 +41,7 @@
               [ngClass]="{'subsubmenu': true, 'open': subModuleClick[j].clicked}"
               class="transform transition-transform duration-500 ease-in-out">
               <li class="cursor-pointer p-2 mx-1 hover:bg-gray-900 rounded-2xl hover:shadow-2xl">
-                <a [href]="'/'+pages[k].url" class="cursor-pointer w-full">{{page}}</a>
+                <a [href]="baseUrl+'/'+pages[k].url" class="cursor-pointer w-full">{{page}}</a>
               </li>
             </ul>
           </li>
