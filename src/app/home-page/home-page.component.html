@@ -1,5 +1,8 @@
-<app-navbar></app-navbar>
-@if(marketingContent == false) {
+<app-navbar [isHomePage]="true"></app-navbar>
+@if(marketingContent === null) {
+
+}
+@else if(marketingContent === false) {
  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 ms-2 me-2">
   <app-card (click)="clicked_card(card)" *ngFor="let card of cardData" [data]="card"></app-card>
  </div>

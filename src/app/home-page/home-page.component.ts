@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { NavbarComponent } from '../shared/navbar/navbar.component';
 import { LoginService } from '../login.service';
-import { HttpClient, HttpHeaders, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { CardComponent } from '../shared/card/card.component';
 import {CommonModule} from '@angular/common'
 import { Router } from '@angular/router';
@@ -26,7 +26,7 @@ export class HomePageComponent {
   private apiURL = this.lService.__apiURL__;
   private token_header = new HttpHeaders();
   public cardData:any[] = [];
-  public marketingContent: boolean = true;
+  public marketingContent: boolean | null = null;
 
   cards = [
     { title: 'Hospital Outside View', content: 'This is the beautiful view of hospital from outside', img: 'https://imgs.search.brave.com/O452HkHjQkJEMo0bhJENw742C6f5Uw6IXvVCWsRZKo0/rs:fit:860:0:0/g:ce/aHR0cDovL2lnaW1z/Lm9yZy9EYXRhRmls/ZXMvQ29udGVudC82/NF8xLmpwZw' },
@@ -94,6 +94,9 @@ export class HomePageComponent {
             }
           }
         )
+      }
+      else {
+        this.marketingContent = true;
       }
     }
   }

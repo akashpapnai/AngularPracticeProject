@@ -1,4 +1,4 @@
-import { Component, ElementRef, HostListener, Renderer2 } from '@angular/core';
+import { Component, ElementRef, HostListener, Input, Renderer2 } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { ConstantsService } from '../../constants.service';
@@ -16,6 +16,7 @@ import { NavbarService, pages } from './navbar.service';
   styleUrl: './navbar.component.scss'
 })
 export class NavbarComponent {
+  @Input() isHomePage: boolean = false;
 
   public url: string = getURL(this.router.url);
   public openSideNav: boolean = false;
@@ -126,10 +127,12 @@ export class NavbarComponent {
         })
       }
       else {
-        this.authenticationChecker = false;
-        alert('You are not Authorized.');
-        window.localStorage.removeItem('token');
-        this.router.navigate(['/login']);
+        if(!this.isHomePage) {
+          this.authenticationChecker = false;
+          alert('You are not Authorized.');
+          window.localStorage.removeItem('token');
+          this.router.navigate(['/login']);
+        }
       }
     }
   }
