@@ -87,7 +87,7 @@
         </div>
         <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col mt-1">
           <app-text-field [title]="'Quantity'" [type]="'number'" [required]="true" [value]="charge.quantity.toString()"
-            [name]="'quantity'" [placeHolder]="'Quantity'" [(ngModel)]="charge.quantity"></app-text-field>
+            [name]="'quantity'" [placeHolder]="'Quantity'" [(ngModel)]="charge.quantity" (ngModelChange)="quantityChanged()"></app-text-field>
         </div>
         <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col mt-1">
           <app-text-field [title]="'Charge'" [type]="'number'" [required]="true" [value]="charge.charge.toString()"

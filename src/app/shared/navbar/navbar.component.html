@@ -36,7 +36,11 @@
           [ngClass]="{'submenu': true, 'open': moduleClick[i].clicked}"
           class="transform transition-transform duration-500 ease-in-out">
           <li class="cursor-pointer p-2 mx-1 hover:bg-gray-800 rounded-2xl hover:shadow-2xl">
-            <a (click)="subModuleClicked(item, subModule)" class="cursor-pointer mb-4 w-full">{{subModule}}</a>
+            <a (click)="subModuleClicked(item, subModule)" class="subModuleLoadingTarget cursor-pointer mb-4 w-full">
+              <div class="flex flex-row">
+                {{subModule}}&nbsp;<mat-spinner *ngIf="subModuleClick[j].loading" [diameter]="20"></mat-spinner>
+              </div>
+            </a>
             <ul *ngFor="let page of sideNavPages; let k = index;"
               [ngClass]="{'subsubmenu': true, 'open': subModuleClick[j].clicked}"
               class="transform transition-transform duration-500 ease-in-out">

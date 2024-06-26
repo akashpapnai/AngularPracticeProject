@@ -5,12 +5,14 @@ import { ConstantsService } from '../../constants.service';
 import { HttpClient } from '@angular/common/http';
 import { LoginService } from '../../login.service';
 import { NavbarService, pages } from './navbar.service';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-navbar',
   standalone: true,
   imports: [
-    CommonModule
+    CommonModule,
+    MatProgressSpinnerModule
   ],
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.scss'
@@ -60,6 +62,7 @@ export class NavbarComponent {
   handleClickOutside(event: Event) {
     const sidenav = this.el.nativeElement.querySelector('#sidenav');
     const toggleButton = this.el.nativeElement.querySelector('#toggleButton');
+
     if (this.sidenavOpen && !sidenav.contains(event.target) && !toggleButton.contains(event.target)) {
       this.sidenavOpen = false;
       sidenav.classList.remove('open');
@@ -86,12 +89,12 @@ export class NavbarComponent {
     }
     this.sidenavModules = sideNav;
     this.sidenavModules.forEach(x => {
-      this.moduleClick.push({ title: x, clicked: false });
+      this.moduleClick.push({ title: x, clicked: false, loading: false });
     });
 
-    this.subModuleClick = [ { title: 'Master', clicked: false }, 
-                            { title: 'Transaction', clicked: false }, 
-                            { title: 'Report', clicked: false }
+    this.subModuleClick = [ { title: 'Master', clicked: false, loading: false }, 
+                            { title: 'Transaction', clicked: false, loading: false }, 
+                            { title: 'Report', clicked: false, loading: false }
                           ]
 
     this.sidenavOpen = !this.sidenavOpen;
@@ -161,9 +164,11 @@ export class NavbarComponent {
     this.subModuleClick.forEach(x => {
       if(x.title !== subModule) {
         x.clicked = false;
+        x.loading = false;
       }
       else {
         x.clicked = !x.clicked;
+        x.loading = true;
       }
     });
     this.sideNavPages = [];
@@ -171,6 +176,8 @@ export class NavbarComponent {
     this.pages.forEach(x => {
       this.sideNavPages.push(x.title);
     });
+
+    this.subModuleClick.forEach(x => {x.loading = false;});
   }
 
   public LogOut() {
@@ -231,4 +238,5 @@ function getURL(url: string): string {
 interface modulesBoolean {
   title: string;
   clicked: boolean;
+  loading: boolean;
 }

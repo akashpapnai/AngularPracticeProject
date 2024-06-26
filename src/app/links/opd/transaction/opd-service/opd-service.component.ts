@@ -249,6 +249,11 @@ export class OpdServiceComponent implements OnInit {
     this.charge.balanceAmount = this.charge.totalCharge - this.charge.paidAmount;
   }
 
+  public quantityChanged() {
+    debugger;
+    this.discountPercentChanged();
+  }
+
   public discountPercentChanged() {
     this.charge.discountPercent = parseFloat(this.charge.discountPercent.toString());
     if (isNaN(this.charge.discountPercent)) {
