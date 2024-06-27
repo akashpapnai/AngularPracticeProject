@@ -13,7 +13,7 @@ import { DoctorMasterService } from '../../../admin/master/doctor-master/doctor-
 import { CommonModule } from '@angular/common';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTabChangeEvent, MatTabsModule } from '@angular/material/tabs';
-import { ChargeSection, OpdServiceService, PatientDetails, chargeSummaryResponse, opdObjectResponse } from './opd-service.service';
+import { ChargeSection, OpdServiceService, PatientDetails, chargeSummaryResponse, opdObjectResponse, opdServiceData } from './opd-service.service';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
@@ -120,6 +120,7 @@ export class OpdServiceComponent implements OnInit {
     );
   }
 
+  public matTabGroupSelectedIndex: number = 2;
   public companiesList: any[] = [];
   public departmentsList: any[] = [];
   public doctorsList: any[] = [];
@@ -176,7 +177,7 @@ export class OpdServiceComponent implements OnInit {
     remarks: '',
 
     paymentMode: 0,
-    bankName: '',
+    bankName: 0,
     chequeDate: new FormControl(''),
     chequeNo: '',
     chequeAmount: 0,
@@ -189,11 +190,11 @@ export class OpdServiceComponent implements OnInit {
   public paymentTypeChanged() {
     this.charge.cardNo = '';
     this.charge.UPIID = '';
-    this.charge.bankName = '';
+    this.charge.bankName = 0;
   }
 
   public paymentModeChanged() {
-    this.charge.bankName = '';
+    this.charge.bankName = 0;
     this.charge.chequeDate = new FormControl('');
     this.charge.chequeNo = '';
     this.charge.chequeAmount = 0;
@@ -247,6 +248,16 @@ export class OpdServiceComponent implements OnInit {
     // }
 
     this.charge.balanceAmount = this.charge.totalCharge - this.charge.paidAmount;
+
+    this.charge.paymentMode= 0;
+    this.charge.bankName= 0;
+    this.charge.chequeDate= new FormControl('');
+    this.charge.chequeNo= '';
+    this.charge.chequeAmount= 0;
+    this.charge.paymentType= '';
+    this.charge.referenceNo= '';
+    this.charge.cardNo= '';
+    this.charge.UPIID= '';
   }
 
   public quantityChanged() {
@@ -286,6 +297,8 @@ export class OpdServiceComponent implements OnInit {
   }
 
   public async loadPatientsDetails(opid: string) {
+    this.resetClick();
+    this.chargeSummaryTable = new MatTableDataSource();
     const data: PatientDetails = await this.service.loadPatientsDetails(opid);
     this.opdService = {
       date: new FormControl({ value: moment(data.date), disabled: true }),
@@ -400,13 +413,56 @@ export class OpdServiceComponent implements OnInit {
 
   public async resetClick() {
     this.loading.resetting = true;
-    //TODO: Reset Button Functioning
+    this.opdService = {
+      'date': new FormControl({ value: '', disabled: true }),
+      'uhid': '',
+      'opid': '',
+      'receiptNo': '',
+      'patientName': '',
+      'age': '',
+      'departmentId': 0,
+      'companyId': 0,
+      'type': '',
+      'doctorId': 0
+    }
+    this.charge = {
+      service: 0,
+      subService: 0,
+      doctor: 0,
+      quantity: 1,
+      charge: 0,
+      discountPercent: 0,
+      discountRs: 0,
+      netCharge: 0,
+  
+      totalAmount: 0,
+      totalDiscount: 0,
+      totalCharge: 0,
+      paidAmount: 0,
+      balanceAmount: 0,
+  
+      referredBy: 0,
+      remarks: '',
+  
+      paymentMode: 0,
+      bankName: 0,
+      chequeDate: new FormControl(''),
+      chequeNo: '',
+      chequeAmount: 0,
+      paymentType: '',
+      referenceNo: '',
+      cardNo: '',
+      UPIID: '',
+    }
+
+    this.matTabGroupSelectedIndex = 2;
+    this.patientDetailsLoaded = false;
     this.loading.resetting = false;
   }
 
   public async submitClick() {
     this.loading.submitting = true;
-    //TODO: Submit Button Functioning
+    await this.service.submitOpdService(this.opdService, this.charge, this.chargeSummaryTable);
     this.loading.submitting = false;
   }
 
@@ -420,17 +476,4 @@ export class OpdServiceComponent implements OnInit {
       );
     }
   }
-}
-
-interface opdServiceData {
-  date: FormControl,
-  uhid: string,
-  opid: string,
-  receiptNo: string,
-  patientName: string
-  age: string,
-  departmentId: number,
-  companyId: number,
-  type: string,
-  doctorId: number
 }

@@ -46,7 +46,7 @@
     </div>
   </div>
 </form>
-<mat-tab-group mat-stretch-tabs="false" mat-align-tabs="start" [selectedIndex]="2"
+<mat-tab-group mat-stretch-tabs="false" mat-align-tabs="start" [(selectedIndex)]="matTabGroupSelectedIndex"
   (selectedTabChange)="tabChanged($event)">
   <mat-tab [disabled]="patientDetailsLoaded === false" label="Charge">
     <div class="mt-4">
@@ -219,11 +219,11 @@
           <mat-radio-group (change)="paymentModeChanged()" class="flex" aria-label="Select an option" [(ngModel)]="charge.paymentMode"
             [name]="'payMode'" [required]="charge.paidAmount > 0">
             <div *ngFor="let paymentMode of paymentModes">
-              <mat-radio-button [value]="paymentMode.key">{{paymentMode.value}}</mat-radio-button>
+              <mat-radio-button  [value]="paymentMode.key">{{paymentMode.value}}</mat-radio-button>
             </div>
           </mat-radio-group>
         </div>
-        <div class="flex flex-wrap -mx-3 mb-6">
+        <div *ngIf="charge.paidAmount > 0" class="flex flex-wrap -mx-3 mb-6">
           @if(charge.paymentMode == 2) { <!-- Cheque -->
           <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col mt-1">
             <app-drop-down [(ngModel)]="charge.bankName" [value]="charge.bankName"
@@ -253,7 +253,7 @@
           </div>
           }
         </div>
-        <div class="flex flex-wrap -mx-3 mb-6">
+        <div *ngIf="charge.paidAmount > 0" class="flex flex-wrap -mx-3 mb-6">
           <div *ngIf="charge.paymentType !== '' && charge.paymentType !== 'UPI'"
             class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col mt-1">
             <app-text-field [(ngModel)]="charge.cardNo" [value]="charge.cardNo" [name]="'cardNo'"
