@@ -160,83 +160,80 @@ export class OpdServiceService {
     return true;
   }
 
-  public submitOpdService(opdService: opdServiceData, master: ChargeSection, child: MatTableDataSource<chargeSummaryResponse, MatPaginator>) {
-    //TODO: Master and Child interface created, validation and main submit implemnetation left
-
-    if (this.validateSubmit(master, child.data.length)) {
-      console.log('Can Save');
-      const masterData: opdServiceMaster = {
-        Id: null,
-        CreatedBy: null,
-        CreatedOn: null,
-        ModifiedBy: null,
-        ModifiedOn: null,
-        isActive: true,
-        Uhid: opdService.uhid,
-        Opid: opdService.opid,
-        TotalAmount: master.totalAmount,
-        TotalDiscount: master.totalDiscount,
-        PaidAmount: master.paidAmount,
-        ReferredBy: master.referredBy,
-        Remarks: master.remarks,
-        PaymentMode: master.paymentMode,
-        BankName: master.bankName,
-        ChequeDate: master.chequeDate.value === '' ? null : master.chequeDate.value,
-        ChequeAmount: master.chequeAmount,
-        PaymentType: master.paymentType,
-        CardNo: master.cardNo,
-        ChequeNo: master.chequeNo,
-        ReferenceNo: master.referenceNo,
-        UpiId: master.UPIID
-      }
-
-      let childData: OpdServiceChild[] = [];
-      child.data.forEach(x => {
-        const tempChildData: OpdServiceChild = {
+  public submitOpdService(opdService: opdServiceData, master: ChargeSection, child: MatTableDataSource<chargeSummaryResponse, MatPaginator>): Promise<void> {
+    return new Promise<void>(() => {
+      if (this.validateSubmit(master, child.data.length)) {
+        console.log('Can Save');
+        const masterData: opdServiceMaster = {
           Id: null,
           CreatedBy: null,
           CreatedOn: null,
           ModifiedBy: null,
           ModifiedOn: null,
           isActive: true,
-          OpdServiceMasterId: null,
-          ServiceId: x.serviceId,
-          SubServiceId: x.subServiceId,
-          ProcedureId: null,
-          ProcedureName: x.procedureName,
-          DoctorId: x.doctorId,
-          Quantity: x.quantity,
-          Charge: x.charge,
-          DiscountInRs: x.discountRs
+          Uhid: opdService.uhid,
+          Opid: opdService.opid,
+          TotalAmount: master.totalAmount,
+          TotalDiscount: master.totalDiscount,
+          PaidAmount: master.paidAmount,
+          ReferredBy: master.referredBy.toString() === '' ? 0 : master.referredBy,
+          Remarks: master.remarks,
+          PaymentMode: master.paymentMode,
+          BankName: master.bankName,
+          ChequeDate: master.chequeDate.value === '' ? null : master.chequeDate.value,
+          ChequeAmount: master.chequeAmount,
+          PaymentType: master.paymentType,
+          CardNo: master.cardNo,
+          ChequeNo: master.chequeNo,
+          ReferenceNo: master.referenceNo,
+          UpiId: master.UPIID
         }
-        childData.push(tempChildData);
-      });
 
-      console.log(masterData);
-      console.log(childData);
-
-      const sendData = this.http.post<number>(this.apiUrl + '/OPD/OpdServicePost',
-        {
-          master: masterData,
-          child: childData,
-          token: localStorage.getItem('token') ?? ''
-        }, { headers: this.token });
-
-      sendData.subscribe({
-        next: (response) => {
-          if(response === 1) {
-            alert('Opd Service Posted Successfully');
+        let childData: OpdServiceChild[] = [];
+        child.data.forEach(x => {
+          const tempChildData: OpdServiceChild = {
+            Id: null,
+            CreatedBy: null,
+            CreatedOn: null,
+            ModifiedBy: null,
+            ModifiedOn: null,
+            isActive: true,
+            OpdServiceMasterId: null,
+            ServiceId: x.serviceId,
+            SubServiceId: x.subServiceId,
+            ProcedureId: null,
+            ProcedureName: x.procedureName,
+            DoctorId: x.doctorId,
+            Quantity: x.quantity,
+            Charge: x.charge,
+            DiscountInRs: x.discountRs
           }
-          else if(response <= 0) {
-            alert('Something went wrong');
+          childData.push(tempChildData);
+        });
+
+        const sendData = this.http.post<number>(this.apiUrl + '/OPD/OpdServicePost',
+          {
+            master: masterData,
+            child: childData,
+            token: localStorage.getItem('token') ?? ''
+          }, { headers: this.token });
+
+        sendData.subscribe({
+          next: (response) => {
+            if (response > 1) {
+              alert('Opd Service Posted Successfully');
+              window.location.reload();
+            }
+            else if (response <= 0) {
+              alert('Something went wrong');
+            }
+          },
+          error: () => {
+            alert('Something went wrong. Server Error');
           }
-        },
-        error: () => {
-          alert('Something went wrong. Server Error');
-        }
+        })
       }
-      )
-    }
+    });
   }
 
   public validateSubmit(x: ChargeSection, y: number): boolean {
