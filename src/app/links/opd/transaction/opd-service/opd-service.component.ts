@@ -261,7 +261,6 @@ export class OpdServiceComponent implements OnInit {
   }
 
   public quantityChanged() {
-    debugger;
     this.discountPercentChanged();
   }
 

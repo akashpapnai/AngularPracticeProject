@@ -162,68 +162,136 @@ export class OpdServiceService {
 
   public submitOpdService(opdService: opdServiceData, master: ChargeSection, child: MatTableDataSource<chargeSummaryResponse, MatPaginator>) {
     //TODO: Master and Child interface created, validation and main submit implemnetation left
-    console.warn(opdService);
-    console.warn(master);
-    console.warn(child.data);
 
-    if(this.validateSubmit(master, child.data.length)) {
+    if (this.validateSubmit(master, child.data.length)) {
       console.log('Can Save');
+      const masterData: opdServiceMaster = {
+        Id: null,
+        CreatedBy: null,
+        CreatedOn: null,
+        ModifiedBy: null,
+        ModifiedOn: null,
+        isActive: true,
+        Uhid: opdService.uhid,
+        Opid: opdService.opid,
+        TotalAmount: master.totalAmount,
+        TotalDiscount: master.totalDiscount,
+        PaidAmount: master.paidAmount,
+        ReferredBy: master.referredBy,
+        Remarks: master.remarks,
+        PaymentMode: master.paymentMode,
+        BankName: master.bankName,
+        ChequeDate: master.chequeDate.value === '' ? null : master.chequeDate.value,
+        ChequeAmount: master.chequeAmount,
+        PaymentType: master.paymentType,
+        CardNo: master.cardNo,
+        ChequeNo: master.chequeNo,
+        ReferenceNo: master.referenceNo,
+        UpiId: master.UPIID
+      }
+
+      let childData: OpdServiceChild[] = [];
+      child.data.forEach(x => {
+        const tempChildData: OpdServiceChild = {
+          Id: null,
+          CreatedBy: null,
+          CreatedOn: null,
+          ModifiedBy: null,
+          ModifiedOn: null,
+          isActive: true,
+          OpdServiceMasterId: null,
+          ServiceId: x.serviceId,
+          SubServiceId: x.subServiceId,
+          ProcedureId: null,
+          ProcedureName: x.procedureName,
+          DoctorId: x.doctorId,
+          Quantity: x.quantity,
+          Charge: x.charge,
+          DiscountInRs: x.discountRs
+        }
+        childData.push(tempChildData);
+      });
+
+      console.log(masterData);
+      console.log(childData);
+
+      const sendData = this.http.post<number>(this.apiUrl + '/OPD/OpdServicePost',
+        {
+          master: masterData,
+          child: childData,
+          token: localStorage.getItem('token') ?? ''
+        }, { headers: this.token });
+
+      sendData.subscribe({
+        next: (response) => {
+          if(response === 1) {
+            alert('Opd Service Posted Successfully');
+          }
+          else if(response <= 0) {
+            alert('Something went wrong');
+          }
+        },
+        error: () => {
+          alert('Something went wrong. Server Error');
+        }
+      }
+      )
     }
   }
 
-  public validateSubmit(x:ChargeSection, y: number):boolean {
-    if(y === 0) {
+  public validateSubmit(x: ChargeSection, y: number): boolean {
+    if (y === 0) {
       alert('Please enter some services to continue.');
       return false;
     }
-    if(x.remarks.trim() === '') {
+    if (x.remarks.trim() === '') {
       alert('Please enter some remarks');
       return false;
     }
-    if(x.paidAmount > 0) {
-      if(x.paymentMode == 0) {
+    if (x.paidAmount > 0) {
+      if (x.paymentMode == 0) {
         alert('Enter Payment Mode');
         return false;
       }
-      else if(x.paymentMode == 2) {
-        if(x.bankName === 0) {
+      else if (x.paymentMode == 2) {
+        if (x.bankName === 0) {
           alert('Please enter bank name');
           return false;
         }
-        if(x.chequeDate === null) {
+        if (x.chequeDate === null) {
           alert('Please enter Cheque Date');
           return false;
         }
-        if(x.chequeNo === '') {
+        if (x.chequeNo === '') {
           alert('Please enter Cheque Number');
           return false;
         }
-        if(x.chequeAmount === null) {
+        if (x.chequeAmount === null) {
           alert('Please enter Cheque Amount');
           return false;
         }
       }
-      else if(x.paymentMode == 3) {
-        if(x.paymentType !== 'UPI') {
-          if(x.cardNo === '') {
+      else if (x.paymentMode == 3) {
+        if (x.paymentType !== 'UPI') {
+          if (x.cardNo === '') {
             alert('Please enter card No.');
             return false;
           }
-          if(x.bankName === 0) {
+          if (x.bankName === 0) {
             alert('Please enter bank name');
             return false;
           }
-          if(x.referenceNo === '') {
+          if (x.referenceNo === '') {
             alert('Please enter Reference Number');
             return false;
           }
         }
         else {
-          if(x.UPIID === '') {
+          if (x.UPIID === '') {
             alert('Please enter UPI ID');
             return false;
           }
-          if(x.referenceNo === '') {
+          if (x.referenceNo === '') {
             alert('Please enter Reference Number');
             return false;
           }
@@ -327,11 +395,11 @@ export interface opdServiceData {
 }
 
 interface opdServiceMaster {
-  Id: number,
-  CreatedBy: number,
-  CreatedOn: Date,
-  ModifiedBy: number,
-  ModifiedOn: Date,
+  Id: number | null,
+  CreatedBy: number | null,
+  CreatedOn: Date | null,
+  ModifiedBy: number | null,
+  ModifiedOn: Date | null,
   isActive: boolean,
   Uhid: string,
   Opid: string,
@@ -345,23 +413,24 @@ interface opdServiceMaster {
   ChequeDate: Date,
   ChequeNo: string,
   ChequeAmount: number,
-  PaymentType: number,
+  PaymentType: string,
   CardNo: string,
   ReferenceNo: string,
   UpiId: string
 }
 
 interface OpdServiceChild {
-  Id: number,
-  CreatedBy: number,
-  CreatedOn: Date,
-  ModifiedBy: number,
-  ModifiedOn: Date,
+  Id: number | null,
+  CreatedBy: number | null,
+  CreatedOn: Date | null,
+  ModifiedBy: number | null,
+  ModifiedOn: Date | null,
   isActive: boolean,
-  OpdServiceMasterId: number,
+  OpdServiceMasterId: number | null,
   ServiceId: number,
   SubServiceId: number,
-  ProcedureId: number,
+  ProcedureId: number | null,
+  ProcedureName: string;
   DoctorId: number,
   Quantity: number,
   Charge: number,
