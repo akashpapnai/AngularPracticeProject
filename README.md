@@ -28,9 +28,18 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 
 ## Deploying the Project
 
-To Deploy the project use the following command<br/>
+To Deploy the project use the following command
+
 `ng b --output-path docs --base-href https://akashpapnai.github.io/AngularPracticeProject/browser/`
 
 Wait for 2-3 minutes to deploy\
 And to visit the deployed page:
 `https://akashpapnai.github.io/AngularPracticeProject/browser/`
+
+## To Untrack a file
+
+`git update-index --assume-unchanged path/to/file`
+
+## To Track a file
+
+`git update-index --no-assume-unchanged path/to/file`
