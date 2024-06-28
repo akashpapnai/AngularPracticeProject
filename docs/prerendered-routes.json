@@ -3,6 +3,7 @@
     "/",
     "/admin",
     "/admin/bankmaster",
+    "/admin/collectionreport",
     "/admin/companymaster",
     "/admin/departmentmaster",
     "/admin/doctormaster",

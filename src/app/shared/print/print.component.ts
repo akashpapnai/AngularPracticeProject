@@ -14,6 +14,7 @@ import { ConstantsService } from '../../constants.service';
 })
 export class PrintComponent implements OnInit {
   @Input() tableData!: any[];
+  @Input() ReportName: string = '';
   public letterHeadUrl: string = this.constants.letterHeadImgUrl;
 
   constructor(private route: ActivatedRoute,private constants: ConstantsService) {}
@@ -21,10 +22,15 @@ export class PrintComponent implements OnInit {
 
   ngOnInit() {
     const encodedData = localStorage.getItem('tableData');
+    const reportName = localStorage.getItem('reportName');
     if(encodedData) {
       this.tableData = JSON.parse(decodeURIComponent(encodedData));
       this.headers = Object.keys(this.tableData[0]);
       print();
+    }
+
+    if(reportName) {
+      this.ReportName = reportName;
     }
   }
 }
