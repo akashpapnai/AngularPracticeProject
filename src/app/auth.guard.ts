@@ -11,7 +11,8 @@ export class AuthGuard {
 
   canActivate(): boolean {
     try {
-      if (this.authService.isLoggedIn()) {
+      const checkingIsLoggedIn = this.authService.isLoggedIn();
+      if (checkingIsLoggedIn) {
         return true;
       } else {
         this.router.navigate(['/login']);

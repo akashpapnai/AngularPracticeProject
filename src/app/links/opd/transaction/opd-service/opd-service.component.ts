@@ -13,7 +13,7 @@ import { DoctorMasterService } from '../../../admin/master/doctor-master/doctor-
 import { CommonModule } from '@angular/common';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTabChangeEvent, MatTabsModule } from '@angular/material/tabs';
-import { ChargeSection, OpdServiceService, PatientDetails, chargeSummaryResponse, opdObjectResponse, opdServiceData } from './opd-service.service';
+import { ChargeSection, OpdServiceService, PackageSection, PatientDetails, chargeSummaryResponse, opdObjectResponse, opdServiceData, packageSummaryResponse } from './opd-service.service';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
@@ -130,9 +130,12 @@ export class OpdServiceComponent implements OnInit {
   public paymentModes: any[] = [];
   public bankNamesList: any[] = [];
   public paymentTypeList: any[] = [];
+  public packagesList: any[] = [];
   public displayedColumns: string[] = ['opid', 'uhid', 'patientsName', 'companyName', 'admissionDate'];
   public chargeSummaryColumns: string[] = ['row', 'serviceName', 'subServiceName', 'procedureName', 'doctorName', 'quantity', 'charge', 'discountRs', 'netCharge'];
+  public packageSummaryColumns: string[] = ['row', 'packageName', 'charge', 'discountRs', 'netCharge']
   public dataSource: MatTableDataSource<opdObjectResponse> = new MatTableDataSource();
+  public packageSummaryTable = new MatTableDataSource<packageSummaryResponse>([]);
   public chargeSummaryTable: MatTableDataSource<chargeSummaryResponse> = new MatTableDataSource();
   public procedureControlOptions: Observable<string[]> = new Observable<string[]>;
   public procedureOptions: string[] = [];
@@ -143,6 +146,9 @@ export class OpdServiceComponent implements OnInit {
     adding: false,
     resetting: false,
     submitting: false,
+    addingPackage: false,
+    packageResetting: false,
+    packageSubmitting: false
   }
   public opdService: opdServiceData = {
     'date': new FormControl({ value: '', disabled: true }),
@@ -155,6 +161,18 @@ export class OpdServiceComponent implements OnInit {
     'companyId': 0,
     'type': '',
     'doctorId': 0
+  }
+
+  public package: PackageSection = {
+    package: 0,
+    charge: 0,
+    discountPer: 0,
+    discountRs: 0,
+    netCharge: 0,
+    totalAmount: 0,
+    discountAmount: 0,
+    balanceAmount: 0,
+    remarks: ''
   }
 
   public charge: ChargeSection = {
@@ -193,6 +211,11 @@ export class OpdServiceComponent implements OnInit {
     this.charge.bankName = 0;
   }
 
+  public async packageChanged() {
+    this.package.charge = await this.service.getPackageCharge(this.package.package);
+    this.package.netCharge = this.package.charge - this.package.discountRs;
+  }
+
   public paymentModeChanged() {
     this.charge.bankName = 0;
     this.charge.chequeDate = new FormControl('');
@@ -219,10 +242,17 @@ export class OpdServiceComponent implements OnInit {
       list.forEach(l => {
         this.paymentTypeList.push(l);
       });
-      
+
       allBanks.forEach(x => {
-        this.bankNamesList.push({key:x.bankId, value: x.bankName});
+        this.bankNamesList.push({ key: x.bankId, value: x.bankName });
       })
+    }
+    else if (event.tab.textLabel === 'Package') {
+      const [allPackages] = await Promise.all([
+        this.service.getAllPackages(),
+      ]);
+
+      this.packagesList = allPackages;
     }
   }
 
@@ -249,54 +279,39 @@ export class OpdServiceComponent implements OnInit {
 
     this.charge.balanceAmount = this.charge.totalCharge - this.charge.paidAmount;
 
-    this.charge.paymentMode= 0;
-    this.charge.bankName= 0;
-    this.charge.chequeDate= new FormControl('');
-    this.charge.chequeNo= '';
-    this.charge.chequeAmount= 0;
-    this.charge.paymentType= '';
-    this.charge.referenceNo= '';
-    this.charge.cardNo= '';
-    this.charge.UPIID= '';
+    this.charge.paymentMode = 0;
+    this.charge.bankName = 0;
+    this.charge.chequeDate = new FormControl('');
+    this.charge.chequeNo = '';
+    this.charge.chequeAmount = 0;
+    this.charge.paymentType = '';
+    this.charge.referenceNo = '';
+    this.charge.cardNo = '';
+    this.charge.UPIID = '';
   }
 
   public quantityChanged() {
     this.discountPercentChanged();
   }
 
+  public packageDiscountPerChanged() {
+    [this.package.discountRs, this.package.netCharge] = this.service.PerChanged(this.package.discountRs, this.package.discountPer, this.package.charge, 1, this.package.netCharge)
+  }
+
   public discountPercentChanged() {
-    this.charge.discountPercent = parseFloat(this.charge.discountPercent.toString());
-    if (isNaN(this.charge.discountPercent)) {
-      this.charge.discountPercent = 0;
-    }
-
-    this.charge.discountRs = parseFloat(((this.charge.discountPercent / 100) * (this.charge.charge * this.charge.quantity)).toFixed(2));
-
-    if (this.charge.discountPercent < 0 || this.charge.discountPercent > 100) {
-      this.charge.discountPercent = 0;
-      this.charge.discountRs = 0;
-    }
-
-    this.charge.netCharge = (this.charge.charge * this.charge.quantity) - this.charge.discountRs;
+    [this.charge.discountRs, this.charge.netCharge] = this.service.PerChanged(this.charge.discountRs, this.charge.discountPercent, this.charge.charge, this.charge.quantity, this.charge.netCharge);
   }
 
   public discountRsChanged() {
-    this.charge.discountRs = parseFloat(this.charge.discountRs.toString());
-    if (isNaN(this.charge.discountRs)) {
-      this.charge.discountRs = 0;
-    }
+    [this.charge.discountPercent, this.charge.netCharge] = this.service.RsChanged(this.charge.discountRs, this.charge.discountPercent, this.charge.charge, this.charge.quantity, this.charge.netCharge);
+  }
 
-    this.charge.discountPercent = ((this.charge.charge * this.charge.quantity) > 0 ? parseFloat(((this.charge.discountRs / (this.charge.charge * this.charge.quantity)) * 100).toFixed(2)) : 0);
-    if (this.charge.discountRs > (this.charge.charge * this.charge.quantity)) {
-      this.charge.discountPercent = 0;
-      this.charge.discountRs = 0;
-    }
-
-    this.charge.netCharge = (this.charge.charge * this.charge.quantity) - this.charge.discountRs;
+  public packageDiscountRsChanged() {
+    [this.package.discountPer, this.package.netCharge] = this.service.RsChanged(this.package.discountRs, this.package.discountPer, this.package.charge, 1, this.package.netCharge);
   }
 
   public async loadPatientsDetails(opid: string) {
-    this.resetClick();
+    this.chargeResetClick();
     this.chargeSummaryTable = new MatTableDataSource();
     const data: PatientDetails = await this.service.loadPatientsDetails(opid);
     this.opdService = {
@@ -352,7 +367,13 @@ export class OpdServiceComponent implements OnInit {
     }, 500);
   }
 
-  public async addClick() {
+  public async addPackageClick() {
+    this.loading.addingPackage = true;
+    this.packageSummaryTable = new MatTableDataSource(await this.service.addPackage(this.package, this.packageSummaryTable, this.packagesList));
+    this.loading.addingPackage = false;
+  }
+
+  public async addChargeClick() {
     if (this.service.validateAdd(this.charge, this.procedureControl.value, this.chargeSummaryTable.data)) {
       this.loading.adding = true;
       const addData: chargeSummaryResponse = {
@@ -405,25 +426,29 @@ export class OpdServiceComponent implements OnInit {
       this.servicesList = allService;
       this.subServicesList = [];
       this.referredByList = referringDoctors;
+      this.charge.doctor = 0;
 
       this.loading.adding = false;
     }
   }
 
-  public async resetClick() {
+  public getChargeFooterTotal(): number[] {
+    const totalQty = this.chargeSummaryTable.data.map(t => t.quantity).reduce((acc, value) => acc + value, 0);
+    const totalChrg = this.chargeSummaryTable.data.map(t => Number(t.charge)).reduce((acc, value) => acc + value, 0);
+    const totalDiscountRs = this.chargeSummaryTable.data.map(t => t.discountRs).reduce((acc, value) => acc + value, 0);
+    const totalNetCharge = this.chargeSummaryTable.data.map(t => t.netCharge).reduce((acc, value) => acc + value, 0);
+    return [totalQty, totalChrg, totalDiscountRs, totalNetCharge];
+  }
+
+  public getPackageFooterTotal(): number[] {
+    const totalCharge = this.packageSummaryTable.data.map(t => t.charge).reduce((acc, value) => acc + value, 0);
+    const totalDiscountRs = this.packageSummaryTable.data.map(t => t.discountRs).reduce((acc, value) => acc + value, 0);
+    const totalNetCharge = this.packageSummaryTable.data.map(t => t.netCharge).reduce((acc, value) => acc + value, 0);
+    return [totalCharge, totalDiscountRs, totalNetCharge];
+  }
+
+  public async chargeResetClick() {
     this.loading.resetting = true;
-    this.opdService = {
-      'date': new FormControl({ value: '', disabled: true }),
-      'uhid': '',
-      'opid': '',
-      'receiptNo': '',
-      'patientName': '',
-      'age': '',
-      'departmentId': 0,
-      'companyId': 0,
-      'type': '',
-      'doctorId': 0
-    }
     this.charge = {
       service: 0,
       subService: 0,
@@ -433,16 +458,16 @@ export class OpdServiceComponent implements OnInit {
       discountPercent: 0,
       discountRs: 0,
       netCharge: 0,
-  
+
       totalAmount: 0,
       totalDiscount: 0,
       totalCharge: 0,
       paidAmount: 0,
       balanceAmount: 0,
-  
+
       referredBy: 0,
       remarks: '',
-  
+
       paymentMode: 0,
       bankName: 0,
       chequeDate: new FormControl(''),
@@ -453,13 +478,36 @@ export class OpdServiceComponent implements OnInit {
       cardNo: '',
       UPIID: '',
     }
-
-    this.matTabGroupSelectedIndex = 2;
-    this.patientDetailsLoaded = false;
     this.loading.resetting = false;
+    this.chargeSummaryTable = new MatTableDataSource();
   }
 
-  public async submitClick() {
+  public async packageResetClick() {
+    //TODO: Package Resetting Click
+    this.loading.packageResetting = true;
+    this.package = {
+      package: 0,
+      charge: 0,
+      discountRs: 0,
+      discountPer: 0,
+      discountAmount: 0,
+      netCharge: 0,
+
+      totalAmount: 0,
+      balanceAmount: 0,
+
+      remarks: '',
+    }
+
+    this.packageSummaryTable = new MatTableDataSource();
+    this.loading.packageResetting = false;
+  }
+
+  public async packageSubmitClick() {
+    //TODO: Package Submit Click
+  }
+
+  public async chargeSubmitClick() {
     this.loading.submitting = true;
     await this.service.submitOpdService(this.opdService, this.charge, this.chargeSummaryTable);
     this.loading.submitting = false;

@@ -1,6 +1,6 @@
 import { Component, HostListener } from '@angular/core';
 import { NavbarComponent } from '../../../../shared/navbar/navbar.component';
-import { CommonModule } from '@angular/common';
+import { CommonModule, CurrencyPipe } from '@angular/common';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -44,6 +44,7 @@ export const DATE_FORMATS = {
     MatInputModule,
     MatTooltipModule,
     CommonModule,
+    CurrencyPipe
   ],
   templateUrl: './collection-report.component.html',
   styleUrl: './collection-report.component.scss',
@@ -73,7 +74,6 @@ export class CollectionReportComponent {
   public dataSource = new MatTableDataSource<CollectionData>(this.ELEMENT_DATA);
 
   async ngOnInit(): Promise<void> {
-
     const data = this.http.get(this.lService.__apiURL__ + '/Common/CollectionReport', { headers: this.token_header });
     data.subscribe({
       next: (response) => {
@@ -91,6 +91,19 @@ export class CollectionReportComponent {
         alert('Could not load Data');
       }
     })
+  }
+
+  public getTotalReceivedAmount() {
+    const total = this.ELEMENT_DATA.map(t => t.receivedAmount).reduce((acc, value) => acc + value, 0);
+    return total;
+  }
+
+  public getTotalPaymentMode() {
+    const cashTotal = this.ELEMENT_DATA.map(t => t.paymentMode === 'Cash').reduce((acc, value) => acc + (value === true ? 1 : 0), 0);
+    const chequeTotal = this.ELEMENT_DATA.map(t => t.paymentMode === 'Cheque').reduce((acc, value) => acc + (value === true ? 1 : 0), 0);
+    const onlineTotal = this.ELEMENT_DATA.map(t => t.paymentMode === 'Online').reduce((acc, value) => acc + (value === true ? 1 : 0), 0);
+
+    return "<span class='text-nowrap text-xs'>Cash: " + cashTotal.toString() + "</span><br/><span class='text-nowrap text-xs'>Cheque: " + chequeTotal.toString() + "</span><br/><span class='text-nowrap text-xs'>Online: " + onlineTotal.toString() + "</span>";
   }
 
   public async getExcel() {

@@ -33,6 +33,38 @@ export class OpdServiceService {
     });
   }
 
+  public async getAllPackages(): Promise<dropDownResponse[]> {
+    return new Promise<dropDownResponse[]>((resolve) => {
+      const allServices = this.http.get<dropDownResponse[]>(this.lService.__apiURL__ + "/Package/GetAllPackages", {
+        headers: this.token
+      });
+
+      allServices.subscribe({
+        next: (data) => {
+          resolve(data);
+        }
+      });
+    });
+  }
+
+  public async getPackageCharge(packageId: number): Promise<number> {
+    return new Promise<number>((resolve) => {
+      const packageCharge = this.http.get<number>(this.lService.__apiURL__ + "/Package/GetChargeOfPackage", {
+        headers: this.token, params: {
+          'packageId': packageId
+        }
+      });
+      packageCharge.subscribe({
+        next: (response) => {
+          resolve(response);
+        },
+        error: () => {
+          resolve(0);
+        }
+      })
+    })
+  }
+
   public async getAllServices(procedureName: string | null = null): Promise<dropDownResponse[]> {
     return new Promise<dropDownResponse[]>((resolve) => {
       const allServices = this.http.get<dropDownResponse[]>(this.lService.__apiURL__ + "/Service/GetAllServices", {
@@ -161,9 +193,8 @@ export class OpdServiceService {
   }
 
   public submitOpdService(opdService: opdServiceData, master: ChargeSection, child: MatTableDataSource<chargeSummaryResponse, MatPaginator>): Promise<void> {
-    return new Promise<void>(() => {
+    return new Promise<void>((resolve, reject) => {
       if (this.validateSubmit(master, child.data.length)) {
-        console.log('Can Save');
         const masterData: opdServiceMaster = {
           Id: null,
           CreatedBy: null,
@@ -233,7 +264,89 @@ export class OpdServiceService {
           }
         })
       }
+      else {
+        resolve();
+      }
     });
+  }
+
+  private validatePackageAdd(_package: PackageSection): boolean {
+    if (_package.package === 0) {
+      alert('Please select Package');
+      return false;
+    }
+    else if (_package.charge === 0) {
+      alert('Charge should be greater than 0');
+      return false;
+    }
+    return true;
+  }
+
+  public PerChanged(discountRs: number, discountPer: number, charge: number, quantity: number, netCharge: number): number[] {
+    discountPer = parseFloat(discountPer.toString());
+    if (isNaN(discountPer)) {
+      discountPer = 0;
+    }
+    discountRs = parseFloat(((discountPer / 100) * (charge * quantity)).toFixed(2));
+
+    if (discountPer < 0 || discountPer > 100) {
+      discountPer = 0;
+      discountRs = 0;
+    }
+
+    netCharge = (charge * quantity) - discountRs;
+    return [discountRs, netCharge];
+  }
+
+  public RsChanged(discountRs: number, discountPer: number, charge: number, quantity: number, netCharge: number): number[] {
+    discountRs = parseFloat(discountRs.toString());
+    if (isNaN(discountRs)) {
+      discountRs = 0;
+    }
+    discountPer = ((charge * quantity) > 0 ? parseFloat(((discountRs / (charge * quantity)) * 100).toFixed(2)) : 0);
+    if (discountRs > (charge * quantity)) {
+      discountPer = 0;
+      discountRs = 0;
+    }
+
+    netCharge = (charge * quantity) - discountRs;
+
+    return [discountPer, netCharge];
+  }
+
+  public async addPackage(_package: PackageSection, table: MatTableDataSource<packageSummaryResponse, MatPaginator>, list: any[]): Promise<packageSummaryResponse[]> {
+    return new Promise<packageSummaryResponse[]>((resolve) => {
+      if (this.validatePackageAdd(_package)) {
+        const addData: packageSummaryResponse = {
+          row: table.data.length + 1,
+          packageId: _package.package,
+          packageName: list.find(pkg => pkg.key == _package.package).value,
+          charge: _package.charge,
+          discountRs: _package.discountRs,
+          netCharge: _package.charge - _package.discountRs
+        }
+        const addDataList: packageSummaryResponse[] = table.data;
+        addDataList.push(addData);
+  
+        let [totalAmount, totalDiscount, totalCharge, totalNetCharge] = [0, 0, 0, 0];
+        addDataList.forEach(x => {
+          totalAmount += x.charge;
+          totalDiscount += x.discountRs;
+          totalCharge += x.charge - x.discountRs;
+        });
+        totalNetCharge = totalAmount - totalDiscount;
+  
+        [_package.totalAmount, _package.discountAmount, _package.balanceAmount] = [totalAmount, totalDiscount, totalNetCharge];
+  
+        [_package.package, _package.charge, _package.discountPer, _package.discountRs, _package.netCharge] = [0, 0, 0, 0, 0];
+  
+        resolve(addDataList);
+      }
+      else {
+        alert('Something went wrong...');
+        resolve(table.data);
+      }
+    })
   }
 
   public validateSubmit(x: ChargeSection, y: number): boolean {
@@ -348,6 +461,15 @@ export interface chargeSummaryResponse {
   netCharge: number;
 }
 
+export interface packageSummaryResponse {
+  row: number,
+  packageId: number,
+  packageName: string,
+  charge: number,
+  discountRs: number,
+  netCharge: number
+}
+
 export interface ChargeSection {
   service: number;
   subService: number;
@@ -376,6 +498,18 @@ export interface ChargeSection {
   referenceNo: string;
   cardNo: string;
   UPIID: string;
+}
+
+export interface PackageSection {
+  package: number;
+  charge: number;
+  discountPer: number;
+  discountRs: number;
+  netCharge: number;
+  totalAmount: number;
+  discountAmount: number;
+  balanceAmount: number;
+  remarks: string;
 }
 
 export interface opdServiceData {

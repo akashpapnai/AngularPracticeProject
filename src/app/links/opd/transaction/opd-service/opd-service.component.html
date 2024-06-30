@@ -83,11 +83,12 @@
         </div>
         <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col mt-1">
           <app-drop-down [title]="'Doctor'" [required]="true" [name]="'Doctor'" [(ngModel)]="charge.doctor"
-            [value]="charge.doctor === 0 ? '' : charge.doctor" [list]="doctorsList"></app-drop-down>
+            [value]="charge.doctor" [list]="doctorsList"></app-drop-down>
         </div>
         <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col mt-1">
           <app-text-field [title]="'Quantity'" [type]="'number'" [required]="true" [value]="charge.quantity.toString()"
-            [name]="'quantity'" [placeHolder]="'Quantity'" [(ngModel)]="charge.quantity" (ngModelChange)="quantityChanged()"></app-text-field>
+            [name]="'quantity'" [placeHolder]="'Quantity'" [(ngModel)]="charge.quantity"
+            (ngModelChange)="quantityChanged()"></app-text-field>
         </div>
         <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col mt-1">
           <app-text-field [title]="'Charge'" [type]="'number'" [required]="true" [value]="charge.charge.toString()"
@@ -107,7 +108,7 @@
         </div>
       </div>
       <div class="w-full items-end flex flex-wrap justify-end -mx-3 mb-2">
-        <button [disabled]="loading.adding" type="button" (click)="addClick()"
+        <button [disabled]="loading.adding" type="button" (click)="addChargeClick()"
           [ngClass]="{'cursor-not-allowed':(loading.adding)}"
           class="cursor-pointer text-white bg-gray-700 hover:bg-gray-800 focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-xs px-3 py-2 me-2 mb-2 dark:bg-gray-600 dark:hover:bg-gray-700 focus:outline-none dark:focus:ring-gray-800">
           <span *ngIf="!loading.adding">Add</span>
@@ -118,52 +119,62 @@
       <div class="table-container ms-4 me-4 mb-4 ChargesSummaryTable">
         <table mat-table [dataSource]="chargeSummaryTable" class="mat-elevation-z8">
           <ng-container matColumnDef="row">
-            <th mat-header-cell *matHeaderCellDef> No. </th>
+            <th mat-header-cell *matHeaderCellDef> S.R No. </th>
             <td mat-cell *matCellDef="let element"> {{element.row}} </td>
+            <td mat-footer-cell *matFooterCellDef></td>
           </ng-container>
 
           <ng-container matColumnDef="serviceName">
             <th mat-header-cell *matHeaderCellDef> Service Name </th>
             <td mat-cell *matCellDef="let element"> {{element.serviceName}} </td>
+            <td mat-footer-cell *matFooterCellDef></td>
           </ng-container>
 
           <ng-container matColumnDef="subServiceName">
             <th mat-header-cell *matHeaderCellDef> Sub Service Name </th>
             <td mat-cell *matCellDef="let element"> {{element.subServiceName}} </td>
+            <td mat-footer-cell *matFooterCellDef></td>
           </ng-container>
 
           <ng-container matColumnDef="procedureName">
             <th mat-header-cell *matHeaderCellDef> ProcedureName </th>
             <td mat-cell *matCellDef="let element"> {{element.procedureName}} </td>
+            <td mat-footer-cell *matFooterCellDef></td>
           </ng-container>
 
           <ng-container matColumnDef="doctorName">
             <th mat-header-cell *matHeaderCellDef> Doctor Name </th>
             <td mat-cell *matCellDef="let element"> {{element.doctorName}} </td>
+            <td mat-footer-cell *matFooterCellDef>Total:</td>
           </ng-container>
 
           <ng-container matColumnDef="quantity">
             <th mat-header-cell *matHeaderCellDef> Quantity </th>
             <td mat-cell *matCellDef="let element"> {{element.quantity}} </td>
+            <td mat-footer-cell *matFooterCellDef>{{getChargeFooterTotal()[0]}}</td>
           </ng-container>
 
           <ng-container matColumnDef="charge">
             <th mat-header-cell *matHeaderCellDef> Charge </th>
-            <td mat-cell *matCellDef="let element"> {{element.charge}} </td>
+            <td mat-cell *matCellDef="let element"> {{element.charge | currency:'INR'}} </td>
+            <td mat-footer-cell *matFooterCellDef>{{getChargeFooterTotal()[1] | currency:'INR'}}</td>
           </ng-container>
 
           <ng-container matColumnDef="discountRs">
             <th mat-header-cell *matHeaderCellDef> Discount </th>
-            <td mat-cell *matCellDef="let element"> {{element.discountRs}} </td>
+            <td mat-cell *matCellDef="let element"> {{element.discountRs | currency:'INR'}} </td>
+            <td mat-footer-cell *matFooterCellDef>{{getChargeFooterTotal()[2] | currency:'INR'}}</td>
           </ng-container>
 
           <ng-container matColumnDef="netCharge">
             <th mat-header-cell *matHeaderCellDef> Net Charge </th>
-            <td mat-cell *matCellDef="let element"> {{element.netCharge}} </td>
+            <td mat-cell *matCellDef="let element"> {{element.netCharge | currency:'INR'}} </td>
+            <td mat-footer-cell *matFooterCellDef>{{getChargeFooterTotal()[3] | currency:'INR'}}</td>
           </ng-container>
 
           <tr mat-header-row *matHeaderRowDef="chargeSummaryColumns"></tr>
           <tr mat-row *matRowDef="let row; columns: chargeSummaryColumns;"></tr>
+          <tr mat-footer-row *matFooterRowDef="chargeSummaryColumns; sticky: true"></tr>
         </table>
       </div>
       }
@@ -216,18 +227,18 @@
           <label for="paymentMode" class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">
             Payment Mode&nbsp;<span class="text-red-900">*</span>
           </label>
-          <mat-radio-group (change)="paymentModeChanged()" class="flex" aria-label="Select an option" [(ngModel)]="charge.paymentMode"
-            [name]="'payMode'" [required]="charge.paidAmount > 0">
+          <mat-radio-group (change)="paymentModeChanged()" class="flex" aria-label="Select an option"
+            [(ngModel)]="charge.paymentMode" [name]="'payMode'" [required]="charge.paidAmount > 0">
             <div *ngFor="let paymentMode of paymentModes">
-              <mat-radio-button  [value]="paymentMode.key">{{paymentMode.value}}</mat-radio-button>
+              <mat-radio-button [value]="paymentMode.key">{{paymentMode.value}}</mat-radio-button>
             </div>
           </mat-radio-group>
         </div>
         <div *ngIf="charge.paidAmount > 0" class="flex flex-wrap -mx-3 mb-6">
           @if(charge.paymentMode == 2) { <!-- Cheque -->
           <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col mt-1">
-            <app-drop-down [(ngModel)]="charge.bankName" [value]="charge.bankName"
-              [list]="bankNamesList" [name]="'bankName'" [title]="'Bank Name'" [disabled]="false"
+            <app-drop-down [(ngModel)]="charge.bankName" [value]="charge.bankName" [list]="bankNamesList"
+              [name]="'bankName'" [title]="'Bank Name'" [disabled]="false"
               [required]="charge.paymentMode == 2"></app-drop-down>
           </div>
           <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 mt-1">
@@ -235,9 +246,9 @@
               [placeHolder]="'DD-MMM-YYYY'" [required]="charge.paymentMode == 2"></app-date>
           </div>
           <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col mt-1">
-            <app-text-field [(ngModel)]="charge.chequeNo" [value]="charge.chequeNo"
-              [name]="'chequeNo'" [required]="charge.paymentMode == 2" [type]="'text'"
-              [placeHolder]="'Cheque Number'" [title]="'Cheque No.'" [disabled]="false"></app-text-field>
+            <app-text-field [(ngModel)]="charge.chequeNo" [value]="charge.chequeNo" [name]="'chequeNo'"
+              [required]="charge.paymentMode == 2" [type]="'text'" [placeHolder]="'Cheque Number'"
+              [title]="'Cheque No.'" [disabled]="false"></app-text-field>
           </div>
           <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col mt-1">
             <app-text-field [(ngModel)]="charge.chequeAmount" [value]="charge.chequeAmount.toString()"
@@ -247,9 +258,9 @@
           }
           @else if(charge.paymentMode == 3) {
           <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col mt-1">
-            <app-drop-down [(ngModel)]="charge.paymentType" [value]="charge.paymentType"
-              [list]="paymentTypeList" [name]="'paymentType'" [title]="'Payment Type'" [disabled]="false"
-              [required]="charge.paymentMode == 3" (ngModelChange)="paymentTypeChanged()"></app-drop-down>
+            <app-drop-down [(ngModel)]="charge.paymentType" [value]="charge.paymentType" [list]="paymentTypeList"
+              [name]="'paymentType'" [title]="'Payment Type'" [disabled]="false" [required]="charge.paymentMode == 3"
+              (ngModelChange)="paymentTypeChanged()"></app-drop-down>
           </div>
           }
         </div>
@@ -263,33 +274,32 @@
 
           <div *ngIf="charge.paymentType !== '' && charge.paymentType !== 'UPI'"
             class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col mt-1">
-            <app-drop-down [(ngModel)]="charge.bankName" [value]="charge.bankName"
-              [list]="bankNamesList" [name]="'bankName'" [title]="'Bank Name'" [disabled]="false"
+            <app-drop-down [(ngModel)]="charge.bankName" [value]="charge.bankName" [list]="bankNamesList"
+              [name]="'bankName'" [title]="'Bank Name'" [disabled]="false"
               [required]="charge.paymentType !== ''"></app-drop-down>
           </div>
 
-          <div *ngIf="charge.paymentType === 'UPI'"
-            class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col mt-1">
+          <div *ngIf="charge.paymentType === 'UPI'" class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col mt-1">
             <app-text-field [(ngModel)]="charge.UPIID" [value]="charge.UPIID" [name]="'UPIID'"
-              [required]="charge.paymentType === 'UPI'" [type]="'text'" [placeHolder]="'UPI ID'"
-              [title]="'UPI Id'" [disabled]="false"></app-text-field>
+              [required]="charge.paymentType === 'UPI'" [type]="'text'" [placeHolder]="'UPI ID'" [title]="'UPI Id'"
+              [disabled]="false"></app-text-field>
           </div>
 
           <div *ngIf="charge.paymentType !== ''" class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col mt-1">
-            <app-text-field [(ngModel)]="charge.referenceNo" [value]="charge.referenceNo"
-              [name]="'referenceNo'" [required]="charge.paymentType !== ''" [type]="'text'"
-              [placeHolder]="'Reference Number'" [title]="'Reference No.'" [disabled]="false"></app-text-field>
+            <app-text-field [(ngModel)]="charge.referenceNo" [value]="charge.referenceNo" [name]="'referenceNo'"
+              [required]="charge.paymentType !== ''" [type]="'text'" [placeHolder]="'Reference Number'"
+              [title]="'Reference No.'" [disabled]="false"></app-text-field>
           </div>
         </div>
       </div>
       <div class="w-full items-end flex flex-wrap justify-end -mx-3 mb-2">
-        <button [disabled]="loading.resetting" type="button" (click)="resetClick()"
+        <button [disabled]="loading.resetting" type="button" (click)="chargeResetClick()"
           [ngClass]="{'cursor-not-allowed':(loading.resetting)}"
           class="cursor-pointer text-white bg-gray-700 hover:bg-gray-800 focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-xs px-3 py-2 me-2 mb-2 dark:bg-gray-600 dark:hover:bg-gray-700 focus:outline-none dark:focus:ring-gray-800">
           <span *ngIf="!loading.resetting">Reset</span>
           <mat-spinner *ngIf="loading.resetting" [diameter]="16"></mat-spinner>
         </button>
-        <button [disabled]="loading.submitting" type="button" (click)="submitClick()"
+        <button [disabled]="loading.submitting" type="button" (click)="chargeSubmitClick()"
           [ngClass]="{'cursor-not-allowed':(loading.submitting)}"
           class="cursor-pointer text-white bg-gray-700 hover:bg-gray-800 focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-xs px-3 py-2 me-2 mb-2 dark:bg-gray-600 dark:hover:bg-gray-700 focus:outline-none dark:focus:ring-gray-800">
           <span *ngIf="!loading.submitting">Submit</span>
@@ -298,7 +308,126 @@
       </div>
     </div>
   </mat-tab>
-  <mat-tab [disabled]="patientDetailsLoaded === false" label="Package"> Package Content </mat-tab>
+  <mat-tab [disabled]="patientDetailsLoaded === false" label="Package">
+    <div class="mt-4">
+      <div class="w-full flex flex-wrap">
+        <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col mt-1">
+          <app-drop-down [title]="'Package'" [required]="true" [name]="'package'" [(ngModel)]="package.package"
+            (ngModelChange)="packageChanged()" [value]="package.package" [list]="packagesList"></app-drop-down>
+        </div>
+        <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col mt-1">
+          <app-text-field [title]="'Charge'" [type]="'number'" [required]="true" [value]="package.charge.toString()"
+            [name]="'packageCharge'" [disabled]="true" [placeHolder]="'Charge'"
+            [(ngModel)]="package.charge"></app-text-field>
+        </div>
+        <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col mt-1">
+          <app-text-field [title]="'Discount(%)'" [type]="'number'" [value]="package.discountPer.toString()"
+            [name]="'packageDiscountPer'" [placeHolder]="'Discount(%)'" [(ngModel)]="package.discountPer"
+            (ngModelChange)="packageDiscountPerChanged()"></app-text-field>
+        </div>
+        <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col mt-1">
+          <app-text-field [title]="'Discount(Rs)'" [type]="'number'" [value]="package.discountRs.toString()"
+            [name]="'packageDiscountRs'" [placeHolder]="'Discount(Rs)'" [(ngModel)]="package.discountRs"
+            (ngModelChange)="packageDiscountRsChanged()"></app-text-field>
+        </div>
+        <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col mt-1">
+          <app-text-field [title]="'Net Charge'" [disabled]="true" [type]="'number'" [required]="true"
+            [value]="package.netCharge.toString()" [name]="'packageNetCharge'" [placeHolder]="'Net Charge'"
+            [(ngModel)]="package.netCharge"></app-text-field>
+        </div>
+        <div class="w-full items-end flex flex-wrap justify-end -mx-3 mb-2">
+          <button [disabled]="loading.addingPackage" type="button" (click)="addPackageClick()"
+            [ngClass]="{'cursor-not-allowed':(loading.addingPackage)}"
+            class="cursor-pointer text-white bg-gray-700 hover:bg-gray-800 focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-xs px-3 py-2 me-2 mb-2 dark:bg-gray-600 dark:hover:bg-gray-700 focus:outline-none dark:focus:ring-gray-800">
+            <span *ngIf="!loading.addingPackage">Add</span>
+            <mat-spinner *ngIf="loading.addingPackage" [diameter]="16"></mat-spinner>
+          </button>
+        </div>
+      </div>
+
+      @if(packageSummaryTable.data.length > 0) {
+      <div class="table-container ms-4 me-4 mb-4 PackagesSummaryTable">
+        <table mat-table [dataSource]="packageSummaryTable" class="mat-elevation-z8">
+          <ng-container matColumnDef="row">
+            <th mat-header-cell *matHeaderCellDef> No. </th>
+            <td mat-cell *matCellDef="let element"> {{element.row}} </td>
+            <td mat-footer-cell *matFooterCellDef></td>
+          </ng-container>
+
+          <ng-container matColumnDef="packageName">
+            <th mat-header-cell *matHeaderCellDef> Package Name </th>
+            <td mat-cell *matCellDef="let element"> {{element.packageName}} </td>
+            <td mat-footer-cell *matFooterCellDef>Total:</td>
+          </ng-container>
+
+          <ng-container matColumnDef="charge">
+            <th mat-header-cell *matHeaderCellDef> Charge </th>
+            <td mat-cell *matCellDef="let element"> {{element.charge | currency:'INR'}} </td>
+            <td mat-footer-cell *matFooterCellDef>{{getPackageFooterTotal()[0] | currency:'INR'}}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="discountRs">
+            <th mat-header-cell *matHeaderCellDef> Discount </th>
+            <td mat-cell *matCellDef="let element"> {{element.discountRs | currency:'INR'}} </td>
+            <td mat-footer-cell *matFooterCellDef>{{getPackageFooterTotal()[1] | currency:'INR'}}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="netCharge">
+            <th mat-header-cell *matHeaderCellDef> Net Charge </th>
+            <td mat-cell *matCellDef="let element"> {{element.netCharge | currency:'INR'}} </td>
+            <td mat-footer-cell *matFooterCellDef>{{getPackageFooterTotal()[2] | currency:'INR'}}</td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="packageSummaryColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: packageSummaryColumns;"></tr>
+          <tr mat-footer-row *matFooterRowDef="packageSummaryColumns; sticky: true"></tr>
+
+        </table>
+      </div>
+      }
+
+      <div class="w-full flex flex-wrap">
+        <div class="w-full items-end md:items-center flex flex-wrap justify-end -mx-3 mb-2">
+          <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 mt-1">
+            <app-text-field [title]="'Total Amount'" [type]="'number'" [disabled]="true"
+              [value]="package.totalAmount.toString()" [(ngModel)]="package.totalAmount"></app-text-field>
+          </div>
+        </div>
+        <div class="w-full items-end md:items-center flex flex-wrap justify-end -mx-3 mb-2">
+          <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 mt-1">
+            <app-text-field [title]="'Discount Amount'" [type]="'number'" [disabled]="true"
+              [value]="package.discountAmount.toString()" [(ngModel)]="package.discountAmount"></app-text-field>
+          </div>
+        </div>
+        <div class="w-full items-end md:items-center flex flex-wrap justify-end -mx-3 mb-2">
+          <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 mt-1">
+            <app-text-field [title]="'Balance Amount'" [type]="'number'" [disabled]="true"
+              [value]="package.balanceAmount.toString()" [(ngModel)]="package.balanceAmount"></app-text-field>
+          </div>
+        </div>
+        <div class="w-full items-end md:items-center flex flex-wrap justify-end -mx-3 mb-2">
+          <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 mt-1">
+            <app-text-field [title]="'Remarks'" [type]="'number'" [disabled]="true" [value]="package.remarks.toString()"
+              [(ngModel)]="package.remarks"></app-text-field>
+          </div>
+        </div>
+      </div>
+      <div class="w-full items-end flex flex-wrap justify-end -mx-3 mb-2">
+        <button [disabled]="loading.packageResetting" type="button" (click)="packageResetClick()"
+          [ngClass]="{'cursor-not-allowed':(loading.packageResetting)}"
+          class="cursor-pointer text-white bg-gray-700 hover:bg-gray-800 focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-xs px-3 py-2 me-2 mb-2 dark:bg-gray-600 dark:hover:bg-gray-700 focus:outline-none dark:focus:ring-gray-800">
+          <span *ngIf="!loading.packageResetting">Reset</span>
+          <mat-spinner *ngIf="loading.packageResetting" [diameter]="16"></mat-spinner>
+        </button>
+        <button [disabled]="loading.packageSubmitting" type="button" (click)="packageSubmitClick()"
+          [ngClass]="{'cursor-not-allowed':(loading.packageSubmitting)}"
+          class="cursor-pointer text-white bg-gray-700 hover:bg-gray-800 focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-xs px-3 py-2 me-2 mb-2 dark:bg-gray-600 dark:hover:bg-gray-700 focus:outline-none dark:focus:ring-gray-800">
+          <span *ngIf="!loading.packageSubmitting">Submit</span>
+          <mat-spinner *ngIf="loading.packageSubmitting" [diameter]="16"></mat-spinner>
+        </button>
+      </div>
+    </div>
+  </mat-tab>
   <mat-tab label="Patients">
     @if(dataSource.data.length > 0) {
 

@@ -5,6 +5,6 @@
  class="appearance-none block w-full bg-gray-200 border border-gray-200 text-gray-700 py-2 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
  [ngClass]="{'cursor-not-allowed':disabled}"
  [name]="name" [required]="true" [disabled]="disabled" [hidden]="hidden" [value]="value" (input)="onInputChange($event)">
- <option value="" selected>--Select One--</option>
+ <option value="0" selected>--Select One--</option>
  <option *ngFor="let m of list" [value]="m.key">{{m.value}}</option>
 </select>
