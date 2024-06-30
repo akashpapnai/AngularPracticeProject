@@ -407,7 +407,7 @@
         </div>
         <div class="w-full items-end md:items-center flex flex-wrap justify-end -mx-3 mb-2">
           <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 mt-1">
-            <app-text-field [title]="'Remarks'" [type]="'number'" [disabled]="true" [value]="package.remarks.toString()"
+            <app-text-field [title]="'Remarks'" [type]="'text'" [required]="true" [value]="package.remarks.toString()"
               [(ngModel)]="package.remarks"></app-text-field>
           </div>
         </div>

@@ -312,6 +312,7 @@ export class OpdServiceComponent implements OnInit {
 
   public async loadPatientsDetails(opid: string) {
     this.chargeResetClick();
+    this.packageResetClick();
     this.chargeSummaryTable = new MatTableDataSource();
     const data: PatientDetails = await this.service.loadPatientsDetails(opid);
     this.opdService = {
@@ -483,7 +484,6 @@ export class OpdServiceComponent implements OnInit {
   }
 
   public async packageResetClick() {
-    //TODO: Package Resetting Click
     this.loading.packageResetting = true;
     this.package = {
       package: 0,

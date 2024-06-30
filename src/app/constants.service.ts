@@ -42,16 +42,16 @@ export class ConstantsService {
     {'key':'RTGS','value':'RTGS'},
     {'key':'UPI','value':'UPI'}
   ];
-  public bloodGroupList: string[] = [
-    'A+',
-    'A-',
-    'AB+',
-    'AB-',
-    'B+',
-    'B-',
-    'O+',
-    'O-',
-    'Not Known'
+  public bloodGroupList: any[] = [
+    {'key':'A+','value':'A+'},
+    {'key':'A-','value':'A-'},
+    {'key':'AB+','value':'AB+'},
+    {'key':'AB-','value':'AB-'},
+    {'key':'B+','value':'B+'},
+    {'key':'B-','value':'B-'},
+    {'key':'O+','value':'O+'},
+    {'key':'O-','value':'O-'},
+    {'key':'Not Known','value':'Not Known'},
   ];
   public religionList: any[] = [
     {'key':'Baudh','value':'Baudh'},
@@ -63,12 +63,12 @@ export class ConstantsService {
     {'key':'Soutaal/Santal', 'value':'Soutaal/Santal'},
     {'key':'Yahudi', 'value':'Yahudi'}
   ];
-  public documentsList: string[] = [
-    'Aadhar Card',
-    'ABHA Card',
-    'Driving Liscence',
-    'Pan Card',
-    'PM-JAY Card'
+  public documentsList: any[] = [
+    {'key':'Aadhar Card', 'value':'Aadhar Card'},
+    {'key':'ABHA Card', 'value':'ABHA Card'},
+    {'key':'Driving Liscence', 'value':'Driving Liscence'},
+    {'key':'Pan Card', 'value':'Pan Card'},
+    {'key':'PM-JAY Card', 'value':'PM-JAY Card'}
   ];
   public consultationList: any[] = [
     {'key':'1', value: 'First Time Consultation'},

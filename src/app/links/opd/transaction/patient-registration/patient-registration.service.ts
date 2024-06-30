@@ -15,7 +15,7 @@ export class PatientRegistrationService {
     'Authorization': 'Bearer ' + localStorage.getItem('token')
   });
 
-  public formValues = {
+  public formValues: formValues = {
     guardianList: this.constants.guardiansList,
     mStatusList: this.constants.maritalStatusList,
     bGroup: this.constants.bloodGroupList,
@@ -105,7 +105,7 @@ export class PatientRegistrationService {
     }
     return cities;
   }
-  public registerPatient(register: any): Promise<any> {
+  public registerPatient(register: PatientRegistration): Promise<any> {
     return new Promise<any>(resolve => {
       const reg = this.http.post(this.apiURL + '/Common/RegisterPatient', register, { headers: this.token_header });
       reg.subscribe({
@@ -140,4 +140,45 @@ interface uhidResponse {
 
 interface citiesResponse {
   allCities: any[]
+}
+
+export interface formValues {
+  age: string,
+  mStatusList: any[],
+  guardianList: any[],
+  bGroup: any[],
+  documents: any[],
+  religion: any[]
+}
+
+export interface PatientRegistration {
+  Id: number | null,
+  CreatedBy: number | null,
+  CreatedDate: Date | null,
+  ModifiedBy: number | null,
+  ModifiedDate: Date | null,
+  isActive: boolean,
+  Uhid: string,
+  Date: Date,
+  Salutation: string,
+  FirstName: string,
+  middleName: string,
+  lastName: string,
+  DOB: Date,
+  MaritalStatus: string,
+  Guardian: string,
+  GuardianName: string,
+  BloodGroup: string,
+  Occupation: string,
+  Religion: string,
+  MobNumber: string,
+  SecMobNumber: string,
+  LocalAddress: string,
+  CountryId: string,
+  StateId: string,
+  CityId: string,
+  PinCode: string,
+  Email: string,
+  DocumentType: string,
+  DocumentNumber: string
 }
