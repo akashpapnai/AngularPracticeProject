@@ -4,10 +4,10 @@ import { Injectable } from '@angular/core';
   providedIn: 'root'
 })
 export class LoginService {
-  public __apiURL__: string = 'https://akashpapnai.bsite.net';
-  // public __apiURL__:string = 'https://localhost:7112'
+  // public __apiURL__: string = 'https://akashpapnai.bsite.net';
+  public __apiURL__:string = 'https://localhost:7112'
 
-  public baseUrlForPrint = '/AngularPracticeProject/browser';
-  // public baseUrlForPrint = '';
+  // public baseUrlForPrint = '/AngularPracticeProject/browser';
+  public baseUrlForPrint = '';
   constructor() { }
 }

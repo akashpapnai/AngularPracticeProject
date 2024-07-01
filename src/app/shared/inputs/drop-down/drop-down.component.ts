@@ -34,13 +34,13 @@ export class DropDownComponent {
   public onInputChange(event: Event): void {
     const input = event.target as HTMLInputElement;
     const value = input.value;
-    this.value = value;
+    this.value = value.toString();
     this.onChange(value);
   }
 
   writeValue(value: any): void {
     if (value) {
-      this.value = value;
+      this.value = value.toString();
     }
   }
 

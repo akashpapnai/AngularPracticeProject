@@ -1,0 +1,159 @@
+<app-navbar />
+
+<form #myForm="ngForm" class="mt-4 mx-auto">
+    <div class="w-full flex flex-wrap">
+        <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 mt-1">
+            <app-date [value]="admissionData.Date" [title]="'Date'" [name]="'date'"
+                [placeHolder]="'DD-MMM-YYYY'"></app-date>
+        </div>
+        <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col mt-1">
+            <app-text-field [(ngModel)]="admissionData.AppointmentNo" [value]="admissionData.AppointmentNo"
+                [name]="'appointmentNo'" [type]="'text'" [placeHolder]="'Appointment No'" [title]="'Appointment No'"
+                [disabled]="true"></app-text-field>
+        </div>
+    </div>
+    <div class="w-full flex flex-wrap">
+        <div (focusout)="checkUhid()" [tabIndex]="1" class="w-full md:w-1/4 px-3 mb-6 md:mb-0 mt-1">
+            <app-auto-complete [title]="'UHID'" [required]="true" [formControl]="uhidControl"
+                [placeHolder]="'Enter UHID'" [autoCompleteOptions]="uhidfilteredOptions" [name]="'uhid'" #uhid
+                (valueChanged)="onUhidChange($event)"></app-auto-complete>
+        </div>
+        <div (focusout)="checkIpid()" [tabIndex]="1" class="w-full md:w-1/4 px-3 mb-6 md:mb-0 mt-1">
+            <app-auto-complete [title]="'IPID'" [required]="true" [formControl]="ipidControl"
+                [placeHolder]="'Enter IPID'" [autoCompleteOptions]="ipidfilteredOptions" [name]="'ipid'"
+                (valueChanged)="onIpidChange($event)"></app-auto-complete>
+        </div>
+        <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col mt-1">
+            <app-drop-down [value]="admissionData.UserType" [(ngModel)]="admissionData.UserType" [list]="userTypeList"
+                [disabled]="true" [name]="'userType'" [title]="'User Type'" [required]="true"></app-drop-down>
+        </div>
+        <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col mt-1">
+            <app-text-field [(ngModel)]="admissionData.FirstName" [value]="admissionData.FirstName" [name]="'firstName'"
+                [type]="'text'" [placeHolder]="'First Name'" [title]="'First Name'" [disabled]="true"
+                [required]="true"></app-text-field>
+        </div>
+        <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col mt-1">
+            <app-text-field [(ngModel)]="admissionData.MiddleName" [value]="admissionData.MiddleName"
+                [name]="'middleName'" [type]="'text'" [placeHolder]="'Middle Name'" [title]="'Middle Name'"
+                [disabled]="true"></app-text-field>
+        </div>
+        <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col mt-1">
+            <app-text-field [(ngModel)]="admissionData.LastName" [value]="admissionData.LastName" [name]="'lastName'"
+                [type]="'text'" [placeHolder]="'Last Name'" [title]="'Last Name'" [disabled]="true"
+                [required]="true"></app-text-field>
+        </div>
+        <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col mt-1">
+            <app-text-field [(ngModel)]="admissionData.GuardianName" [value]="admissionData.GuardianName"
+                [name]="'guardianName'" [type]="'text'" [placeHolder]="'Guardian Name'" [title]="'Guardian Name'"
+                [disabled]="true"></app-text-field>
+        </div>
+        <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col mt-1">
+            <app-text-field [(ngModel)]="admissionData.Age" [value]="admissionData.Age" [name]="'age'" [type]="'text'"
+                [placeHolder]="'Age'" [title]="'Age'" [disabled]="true"></app-text-field>
+        </div>
+        <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col mt-1">
+            <app-drop-down [value]="admissionData.MaritalStatus" [(ngModel)]="admissionData.MaritalStatus"
+                [list]="maritalStatusList" [disabled]="true" [name]="'maritalStatus'"
+                [title]="'Marital Status'"></app-drop-down>
+        </div>
+        <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col mt-1">
+            <app-text-field [(ngModel)]="admissionData.Occupation" [value]="admissionData.Occupation"
+                [name]="'occupation'" [type]="'text'" [placeHolder]="'Occupation'" [title]="'Occupation'"
+                [disabled]="true"></app-text-field>
+        </div>
+        <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col mt-1">
+            <app-drop-down [value]="admissionData.Religion" [(ngModel)]="admissionData.Religion" [list]="religionList"
+                [disabled]="true" [name]="'religion'" [title]="'Religion'"></app-drop-down>
+        </div>
+        <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col mt-1">
+            <app-text-field [(ngModel)]="admissionData.LocalAddress" [value]="admissionData.LocalAddress"
+                [name]="'address'" [type]="'text'" [placeHolder]="'Address'" [title]="'Address'" [disabled]="true"
+                [required]="true"></app-text-field>
+        </div>
+        <!-- Country -->
+        <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col mt-1">
+            <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" [htmlFor]="'countries'">
+                {{'Country'}}&nbsp;<span class="text-red-900">*</span>
+            </label>
+            <select
+                class="cursor-not-allowed appearance-none block w-full bg-gray-200 border border-gray-200 text-gray-700 py-2 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                [name]="'countries'" [required]="true" [disabled]="true" [hidden]="false"
+                [(ngModel)]="admissionData.CountryId" [value]="admissionData.CountryId"
+                (ngModelChange)="countryChanged($event)">
+                <option value="0" selected>--Select One--</option>
+                <option *ngFor="let m of countriesList" [value]="m.key">{{m.value}}</option>
+            </select>
+        </div>
+        <!-- State -->
+        <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col mt-1">
+            <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" [htmlFor]="'states'">
+                {{'State'}}&nbsp;<span class="text-red-900">*</span>
+            </label>
+            <select
+                class="cursor-not-allowed appearance-none block w-full bg-gray-200 border border-gray-200 text-gray-700 py-2 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                [name]="'states'" [required]="true" [disabled]="true" [hidden]="false"
+                [(ngModel)]="admissionData.StateId" [value]="admissionData.StateId">
+                <option value="0" selected>--Select One--</option>
+                <option *ngFor="let m of statesList" [value]="m.key">{{m.value}}</option>
+            </select>
+        </div>
+        <!-- City -->
+        <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col mt-1">
+            <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" [htmlFor]="'cities'">
+                {{'City'}}&nbsp;<span class="text-red-900">*</span>
+            </label>
+            <select
+                class="cursor-not-allowed ppearance-none block w-full bg-gray-200 border border-gray-200 text-gray-700 py-2 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                [name]="'cities'" [required]="true" [disabled]="true" [hidden]="false"
+                [(ngModel)]="admissionData.CityId" [value]="admissionData.CityId">
+                <option value="0" selected>--Select One--</option>
+                <option *ngFor="let m of citiesList" [value]="m.key">{{m.value}}</option>
+            </select>
+        </div>
+        <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col mt-1">
+            <app-text-field [(ngModel)]="admissionData.mobile" [value]="admissionData.mobile" [name]="'mobile'"
+                [type]="'number'" [placeHolder]="'Mobile'" [title]="'Mobile'" [disabled]="true"
+                [required]="true"></app-text-field>
+        </div>
+        <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col mt-1">
+            <app-text-field [(ngModel)]="admissionData.secMobile" [value]="admissionData.secMobile" [name]="'secMobile'"
+                [type]="'number'" [placeHolder]="'Secondary Mobile'" [title]="'Secondary Mobile'"
+                [disabled]="true"></app-text-field>
+        </div>
+        <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col mt-1">
+            <app-text-field [(ngModel)]="admissionData.email" [value]="admissionData.email" [name]="'email'"
+                [type]="'email'" [placeHolder]="'Email'" [title]="'Email'" [disabled]="true"
+                [required]="true"></app-text-field>
+        </div>
+        <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col mt-1">
+            <app-text-field [(ngModel)]="admissionData.refLetterNo" [value]="admissionData.refLetterNo" [name]="'refLetterNo'"
+                [type]="'text'" [placeHolder]="'ref Letter No'" [title]="'Reference Letter No'" [disabled]="false"
+                [required]="false"></app-text-field>
+        </div>
+        <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col mt-1">
+            <app-text-field [(ngModel)]="admissionData.idCardNo" [value]="admissionData.idCardNo" [name]="'idCardNo'"
+                [type]="'text'" [placeHolder]="'id Card No'" [title]="'Id Card No'" [disabled]="false"
+                [required]="false"></app-text-field>
+        </div>
+        <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col mt-1">
+            <app-drop-down [value]="admissionData.AdmittingDoc" [(ngModel)]="admissionData.AdmittingDoc" (ngModelChange)="admittingDocChanged($event)"
+                [list]="admittingDocList" [disabled]="false" [required]="true" [name]="'admittingDoc'"
+                [title]="'Admitting Doctor'"></app-drop-down>
+        </div>
+        <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col mt-1">
+            <app-drop-down [value]="admissionData.department" [(ngModel)]="admissionData.department"
+                [list]="departmentList" [disabled]="true" [required]="true" [name]="'department'"
+                [title]="'Department'"></app-drop-down>
+        </div>
+        <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col mt-1">
+            <app-drop-down [value]="admissionData.Ward" [(ngModel)]="admissionData.Ward" (ngModelChange)="wardChanged($event)"
+                [list]="wardList" [disabled]="true" [required]="true" [name]="'ward'"
+                [title]="'Ward'"></app-drop-down>
+        </div>
+        <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0 flex flex-col mt-1">
+            <app-drop-down [value]="admissionData.Bed" [(ngModel)]="admissionData.Bed"
+                [list]="bedList" [disabled]="true" [required]="true" [name]="'bed'"
+                [title]="'Bed'"></app-drop-down>
+        </div>
+    </div>
+</form>

@@ -16,6 +16,10 @@ import { EmployeeMasterComponent } from './links/admin/master/employee-master/em
 import { OpdPatientsReportComponent } from './links/opd/reports/opd-patients-report/opd-patients-report.component';
 import { OpdServiceComponent } from './links/opd/transaction/opd-service/opd-service.component';
 import { CollectionReportComponent } from './links/admin/reports/collection-report/collection-report.component';
+import { IpdAdmissionComponent } from './links/ipd/transaction/ipd-admission/ipd-admission.component';
+import { FloorMasterComponent } from './links/ipd/master/floor-master/floor-master.component';
+import { WardMasterComponent } from './links/ipd/master/ward-master/ward-master.component';
+import { BedMasterComponent } from './links/ipd/master/bed-master/bed-master.component';
 
 export const routes: Routes = [
     { path:'',component: HomePageComponent,pathMatch:'full' },
@@ -33,6 +37,10 @@ export const routes: Routes = [
     { path:'admin/employeemaster', component: EmployeeMasterComponent, canActivate:[AuthGuard] },
     { path:'admin/departmentmaster', component: DepartmentMasterComponent, canActivate:[AuthGuard] },
     { path:'admin/collectionreport', component: CollectionReportComponent, canActivate:[AuthGuard] },
+    { path:'ipd/ipdadmission', component: IpdAdmissionComponent, canActivate: [AuthGuard] },
+    { path:'ipd/floormaster', component: FloorMasterComponent, canActivate: [AuthGuard] },
+    { path:'ipd/wardmaster', component: WardMasterComponent, canActivate: [AuthGuard] },
+    { path:'ipd/bedmaster', component: BedMasterComponent, canActivate: [AuthGuard] },
     { path:'opd/patientregistration', component: PatientRegistrationComponent, canActivate:[AuthGuard] },
     { path:'opd/opdmanagement', component: OpdmanagementComponent, canActivate:[AuthGuard] },
     { path:'opd/opdmanagement/:id', component: OpdmanagementComponent, canActivate:[AuthGuard] },

@@ -1,0 +1,10 @@
+.table-container {
+  .mat-elevation-z8 {
+    overflow: auto;
+  }
+
+  &::-webkit-scrollbar {
+    width: 0px;
+    height: 0px;
+  }
+}
